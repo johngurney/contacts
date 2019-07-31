@@ -9,7 +9,31 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body style="background-color: #d3d3e0; font-family: Arial;" >
+
+  <table style="width:100%" align="center" >
+    <col width="15%">
+    <col width="60%">
+    <col width="15%">
+
+    <tr>
+
+      <td align="center" style="font-size: 40px"; >
+      </td>
+
+
+      <td align="center" style="font-size: 50pt; font-weight: bold">
+        Contacts sheets
+      </td>
+
+      <td align="center" style="font-size: 10pt; font-weight: bold">
+      </td>
+
+    </tr>
+  </table>
+
+
+
+  <%= yield %>
   </body>
 </html>

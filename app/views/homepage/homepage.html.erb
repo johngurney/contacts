@@ -1,1 +1,17 @@
-This is the homepage
+<table style="width:100%" >
+  <col width="50%">
+  <col width="50%">
+  <tr>
+    <td>
+      Contacts
+      <%= button_to "Add contact", add_contact_path %>
+      <% Contact.all.order(:last_name, :first_name ).each do |contact| %>
+      <%= contact.name %><br/>
+      <% end %>
+
+    </td>
+    <td>
+      Sheets
+    </td>
+  </tr>
+</table>
