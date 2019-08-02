@@ -1,0 +1,14 @@
+<%= @sheet.client_name %><BR/>
+<table>
+  <col width="50%">
+  <col width="25%">
+  <col width="25%">
+  <% @sheet.contacts.each do |contact| %>
+    <tr>
+      <td><%= contact.name %></td>
+      <td><%= link_to contact.mobile_number, "tel:#" + contact.mobile_number %></td>
+      <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
+    </tr>
+  <% end %>
+</table>
+<%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %>

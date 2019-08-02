@@ -1,0 +1,31 @@
+<h1>Editing Sheet</h1>
+
+<%= render 'form', sheet: @sheet %>
+
+Contacts for sheet<br/>
+<%= form_tag remove_contact_from_sheet_path(@sheet)  do %>
+  <% @sheet.contacts.each do|contact| %>
+    <span style="white-space: nowrap;">
+      <%= check_box_tag 'check'+ contact.id.to_s %>
+      <%= contact.name %><br/>
+    </span>
+  <% end %>
+  <%= submit_tag "Remove contacts" %>
+<% end %>
+
+<br/>
+Other contacts<br/>
+<%= form_tag add_contact_to_sheet_path(@sheet)  do %>
+  <% Contact.all.order(:last_name, :first_name).each do|contact| %>
+    <% if @sheet.contacts.where(:id => contact.id).count == 0 %>
+      <span style="white-space: nowrap;">
+        <%= check_box_tag 'check'+ contact.id.to_s %>
+        <%= contact.name %><br/>
+      </span>
+    <% end %>
+  <% end %>
+  <%= submit_tag "Add contacts" %>
+<% end %>
+<br/>
+<%= link_to 'Show', @sheet %> |
+<%= link_to 'Back', sheets_path %>
