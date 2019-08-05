@@ -3,19 +3,11 @@
   <col width="50%">
   <tr>
     <td>
-      Contacts
-      <%= button_to "New contact", new_contact_path, method: :get %>
-      <% Contact.all.order(:last_name, :first_name ).each do |contact| %>
-      <%= link_to contact.name , contact_path(contact) %><br/>
-      <% end %>
+      <%= button_to "Contacts", contacts_path, method: :get %>
 
     </td>
     <td>
-      Sheets
-      <%= button_to "New sheet", new_sheet_path, method: :get %>
-      <% Sheet.all.order(:client_name ).each do |sheet| %>
-      <%= link_to sheet.client_name , sheet_path(sheet) %><br/>
-      <% end %>
+      <%= button_to "Sheets", sheets_path, method: :get %>
     </td>
   </tr>
 </table>

@@ -9,6 +9,8 @@
   <%= @sheet.id.to_s %>
 </p>
 
+<%= link_to "See sheet",  contact_sheet_path(@sheet.number) %><br/><br/>
+
 <% @sheet.contacts.each do|contact| %>
   <%= contact.name %><br/>
 <% end %>

@@ -10,4 +10,12 @@ Rails.application.routes.draw do
   post 'sheet/addcontact/.:id' , to: 'sheets#add_contact', as: :add_contact_to_sheet
   post 'sheet/removecontact/.:id' , to: 'sheets#remove_contact', as: :remove_contact_from_sheet
 
+  get 'sheet/order_up/:sheet_id/:contact_id' , to: 'sheets#order_up', as: :sheet_order_up
+  get 'sheet/order_down/:sheet_id/:contact_id' , to: 'sheets#order_down', as: :sheet_order_down
+  get 'sheet/to_top/:sheet_id/:contact_id' , to: 'sheets#to_top', as: :to_top
+  get 'sheet/to_bottom/:sheet_id/:contact_id' , to: 'sheets#to_bottom', as: :to_bottom
+  get 'test/:id' , to: 'sheets#test', as: :test
+
+  post 'upload_contacts_file', to:  "contacts#upload_contacts_file" , as:  :upload_contacts_file
+
 end

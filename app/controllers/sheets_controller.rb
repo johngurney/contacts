@@ -1,5 +1,5 @@
 class SheetsController < ApplicationController
-  before_action :set_sheet, only: [:show, :edit, :update, :destroy, :add_contact, :remove_contact]
+  before_action :set_sheet, only: [:show, :edit, :update, :destroy, :add_contact, :remove_contact, :test]
 
   # GET /sheets
   # GET /sheets.json
@@ -75,30 +75,120 @@ class SheetsController < ApplicationController
   end
 
   def add_contact
-    Contact.all.each do |contact|
+    @sheet.check_orders_number_are_null
+    Contact.all.order(:last_name, :first_name).each do |contact|
       s = params['check' + contact.id.to_s]
       if !s.blank?
+        max_order = @sheet.max_order
         @sheet.contacts << contact
+        @sheet.save
+        contact_sheet = ContactSheet.where(:sheet_id => @sheet.id, :contact_id => contact.id).first
+        contact_sheet.order_number = max_order
+        contact_sheet.save
       end
     end
     redirect_to sheet_path(@sheet)
   end
+
 
   def remove_contact
     Contact.all.each do |contact|
       s = params['check' + contact.id.to_s]
       if !s.blank?
         @sheet.contacts.delete(contact)
+        @sheet.save
       end
     end
+
+    n = 0
+    ContactSheet.where(:sheet_id => @sheet.id ).order(:order_number).each do |contact|
+      contact.order_number = n
+      contact.save
+      n += 1
+    end
+
     redirect_to sheet_path(@sheet)
+  end
+
+  def order_up
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_orders_number_are_null
+    contact_id = params[:contact_id]
+    contact_sheet1 = ContactSheet.where(:sheet_id => sheet_id, :contact_id => contact_id).first
+    contact_sheet2 = ContactSheet.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number - 1).first
+    contact_sheet1.order_number -= 1
+    contact_sheet2.order_number += 1
+    contact_sheet1.save
+    contact_sheet2.save
+
+    redirect_to edit_sheet_path(sheet_id)
+  end
+
+  def to_top
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_orders_number_are_null
+    contact_id = params[:contact_id]
+    contact_sheet1 = ContactSheet.where(:sheet_id => sheet_id, :contact_id => contact_id).first
+
+    ContactSheet.where(:sheet_id => sheet_id).where("order_number < ?",contact_sheet1.order_number).each do |contact|
+      contact.order_number +=1
+      contact.save
+    end
+    contact_sheet1.order_number = 0
+    contact_sheet1.save
+
+    redirect_to edit_sheet_path(sheet_id)
+  end
+
+  def test
+    puts "TEST"
+    puts "Max:" + @sheet.max_order.to_s
+
+    redirect_to edit_sheet_path(@sheet)
+  end
+
+  def to_bottom
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_orders_number_are_null
+    contact_id = params[:contact_id]
+    contact_sheet1 = ContactSheet.where(:sheet_id => sheet_id, :contact_id => contact_id).first
+    max_order = ContactSheet.where(:sheet_id => sheet_id).maximum(:order_number)
+
+    ContactSheet.where(:sheet_id => sheet_id).where("order_number > ?",contact_sheet1.order_number).each do |contact|
+      contact.order_number -=1
+      contact.save
+    end
+    contact_sheet1.order_number = max_order
+
+    contact_sheet1.save
+
+    redirect_to edit_sheet_path(sheet_id)
+  end
+
+
+  def order_down
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_orders_number_are_null
+    contact_id = params[:contact_id]
+    contact_sheet1 = ContactSheet.where(:sheet_id => sheet_id, :contact_id => contact_id).first
+    contact_sheet2 = ContactSheet.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number + 1).first
+    contact_sheet1.order_number += 1
+    contact_sheet2.order_number -= 1
+    contact_sheet1.save
+    contact_sheet2.save
+
+    redirect_to edit_sheet_path(sheet_id)
   end
 
   def sheet
     sheet_number = params[:id]
     if Sheet.where(:number => sheet_number).count > 0
       @sheet = Sheet.where(:number => sheet_number).first
-      render "sheet" , :layout => false
+      if mobile?
+        render "sheet_mobile" , :layout => false
+      else
+        render "sheet" , :layout => false
+      end
     else
       render 'sheet_number_error'
     end

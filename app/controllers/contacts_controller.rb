@@ -61,6 +61,68 @@ class ContactsController < ApplicationController
     end
   end
 
+
+
+  def upload_contacts_file
+
+    uploaded_io = params[:file]
+    text = uploaded_io.read
+
+    flag = false
+    first_name_column = -1
+    last_name_column = -1
+    position_column = -1
+    tel_number_column = -1
+    mobile_number_column = -1
+    email_address_column = -1
+
+    text.each_line do |line|
+      values=line.split "\t"
+      if flag == false
+        first_name_column = find_in_array(values, "first_name")
+        last_name_column = find_in_array(values, "last_name")
+        position_column = find_in_array(values, "position")
+        tel_number_column = find_in_array(values, "tel_number")
+        mobile_number_column = find_in_array(values, "mobile_number")
+        email_address_column = find_in_array(values, "email_address")
+        flag=true
+      else
+        contact = Contact.new
+        if first_name_column >= 0
+          contact.first_name = values[first_name_column]
+        end
+        if last_name_column >= 0
+          contact.last_name  = values[last_name_column]
+        end
+        if position_column >= 0
+          contact.position   = values[position_column]
+        end
+        if tel_number_column >= 0
+          contact.tel_number   = values[tel_number_column]
+        end
+        if mobile_number_column >= 0
+          contact.mobile_number   = values[mobile_number_column]
+        end
+        if email_address_column >= 0
+          contact.email_address   = values[email_address_column]
+        end
+        contact.save
+      end
+    end
+
+    redirect_to contacts_path
+  end
+
+  def find_in_array(arry , text)
+    a = arry.index{|v| v.downcase == text.downcase}
+    if a.blank?
+      -1
+    else
+      a
+    end
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_contact

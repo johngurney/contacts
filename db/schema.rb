@@ -10,34 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_02_133205) do
+ActiveRecord::Schema.define(version: 2019_08_05_073645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "contacts", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.string "position"
-    t.text "description"
-    t.string "email_address"
-    t.string "tel_number"
-    t.string "mobile_number"
-    t.string "url"
+  create_table "contact_sheets", force: :cascade do |t|
+    t.integer "sheet_id", default: 0
+    t.integer "contact_id", default: 0
+    t.integer "order_number", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "contacts_sheets", id: false, force: :cascade do |t|
-    t.integer "contact_id"
-    t.integer "sheet_id"
+  create_table "contacts", force: :cascade do |t|
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.string "position", default: ""
+    t.text "description", default: ""
+    t.string "email_address", default: ""
+    t.string "tel_number", default: ""
+    t.string "mobile_number", default: ""
+    t.string "url", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sheets", force: :cascade do |t|
-    t.string "client_name"
+    t.string "client_name", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "number"
+    t.string "number", default: "000000"
   end
 
 end

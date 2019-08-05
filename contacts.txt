@@ -1,0 +1,58 @@
+No	Name	first_name	last_name	User ID	Position	Department	Team	Office	Location/Floor	tel_number	mobile_number	Email
+1	Adam Kosmalski	Adam	Kosmalski	AAKM	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.128 / 7	+44 20 7367 3352		adam.kosmalski@cms-cmno.com
+2	Alex Korenkov	Alex	Korenkov	AXKO	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.083 / 7	+44 20 7367 3750	+44 7824 321425	alex.korenkov@cms-cmno.com
+3	Amy Wilkinson	Amy	Wilkinson	AMWK	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.123 / 7	+44 20 7367 3331		amy.wilkinson@cms-cmno.com
+4	Andrew Starling	Andrew	Starling	ADSY	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.131 / 7	+44 20 7367 3757	+44 7912 299 817	andrew.starling@cms-cmno.com
+5	Anita de Villiers	Anita	de Villiers	AIDR	Senior Associate (Western Australian qualified)	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.066 / 7	+44 20 7067 3393		anita.devilliers@cms-cmno.com
+6	Anuj Moudgil	Anuj	Moudgil	AUMO	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.143 / 7	+44 20 7367 2214		anuj.moudgil@cms-cmno.com
+7	Cathryn Hopkins	Cathryn	Hopkins	CTHV	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.130 / 7	+44 20 7067 3310	+44 7834252394	cathryn.hopkins@cms-cmno.com
+8	Devina Shah	Devina	Shah	DASB	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.116 / 7	+44 20 7367 3307		devina.shah@cms-cmno.com
+9	Emily Sheard	Emily	Sheard	EMSA	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.111 / 7	+44 20 7367 2066	+44 7810 655 331	emily.sheard@cms-cmno.com
+10	Emma Cross	Emma	Cross	EMCR	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.119 / 7	+44 20 7067 3336	+44 7713878686	emma.cross@cms-cmno.com
+11	Francesca Knight	Francesca	Knight	FNKN	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.139 / 7	+44 20 7067 3570	+44 7739875858	francesca.knight@cms-cmno.com
+12	Georgina Swift	Georgina	Swift	GESW	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.069 / 7	+44 20 7367 2967	+44 07471 354 136	georgina.swift@cms-cmno.com
+13	Jessica Foley	Jessica	Foley	JEFO	Associate - Solicitor Advocate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.113 / 7	+44 20 7367 2512	+44 7738 837 455	jessica.foley@cms-cmno.com
+14	Jonathan Scrine	Jonathan	Scrine	JOSN	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.144 / 7	+44 20 7524 6855	+44 07584 607724	jonathan.scrine@cms-cmno.com
+15	Josh Levy	Josh	Levy	JOLV	Associate (Secondee)	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.124 / 7	+44 20 7367 2675		josh.levy@cms-cmno.com
+16	Joy McElroy	Joy	McElroy	JYMC	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.118 / 7	+44 20 7524 6108	+44 7824 144 725	joy.mcelroy@cms-cmno.com
+17	Kushal Gandhi	Kushal	Gandhi	KUGA	Senior Associate & Solicitor Advocate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.117 / 7	+44 20 7367 2664	+44 7717 211560	kushal.gandhi@cms-cmno.com
+18	Lisa Fox	Lisa	Fox	LIFN	Senior Associate - Solicitor Advocate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.104 / 7	+44 20 7367 2377	+44 7725 289 912	lisa.fox@cms-cmno.com
+19	Louise Boswell	Louise	Boswell	LOPO	Senior Associate & Solicitor Advocate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.137 / 7	+44 20 7367 3725	+44 7725 683 831	louise.boswell@cms-cmno.com
+20	Louise Pearce	Louise	Pearce	LOPE	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.085 / 7	+44 20 7367 3596	+44 7900 770 015	louise.pearce@cms-cmno.com
+21	Maria Petzsch	Maria	Petzsch	MBPD	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.100 / 7	+44 20 7367 2717		maria.petzsch@cms-cmno.com
+22	Marie Stewart	Marie	Stewart	MBSC	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.072 / 7	+44 20 7367 2763		marie.stewart@cms-cmno.com
+23	Mark Davison	Mark	Davison	MKDA	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.070 / 7	+44 20 7067 3912	+44 7872636505	mark.davison@cms-cmno.com
+24	Matthew McGoldrick	Matthew	McGoldrick	MBMK	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.125 / 7	+44 20 7367 2709		matthew.mcgoldrick@cms-cmno.com
+25	Michaela Potter	Michaela	Potter	MHPO	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.080 / 7	+44 20 7367 3749		michaela.potter@cms-cmno.com
+26	Nadia Latti	Nadia	Latti	NDLA	Associate (Australian Qualified)	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	#N/A	+44 20 7367 3581		nadia.latti@cms-cmno.com
+27	Nicholas Chandler	Nicholas	Chandler	NHCH	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.073 / 7	+44 20 7367 2901		nicholas.chandler@cms-cmno.com
+28	Pippa Borton	Pippa	Borton	PHBO	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.68 / 7	+44 20 7067 3171	+44 77 2582 8226	pippa.borton@cms-cmno.com
+29	Rachel Ormsby	Rachel	Ormsby	RAOR	Senior Associate, Solicitor Advocate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.117 / 7	+44 20 7367 2358		rachel.ormsby@cms-cmno.com
+30	Rose Falconer	Rose	Falconer	ROFZ	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.067 / 7	+44 20 7067 3512		rose.falconer@cms-cmno.com
+31	Shravan Ratakondla	Shravan	Ratakondla	SHRQ	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.132 / 7	+44 20 7367 3207	+44 7834 146 937	shravan.ratakondla@cms-cmno.com
+32	Stefanie Day	Stefanie	Day	STDN	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.140 / 7	+44 20 7524 6123	+44 7721260445	stefanie.day@cms-cmno.com
+33	Stephanie Woods	Stephanie	Woods	STWC	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.141 / 7	+44 20 7067 3239		stephanie.woods@cms-cmno.com
+34	Tim Malloch	Tim	Malloch	TIML	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.084 / 7	+44 20 7367 2499		tim.malloch@cms-cmno.com
+35	Tim Sales	Tim	Sales	TISO	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.145 / 7	+44 20 7524 6162	+44 07775 025438	tim.sales@cms-cmno.com
+36	Tom Sandeman	Tom	Sandeman	THSA	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.115 / 7	+44 20 7524 6289		tom.sandeman@cms-cmno.com
+37	Zainab Hodgson	Zainab	Hodgson	ZAHO	Senior Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.114 / 7	+44 20 7524 6948	+44 07775 025382	zainab.hodgson@cms-cmno.com
+38	Zoe Homer	Zoe	Homer	ZOHY	Associate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.127 / 7	+44 20 7367 3618	+44 7500 976 344	zoe.homer@cms-cmno.com
+40	Andrew Taplin	Andrew	Taplin	ANTY	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.096 / 7	+44 20 7524 6463	+44 07775 025349	andrew.taplin@cms-cmno.com
+41	Ben Trust	Ben	Trust	BETD	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.098 / 7	+44 20 7524 6234	+44 7775 025432	ben.trust@cms-cmno.com
+42	Bernard O'Sullivan	Bernard	O'Sullivan	BEOS	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.109 / 7	+44 20 7067 3594		bernard.o'sullivan@cms-cmno.com
+43	Chris Gooding	Chris	Gooding	CHGW	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.133 / 7	+44 20 7524 6572	+44 7977 008498	chris.gooding@cms-cmno.com
+44	Dan Tench	Dan	Tench	DATE	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.134 / 7	+44 20 7067 3518		dan.tench@cms-cmno.com
+45	David Bridge	David	Bridge	DDBE	Partner, Solicitor Advocate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.097 / 7	+44 20 7367 3021	+44 7818 050293	david.bridge@cms-cmno.com
+46	Geraldine Proudler	Geraldine	Proudler	GEPT	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.152 / 7	+44 20 7067 3540	+44 7774 235255	geraldine.proudler@cms-cmno.com
+47	Guy Pendell	Guy	Pendell	GUP	Partner - Solicitor Advocate	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.085 / 7	+44 20 7367 2404	+44 7973 375389	guy.pendell@cms-cmno.com
+48	Jeremy Mash	Jeremy	Mash	JEMV	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.150 / 7	+44 20 7067 3270		jeremy.mash@cms-cmno.com
+49	Jonathan Warne	Jonathan	Warne	JNWO	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.090 / 7	+44 20 7524 6130	+44 07771 945445	jonathan.warne@cms-cmno.com
+50	Karen Denny	Karen	Denny	KADT	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.120 / 7	+44 20 7524 6470	+44 07818 454381	karen.denny@cms-cmno.com
+51	Lee Gluyas	Lee	Gluyas	LEGL	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.151 / 7	+44 20 7524 6283	+44 07884 866965	lee.gluyas@cms-cmno.com
+52	Luke Pardey	Luke	Pardey	LUPA	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL146 / 7	+44 20 7067 3551		luke.pardey@cms-cmno.com
+53	Neal Gibson	Neal	Gibson	NEGI	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.064 / 7	+44 20 7524 6591	+44 77 1765 8861	neal.gibson@cms-cmno.com
+54	Omar Qureshi	Omar	Qureshi	OMQ	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.149 / 7	+44 20 7367 2573	+44 7702 526362	omar.qureshi@cms-cmno.com
+55	Richard Bamforth	Richard	Bamforth	RIBD	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.148 / 7	+44 20 7067 3641	+44 7843369549	richard.bamforth@cms-cmno.com
+56	Steven Corney	Steven	Corney	STCD	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.075 / 7	+44 20 7067 3509		steven.corney@cms-cmno.com
+57	Sukhi Kaler	Sukhi	Kaler	SUKN	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.135 / 7	+44 20 7524 6209	+44 07471 227044	sukhi.kaler@cms-cmno.com
+58	Tamsin Blow	Tamsin	Blow	TABZ	Partner	LAIE	LIT & ARB - CONTENTIOUS	London Cannon Place	BL.095 / 7	+44 20 7067 3793	+44 7725829132	tamsin.blow@cms-cmno.com

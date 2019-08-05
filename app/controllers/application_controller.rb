@@ -6,4 +6,11 @@ class ApplicationController < ActionController::Base
 
   helper_method :telephone_link
 
+  def mobile?
+    require "browser/aliases"
+    Browser::Base.include(Browser::Aliases)
+    @browser = Browser.new(request.env["HTTP_USER_AGENT"])
+    @browser.mobile?
+  end
+
 end

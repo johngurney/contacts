@@ -24,4 +24,16 @@
 
 <br>
 
+<%= form_tag upload_contacts_file_path, :multipart => true do  %>
+  <span class="small_user" >
+    <span style="font-size: 12pt; font-family: Arial; margin-right: 25px">
+    Upload file of users
+    </span>
+    <%= file_field_tag :file , :style =>"width: 300px; font-size: 12pt;"%>
+  </span>
+    <%= submit_tag "Upload",  {:class=>"large_button", :style =>"width: 120px; margin-left: 10px"} %>
+<% end %>
+
+<br>
+
 <%= link_to 'New Contact', new_contact_path %>

@@ -3,16 +3,29 @@
 <%= render 'form', sheet: @sheet %>
 
 Contacts for sheet<br/>
+<%= link_to "TEST", test_path(@sheet) %>
 <%= form_tag remove_contact_from_sheet_path(@sheet)  do %>
-  <% @sheet.contacts.each do|contact| %>
-    <span style="white-space: nowrap;">
-      <%= check_box_tag 'check'+ contact.id.to_s %>
-      <%= contact.name %><br/>
-    </span>
-  <% end %>
+  <table style="width:50%">
+    <col width="10%">
+    <col width="35%">
+    <col width="10%">
+    <col width="10%">
+    <col width="15%">
+    <col width="20%">
+    <% contacts = @sheet.contacts_in_order %>
+    <% contacts.each do|contact| %>
+      <tr>
+        <td><%= check_box_tag 'check'+ contact.id.to_s %></td>
+        <td><%= contact.name %>(<%= contact.order_number(@sheet)%>)</td>
+        <td><% if contact != contacts.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+        <td><% if contact != contacts.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+        <td><% if contact != contacts.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+        <td><% if contact != contacts.last %><%= link_to "to bottom", to_bottom_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+      </tr>
+    <% end %>
+  </table>
   <%= submit_tag "Remove contacts" %>
 <% end %>
-
 <br/>
 Other contacts<br/>
 <%= form_tag add_contact_to_sheet_path(@sheet)  do %>
