@@ -61,6 +61,13 @@ class ContactsController < ApplicationController
     end
   end
 
+  def delete_all_contacts
+
+    Contact.delete_all
+    ContactSheet.delete_all
+
+    redirect_to contacts_path
+  end
 
 
   def upload_contacts_file

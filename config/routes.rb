@@ -17,5 +17,7 @@ Rails.application.routes.draw do
   get 'test/:id' , to: 'sheets#test', as: :test
 
   post 'upload_contacts_file', to:  "contacts#upload_contacts_file" , as:  :upload_contacts_file
+  post 'delete_all_contacts', to:  "contacts#delete_all_contacts" , as:  :delete_all_contacts
+
 
 end
