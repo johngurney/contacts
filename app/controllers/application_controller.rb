@@ -1,4 +1,13 @@
 class ApplicationController < ActionController::Base
+  before_action :check_cookie_consent
+
+  def check_cookie_consent
+    if cookies[:consent].blank?
+      render 'general/cookie_consent'
+      false
+    end
+  end
+
   def telephone_link(tel_no)
       tel_no_mod = tel_no.to_s.scan(/(?:^\+)?\d+/)
       self.class.helpers.link_to tel_no, "#{tel_no_mod.join '-'}"

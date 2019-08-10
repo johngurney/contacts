@@ -11,12 +11,23 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :client_name %>
-    <%= form.text_field :client_name %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+<table width="20%">
+  <col width="50%">
+  <col width="50%">
+  <tr>
+    <td>
+      <%= form.label :client_name %>
+    </td>
+    <td>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= form.text_field :client_name %>
+    </td>
+    <td>
+      <%= form.submit "Update" %>
+    </td>
+  </tr>
+</table>
 <% end %>

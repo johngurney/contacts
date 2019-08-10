@@ -1,0 +1,44 @@
+<div class="sheet_box" style="overflow:auto; height: 90%; border-color: #606060; border-style: solid; border-width: 6px; border-radius: 10px; padding: 6px" >
+  Mobile version
+
+  <table width="100%">
+    <col width="15%">
+    <col width="85%">
+    <tr>
+      <td><%= image_tag "cms.png" %></td>
+      <td style="font-size: 60px;font-weight: bold">Contact details for <%= @sheet.client_name %></td>
+    </tr>
+  </table>
+
+
+    <table width="100%" style="margin-top: 20px">
+      <col width="30%">
+      <col width="20%">
+      <col width="20%">
+      <col width="20%">
+      <col width="10%">
+      <% @sheet.contacts_in_order.each do |contact| %>
+        <tr>
+          <td><%= contact.name %></td>
+          <td><%= link_to contact.tel_number, "tel:" + contact.tel_number %></td>
+          <td><%= link_to contact.mobile_number, "tel:" + contact.mobile_number %></td>
+          <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
+          <td>
+            <div id="show_button<%=contact.id.to_s %>">
+              <button onclick="show_further_details(<%=contact.id.to_s %>)">Details</button>
+            </div>
+            <div id="hide_button<%=contact.id.to_s %>" style="display: none">
+              <button onclick="hide_further_details(<%=contact.id.to_s %>)">Hide</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="details<%=contact.id.to_s %>" style="display: none">
+          <td><%= contact.name %></td>
+        </tr>
+      <% end %>
+    </table>
+  <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %>
+
+
+  </body>
+</div>

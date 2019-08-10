@@ -140,13 +140,6 @@ class SheetsController < ApplicationController
     redirect_to edit_sheet_path(sheet_id)
   end
 
-  def test
-    puts "TEST"
-    puts "Max:" + @sheet.max_order.to_s
-
-    redirect_to edit_sheet_path(@sheet)
-  end
-
   def to_bottom
     sheet_id = params[:sheet_id]
     Sheet.find(sheet_id).check_orders_number_are_null
@@ -187,7 +180,7 @@ class SheetsController < ApplicationController
       if mobile?
         render "sheet_mobile" , :layout => false
       else
-        render "sheet" , :layout => false
+        render "sheet_mobile" , :layout => false
       end
     else
       render 'sheet_number_error'

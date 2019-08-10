@@ -2,8 +2,7 @@
 
 <%= render 'form', sheet: @sheet %>
 
-Contacts for sheet<br/>
-<%= link_to "TEST", test_path(@sheet) %>
+<div style="font-weight: bold">Contacts for sheet</div><br/>
 <%= form_tag remove_contact_from_sheet_path(@sheet)  do %>
   <table style="width:50%">
     <col width="10%">
@@ -24,20 +23,26 @@ Contacts for sheet<br/>
       </tr>
     <% end %>
   </table>
-  <%= submit_tag "Remove contacts" %>
+  <% if contacts.count > 0 %>
+    <%= submit_tag "Remove contacts" %>
+  <% else %>
+    None
+  <% end %>
 <% end %>
 <br/>
-Other contacts<br/>
+<div style="font-weight: bold">Other contacts</div><br/>
 <%= form_tag add_contact_to_sheet_path(@sheet)  do %>
   <% Contact.all.order(:last_name, :first_name).each do|contact| %>
     <% if @sheet.contacts.where(:id => contact.id).count == 0 %>
       <span style="white-space: nowrap;">
         <%= check_box_tag 'check'+ contact.id.to_s %>
-        <%= contact.name %><br/>
+        <%= contact.name %>
       </span>
     <% end %>
   <% end %>
-  <%= submit_tag "Add contacts" %>
+  <br/>
+  <br/>
+  <%= submit_tag "Add contact(s)" %>
 <% end %>
 <br/>
 <%= link_to 'Show', @sheet %> |

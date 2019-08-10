@@ -27,7 +27,7 @@ class ContactsController < ApplicationController
     @contact = Contact.new(contact_params)
 
     respond_to do |format|
-      if @contact.save
+      if (Contact.where("lower(email_address) = ?", contact.email_address).count == 0) and @contact.save
         format.html { redirect_to @contact, notice: 'Contact was successfully created.' }
         format.json { render :show, status: :created, location: @contact }
       else
@@ -84,8 +84,11 @@ class ContactsController < ApplicationController
     email_address_column = -1
 
     text.each_line do |line|
+      line.gsub!("\r\n", '')
+
       values=line.split "\t"
       if flag == false
+        puts values.to_s
         first_name_column = find_in_array(values, "first_name")
         last_name_column = find_in_array(values, "last_name")
         position_column = find_in_array(values, "position")
@@ -94,6 +97,7 @@ class ContactsController < ApplicationController
         email_address_column = find_in_array(values, "email_address")
         flag=true
       else
+
         contact = Contact.new
         if first_name_column >= 0
           contact.first_name = values[first_name_column]
@@ -110,10 +114,12 @@ class ContactsController < ApplicationController
         if mobile_number_column >= 0
           contact.mobile_number   = values[mobile_number_column]
         end
+        #puts "**" + email_address_column.to_s
         if email_address_column >= 0
           contact.email_address   = values[email_address_column]
         end
-        contact.save
+        contact.save if Contact.where("lower(email_address) = ?", contact.email_address).count == 0
+
       end
     end
 
