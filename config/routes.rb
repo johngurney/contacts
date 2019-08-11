@@ -23,6 +23,6 @@ Rails.application.routes.draw do
   get 'reset_cookie_consent' , to: 'homepage#reset_cookie_consent', as: :reset_cookie_consent
 
 
-  #mount_griddler
-  #https://github.com/thoughtbot/griddler
+  mount_griddler
+  https://github.com/thoughtbot/griddler
 end
