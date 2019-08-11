@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   post 'delete_all_contacts', to:  "contacts#delete_all_contacts" , as:  :delete_all_contacts
 
   post 'cookie_consent'=> 'homepage#cookie_consent', as: :cookie_consent
+  get 'reset_cookie_consent' , to: 'homepage#reset_cookie_consent', as: :reset_cookie_consent
+
 
   #mount_griddler
   #https://github.com/thoughtbot/griddler

@@ -14,7 +14,16 @@ class HomepageController < ApplicationController
 
   def cookie_consent
 
-    cookies.permanent[:consent] = true if params[:cookie_consent] == "1"
+    cookies.permanent[:contacts_cookie_consent] = true if params[:cookie_consent] == "1"
+    puts "AA" + params[:cookie_consent]
+    puts "BB" + cookies[:contacts_cookie_consent].to_s
+
+    redirect_to root_path
+  end
+
+  def reset_cookie_consent
+
+    cookies.permanent[:contacts_cookie_consent] = nil
 
     redirect_to root_path
   end

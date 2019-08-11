@@ -11,30 +11,31 @@
 
   <body style="background-color: #d3d3e0; font-family: Arial;" >
 
-  <table style="width:100%" align="center" >
-    <col width="15%">
-    <col width="60%">
-    <col width="15%">
+    <table style="width:100%" align="center" >
+      <col width="15%">
+      <col width="60%">
+      <col width="15%">
 
-    <tr>
+      <tr>
 
-      <td align="center" style="font-size: 40px"; >
-        <%= link_to "Home", root_path %>
-      </td>
+        <td align="center" style="font-size: 40px"; >
+          <%= link_to "Home", root_path %>
+        </td>
 
 
-      <td align="center" style="font-size: 50pt; font-weight: bold">
-        Contacts sheets
-      </td>
+        <td align="center" style="font-size: 50pt; font-weight: bold">
+          Contacts sheets
+        </td>
 
-      <td align="center" style="font-size: 10pt; font-weight: bold">
-      </td>
+        <td align="center" style="font-size: 6pt; font-weight: bold">
+          <%= link_to "Reset cookie consent", reset_cookie_consent_path %>
+        </td>
 
-    </tr>
-  </table>
-
+      </tr>
+    </table>
 
 
   <%= yield %>
+
   </body>
 </html>

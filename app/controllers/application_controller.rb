@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
-  before_action :check_cookie_consent
+
+  before_action :check_cookie_consent, except: [:cookie_consent ]
 
   def check_cookie_consent
-    if cookies[:consent].blank?
+    if cookies[:contacts_cookie_consent].blank?
       render 'general/cookie_consent'
       false
     end
