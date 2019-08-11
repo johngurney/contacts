@@ -24,5 +24,5 @@ Rails.application.routes.draw do
 
 
   mount_griddler
-  https://github.com/thoughtbot/griddler
+  #https://github.com/thoughtbot/griddler
 end
