@@ -57,5 +57,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'browser'
 
-gem 'griddler'
-gem 'griddler-sendgrid'
+# gem 'griddler'
+# gem 'griddler-sendgrid'
