@@ -11,7 +11,7 @@ class EmailProcessor
     puts "Emails arrived"
     puts "From email: " + @email.from[:email]
     puts "From name: " + @email.from[:name]
-    puts "Header: " + @email.headers.to_s
+    puts "Header: " + @email.headers[:date]
 
     # here's an example of model creation
     # user = User.find_by_email(@email.from[:email])
