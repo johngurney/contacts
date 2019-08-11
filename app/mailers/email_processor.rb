@@ -9,12 +9,12 @@ class EmailProcessor
     # processing reports, etc
 
     puts "Emails arrived"
+    puts "Email: " + @email.to_s
     puts "From email: " + @email.from[:email]
     puts "From name: " + @email.from[:name]
     puts "Header: " + @email.headers.to_s
     puts "Header: " + @email.headers.count.to_s
-    puts "Header: " + @email.headers[0].to_s
-    puts "Header: " + @email.headers[0][:Date]
+    puts "Header: " + @email.headers["Date"]
 
     # here's an example of model creation
     # user = User.find_by_email(@email.from[:email])
