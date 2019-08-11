@@ -21,6 +21,6 @@ Rails.application.routes.draw do
 
   post 'cookie_consent'=> 'homepage#cookie_consent', as: :cookie_consent
 
-  mount_griddler
+  #mount_griddler
   #https://github.com/thoughtbot/griddler
 end
