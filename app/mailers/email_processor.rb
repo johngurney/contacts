@@ -23,7 +23,7 @@ class EmailProcessor
 
       if values[0].downcase == "sheet" && values.count > 1
         temp_sheets = Sheet.where(:if => values[1]).or.Sheet.where(:name => values[1])
-        temp_sheet = temp_sheets.first if  => temp_sheets.count == 1
+        temp_sheet = temp_sheets.first if temp_sheets.count == 1
         sheet = temp_sheet if logged_in || (values.count > 2 && temp_sheet.password == values[2])
       end
 
