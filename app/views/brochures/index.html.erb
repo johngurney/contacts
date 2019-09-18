@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Brochures</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @brochures.each do |brochure| %>
+      <tr>
+        <td><%= brochure.name %></td>
+        <td><%= link_to 'Edit', edit_brochure_path(brochure) %></td>
+        <td><%= link_to 'Delete', brochure, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Brochure', new_brochure_path %>

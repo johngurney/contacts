@@ -11,22 +11,29 @@
     </div>
   <% end %>
 
-<table width="20%">
-  <col width="50%">
-  <col width="50%">
+<table width="100%">
+  <col width="15%">
+  <col width="30%">
+  <col width="55%">
   <tr>
+    <td class="standard_label">
+      Name
+    </td>
     <td>
-      <%= form.label :client_name %>
+      <%= form.text_field :client_name , :class=> "standard" %>
     </td>
     <td>
     </td>
   </tr>
   <tr>
-    <td>
-      <%= form.text_field :client_name %>
+    <td class="standard_label">
+      Password
     </td>
     <td>
-      <%= form.submit "Update" %>
+      <%= form.text_field :password , :class=> "standard" %>
+    </td>
+    <td>
+      <%= form.submit "Update" , :class=> "standard" %>
     </td>
   </tr>
 </table>

@@ -1,0 +1,21 @@
+<% if !@description_text.blank? %>
+  document.getElementById("text").value="<%= @description_text %>";
+<% else %>
+    document.getElementById("text").value="";
+<% end %>
+
+<% if !@name.blank? %>
+  document.getElementById("name").value="<%= @name %>";
+  document.getElementById("rename").style.display = "block";
+  document.getElementById("text_div").style.display = "block";
+<% else %>
+  document.getElementById("name").value="";
+  document.getElementById("rename").style.display = "none";
+  document.getElementById("text_div").style.display = "none";
+<% end %>
+
+<% if !@selector.blank? %>
+  $("#desc_selector").html('<%= escape_javascript @selector %>');
+<% end %>
+
+document.getElementById("selector_row").style.display = "<%= @selector.blank? ? "none" : "table-row" %>";

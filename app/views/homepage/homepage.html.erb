@@ -1,6 +1,7 @@
 <table style="width:100%; margin-top:30px" >
-  <col width="50%">
-  <col width="50%">
+  <col width="33%">
+  <col width="33%">
+  <col width="33%">
   <tr>
     <td>
       <%= button_to "Contacts", contacts_path, method: :get %>
@@ -9,7 +10,8 @@
     <td>
       <%= button_to "Sheets", sheets_path, method: :get %>
     </td>
+    <td>
+      <%= button_to "Brochures", brochures_path, method: :get %>
+    </td>
   </tr>
 </table>
-
-<%= button_to "Email", "/email_processor", method: :post %>

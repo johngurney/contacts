@@ -15,9 +15,11 @@ class HomepageController < ApplicationController
   def cookie_consent
 
     cookies.permanent[:contacts_cookie_consent] = true if params[:cookie_consent] == "1"
-    puts "AA" + params[:cookie_consent]
-    puts "BB" + cookies[:contacts_cookie_consent].to_s
+    redirect_to root_path
+  end
 
+  def log_in
+    cookies.permanent.signed[:logged_in] = true if params[:password] == Rails.configuration.system_password
     redirect_to root_path
   end
 
@@ -27,5 +29,13 @@ class HomepageController < ApplicationController
 
     redirect_to root_path
   end
+
+  def log_out
+
+    cookies.permanent[:logged_in] = nil
+
+    redirect_to root_path
+  end
+
 
 end

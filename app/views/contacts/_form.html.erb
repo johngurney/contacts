@@ -1,57 +1,179 @@
-<%= form_with(model: contact, local: true) do |form| %>
-  <% if contact.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
+<table style="width:100%; ">
+  <col width="50%">
+  <col width="35%">
+  <col width="15%">
+  <tr>
+    <td>
+      <% if contact.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
 
-      <ul>
-      <% contact.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+          <ul>
+          <% contact.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
       <% end %>
-      </ul>
-    </div>
-  <% end %>
+      <%= form_with(model: contact, local: true) do |form| %>
+        <table style="width:80%; vertical-align: top;">
+          <col width="50%">
+          <col width="50%">
+          <tr>
+            <td>
+              <%= form.label :first_name, :class => "standard_label"  %>
+            </td>
+            <td>
+              <%= form.text_field :first_name, :class => "standard" %>
+            <td>
+          </tr>
 
-  <div class="field">
-    <%= form.label :first_name %>
-    <%= form.text_field :first_name %>
-  </div>
+          <tr>
+            <td>
+              <%= form.label :last_name, :class => "standard_label"  %>
+            </td>
+            <td>
+              <%= form.text_field :last_name, :class => "standard" %>
+            <td>
+          </tr>
 
-  <div class="field">
-    <%= form.label :last_name %>
-    <%= form.text_field :last_name %>
-  </div>
+          <tr>
+            <td>
+              <%= form.label :position, :class => "standard_label"  %>
+            </td>
+            <td>
+              <%= form.text_field :position, :class => "standard" %>
+            <td>
+          </tr>
 
-  <div class="field">
-    <%= form.label :position %>
-    <%= form.text_field :position %>
-  </div>
+          <tr>
+            <td>
+              <%= form.label :tel_number, :class => "standard_label"  %>
+            </td>
+            <td>
+              <%= form.text_field :tel_number, :class => "standard" %>
+            <td>
+          </tr>
 
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_field :description, style: "width: 350px; height: 50px" %>
-  </div>
+          <tr>
+            <td>
+              <%= form.label :mobile_number, :class => "standard_label"  %>
+            </td>
+            <td>
+              <%= form.text_field :mobile_number, :class => "standard" %>
+            <td>
+          </tr>
 
-  <div class="field">
-    <%= form.label :tel_number %>
-    <%= form.text_field :tel_number %>
-  </div>
+          <tr>
+            <td>
+              <%= form.label :email_address, :class => "standard_label"  %>
+            </td>
+            <td>
+              <%= form.text_field :email_address, :class => "standard", :style =>"width: 280px"  %>
+            <td>
+          </tr>
 
-  <div class="field">
-    <%= form.label :mobile_number %>
-    <%= form.text_field :mobile_number %>
-  </div>
+          <tr>
+            <td>
+              <%= form.label "Profile web address", :class => "standard_label"  %>
+            </td>
+            <td>
+              <%= form.text_field :url, :class => "standard", :style =>"width: 280px"  %>
+            <td>
+          </tr>
 
-  <div class="field">
-    <%= form.label :url %>
-    <%= form.text_field :url %>
-  </div>
+          <tr>
+            <td>
+            </td>
+            <td>
+              <%= form.submit  "Update details", :class => "standard", :style =>"width: 200px" %>
+            <td>
+          </tr>
+        </table>
+      <% end %>
 
-  <div class="field">
-    <%= form.label :email_address %>
-    <%= form.text_field :email_address %>
-  </div>
+      <div class="standard_label" style="font-weight: bold">Picture</div>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+      <table>
+        <col width="30%">
+        <col width="70%">
+        <tr>
+          <td style="text-align: center; vertical-align: middle;">
+            <% if @contact.has_picture? %>
+              <%= image_tag get_picture_path(@contact), :width => "70" %>
+            <% end %>
+          </td>
+          <td>
+
+            <%= form_tag upload_picture_path(@contact), :multipart => true, :method =>'post' do  %>
+                <%= file_field_tag :picture_file , {accept: '.jpg', :class=>"standard" } %>
+                <div>
+                  <%= submit_tag "Upload",  {:class=>"standard", :style =>"width: 80px"} %>
+                  <%= submit_tag "Rotate left" , :class=>"standard" %>
+                  <%= submit_tag "Rotate right" , :class=>"standard" %>
+                  <%= submit_tag "Delete" , :class=>"standard" %>
+                </div>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+
+    <td style="vertical-align: top;">
+      <div style="font-size:20px;font-weight:bold">Descriptions</div>
+      <%= form_tag contact_desc_path(@contact), remote: true,  :id => 'desc_form' do %>
+        <% description = @contact.descs_in_order.first %>
+        <table width=70% >
+          <col width="20%">
+          <col width="40%">
+          <col width="20%">
+          <col width="20%">
+          <% selector = @contact.set_selector(0) %>
+          <tr id="selector_row" <%= selector.blank? ? "style=\"display: none\"".html_safe : "" %> >
+
+            <td class="standard_label" >
+              Select
+            </td>
+            <td>
+              <div id="desc_selector">
+                <%= selector.html_safe if !selector.blank? %>
+              </div>
+              <div style="display: none">
+                <%= submit_tag "Select", :id => "select_button" %>
+                <%# NB THis is to address and apparent bug on onchange with AJAX on a select button.
+                See https://stackoverflow.com/questions/57535070/why-does-sumbitting-a-form-for-an-ajax-request-using-onchange-on-an-html-eleme %>
+              </div>
+            </td>
+            <td>
+              <%= submit_tag "Delete", :class => "standard", :style =>"width: 120px" %>
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td class="standard_label" >
+              Name
+            </td>
+            <td>
+              <%= text_field_tag :name, description.blank? ? "" : description.name, {"id" => "name", :class => "standard", :style => "width:80%;"}  %>
+            </td>
+            <td>
+              <%= submit_tag "Rename", {"id" => "rename", :class => "standard", :style => "width:100px;" + (selector.blank? ? "display: none" : "") }  %>
+            </td>
+            <td>
+              <%= submit_tag "Add", :class => "standard", :style =>"width: 100px" %>
+            </td>
+          </tr>
+        </table>
+          <div id="text_div" <%= selector.blank? ? "style=\"display: none\"".html_safe : "" %> >
+          <div class="standard_label">Description</div>
+          <%= text_area_tag :desc_text, description.blank? ? "" : description.text, {class: "standard", style: "width:97%; height: 200px", id: "text"} %>
+          <%= submit_tag "Update text", :class => "standard", :style =>"width: 200px" %>
+        </div>
+      <% end %>
+    </td>
+  <td>
+  </td>
+  <tr>
+</table>

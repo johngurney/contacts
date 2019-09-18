@@ -10,28 +10,64 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_05_073645) do
+ActiveRecord::Schema.define(version: 2019_09_17_060455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "contact_sheets", force: :cascade do |t|
-    t.integer "sheet_id", default: 0
+  create_table "brochures", force: :cascade do |t|
+    t.binary "content"
+    t.binary "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.integer "rotation"
+  end
+
+  create_table "broshejointables", force: :cascade do |t|
+    t.integer "sheet_id"
+    t.integer "brochure_id"
+    t.integer "order_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "conshejointables", force: :cascade do |t|
     t.integer "contact_id", default: 0
+    t.integer "sheet_id", default: 0
     t.integer "order_number", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "description_id"
   end
 
   create_table "contacts", force: :cascade do |t|
     t.string "first_name", default: ""
     t.string "last_name", default: ""
     t.string "position", default: ""
-    t.text "description", default: ""
     t.string "email_address", default: ""
     t.string "tel_number", default: ""
     t.string "mobile_number", default: ""
     t.string "url", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "rotation", default: 0
+    t.binary "image"
+  end
+
+  create_table "contacts_sheets", force: :cascade do |t|
+    t.integer "sheet_id", default: 0
+    t.integer "contact_id", default: 0
+    t.integer "order_number", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "description_id"
+  end
+
+  create_table "descriptions", force: :cascade do |t|
+    t.text "text"
+    t.integer "contact_id"
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -41,6 +77,7 @@ ActiveRecord::Schema.define(version: 2019_08_05_073645) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "number", default: "000000"
+    t.string "password"
   end
 
 end

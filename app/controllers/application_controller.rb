@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
 
-  before_action :check_cookie_consent, except: [:cookie_consent ]
+  before_action :check_cookie_consent, except: [:cookie_consent, :log_in ]
+  before_action :check_logged_in, except: [:cookie_consent, :log_in  ]
 
   def check_cookie_consent
     if cookies[:contacts_cookie_consent].blank?
@@ -8,6 +9,14 @@ class ApplicationController < ActionController::Base
       false
     end
   end
+
+  def check_logged_in
+    if cookies.signed[:logged_in].blank?
+      render 'general/password'
+      false
+    end
+  end
+
 
   def telephone_link(tel_no)
       tel_no_mod = tel_no.to_s.scan(/(?:^\+)?\d+/)

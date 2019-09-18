@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
   function show_further_details(contact_number) {
-      document.getElementById("details" + contact_number).style.display = "block";
+      document.getElementById("details" + contact_number).style.display = "table-row";
       document.getElementById("show_button" + contact_number).style.display = "none";
       document.getElementById("hide_button" + contact_number).style.display = "block";
 
@@ -14,6 +14,7 @@
 
   }
 </script>
+
 <body style="background-color: #d3d3e0; font-family: Arial;" >
 
 
@@ -49,11 +50,43 @@
         </div>
       </td>
     </tr>
+
     <tr id="details<%=contact.id.to_s %>" style="display: none">
-      <td><%= contact.name %></td>
+      <% if contact.has_picture? %>
+        <td>
+          <table>
+            <col width="20%">
+            <col width="80%">
+            <tr>
+              <td><%= image_tag get_picture_path(contact), :width => "70" %></td>
+              <td><%= Description.find(Conshejointable.where(:contact_id => contact.id, :sheet_id => @sheet.id).first.description_id).text if contact.descriptions.count > 0 %></td>
+            </tr>
+          </table>
+        </td>
+      <% else %>
+        <td><%= contact.descriptions.first.text if contact.descriptions.count > 0 %></td>
+      <% end %>
+
     </tr>
   <% end %>
 </table>
 <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %>
+
+<table width="100%" style="margin-top: 10px">
+  <col width="15%">
+  <col width="85%">
+  <% @sheet.brochures_in_order.each do |brochure| %>
+    <tr>
+      <td>
+        <%= link_to(image_tag( brochure.has_picture? ? get_broch_picture_path(brochure) : "pdf.gif", :title => "Download pdf for job", :width => "70" ), download_content_path(brochure), :style => "margin-left: 5px" ) =%>
+
+      </td>
+      <td>
+        <%= link_to brochure.name, download_content_path(brochure) %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
 
 </body>

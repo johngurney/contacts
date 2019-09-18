@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sheet_id: 1
+  brochure_id.integer: MyString
+  order_number: 1
+
+two:
+  sheet_id: 1
+  brochure_id.integer: MyString
+  order_number: 1

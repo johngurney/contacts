@@ -1,49 +1,126 @@
-<h1>Editing Sheet</h1>
+<h1>Client Sheet</h1>
 
 <%= render 'form', sheet: @sheet %>
 
-<div style="font-weight: bold">Contacts for sheet</div><br/>
-<%= form_tag remove_contact_from_sheet_path(@sheet)  do %>
-  <table style="width:50%">
-    <col width="10%">
-    <col width="35%">
-    <col width="10%">
-    <col width="10%">
-    <col width="15%">
-    <col width="20%">
+<div class="select_box_wrapper" style="margin-top: 4px; background-color: yellow;height: 200px ">
+  <div style="font-weight: bold">Contacts for sheet</div><br/>
+  <div class="select_box_list">
     <% contacts = @sheet.contacts_in_order %>
-    <% contacts.each do|contact| %>
-      <tr>
-        <td><%= check_box_tag 'check'+ contact.id.to_s %></td>
-        <td><%= contact.name %>(<%= contact.order_number(@sheet)%>)</td>
-        <td><% if contact != contacts.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-        <td><% if contact != contacts.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-        <td><% if contact != contacts.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-        <td><% if contact != contacts.last %><%= link_to "to bottom", to_bottom_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-      </tr>
-    <% end %>
-  </table>
-  <% if contacts.count > 0 %>
-    <%= submit_tag "Remove contacts" %>
-  <% else %>
-    None
+    <% if contacts.count > 0 %>
+      <%= form_tag update_contact_for_sheet_path(@sheet)  do %>
+        <table style="width:70%">
+          <col width="4%">
+          <col width="30%">
+          <col width="20%">
+          <col width="7%">
+          <col width="7%">
+          <col width="11%">
+          <col width="11%">
+          <% contacts.each do|contact| %>
+            <tr>
+              <td><%= check_box_tag 'check'+ contact.id.to_s %></td>
+              <td><%= link_to contact.name, edit_contact_path(contact) %>(<%= contact.order_number(@sheet)%>)</td>
+              <td>
+                <% descs_in_order = contact.descs_in_order %>
+                <%= select_tag "select"+contact.id.to_s, options_for_select(descs_in_order.map{ |description| [description.name, description.id]}, Conshejointable.where(:sheet_id => @sheet.id, :contact_id => contact.id).first.description_id),:class => "standard" if !descs_in_order.blank? %></td>
+              <td><% if contact != contacts.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+              <td><% if contact != contacts.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+              <td><% if contact != contacts.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+              <td><% if contact != contacts.last %><%= link_to "to bottom", to_bottom_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+            </tr>
+          <% end %>
+            <tr>
+              <td><%= submit_tag "Remove contacts", :class => "standard" %></td>
+              <td><%= submit_tag "Update", :class => "standard" %></td>
+            </tr>
+        </table>
+        <% end %>
+
+      <% else %>
+        None
+      <% end %>
+  </div>
+</div>
+
+<div class="select_box_wrapper" style="margin-top: 4px; background-color: green; height: 270px ">
+  <div style="font-weight: bold">Other contacts</div><br/>
+  <%= form_tag add_contact_to_sheet_path(@sheet)  do %>
+    <div class="select_box_list" style="height: 150px ">
+      <% Contact.all.order(:last_name, :first_name).each do|contact| %>
+        <% if @sheet.contacts.where(:id => contact.id).count == 0 %>
+          <span style="white-space: nowrap;">
+            <%= check_box_tag 'check'+ contact.id.to_s %>
+            <%= contact.name %>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+    <%= submit_tag "Add contact(s)", :class => "standard" %>
   <% end %>
-<% end %>
-<br/>
-<div style="font-weight: bold">Other contacts</div><br/>
-<%= form_tag add_contact_to_sheet_path(@sheet)  do %>
-  <% Contact.all.order(:last_name, :first_name).each do|contact| %>
-    <% if @sheet.contacts.where(:id => contact.id).count == 0 %>
-      <span style="white-space: nowrap;">
-        <%= check_box_tag 'check'+ contact.id.to_s %>
-        <%= contact.name %>
-      </span>
-    <% end %>
+</div>
+
+
+<div class="select_box_wrapper" style="margin-top: 4px; background-color: light-blue;height: 200px ">
+  <div style="font-weight: bold">Contacts for sheet</div><br/>
+  <div class="select_box_list">
+    <% brochures = @sheet.brochures_in_order %>
+    <% if brochures.count > 0 %>
+      <%= form_tag update_brochure_for_sheet_path(@sheet)  do %>
+        <table style="width:70%">
+          <col width="4%">
+          <col width="30%">
+          <col width="20%">
+          <col width="7%">
+          <col width="7%">
+          <col width="11%">
+          <col width="11%">
+          <% brochures.each do |brochure| %>
+            <tr>
+              <td><%= check_box_tag 'check'+ brochure.id.to_s %></td>
+              <td><%= link_to brochure.name, edit_brochure_path(brochure) %>(<%= brochure.order_number(@sheet)%>)</td>
+              <td><% if brochure != brochures.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+              <td><% if brochure != brochures.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+              <td><% if brochure != brochures.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+              <td><% if brochure != brochures.last %><%= link_to "to bottom", to_bottom_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+            </tr>
+          <% end %>
+            <tr>
+              <td><%= submit_tag "Remove brochures", :class => "standard" %></td>
+            </tr>
+        </table>
+        <% end %>
+
+      <% else %>
+        None
+      <% end %>
+  </div>
+</div>
+
+<div class="select_box_wrapper" style="margin-top: 4px; background-color: pink; height: 270px ">
+  <div style="font-weight: bold">Other contacts</div><br/>
+  <%= form_tag add_brochure_to_sheet_path(@sheet)  do %>
+    <div class="select_box_list" style="height: 150px ">
+      <% Brochure.all.order(:name).each do|brochure| %>
+        <% if @sheet.brochures.where(:id => brochure.id).count == 0 %>
+          <span style="white-space: nowrap;">
+            <%= check_box_tag 'check'+ brochure.id.to_s %>
+            <%= brochure.name %>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+    <%= submit_tag "Add brochure(s)", :class => "standard" %>
   <% end %>
-  <br/>
-  <br/>
-  <%= submit_tag "Add contact(s)" %>
-<% end %>
-<br/>
-<%= link_to 'Show', @sheet %> |
+</div>
+
+
+
+
+
+
+
+
+
+
+<% if !@sheet.number.blank? %> <%= link_to 'Show', contact_sheet_path(:id => @sheet.number) %><% end %>
 <%= link_to 'Back', sheets_path %>

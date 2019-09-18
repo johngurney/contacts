@@ -1,0 +1,58 @@
+<%= form_with(model: brochure, local: true) do |form| %>
+  <% if brochure.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(brochure.errors.count, "error") %> prohibited this brochure from being saved:</h2>
+
+      <ul>
+      <% brochure.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    Name<%= form.text_field :name, :class => "standard" %>
+    <%= form.submit "Submit" %>
+  </div>
+<% end %>
+<table>
+  <col width="10%">
+  <col width="90%">
+  <tr>
+    <td style="text-align: center; vertical-align: middle;">
+      <% if @brochure.has_picture? %>
+        <%= image_tag get_broch_picture_path(@brochure), :width => "70" %>
+      <% end %>
+    </td>
+  <td>
+      <%= form_tag broch_upload_picture_path(@brochure), :multipart => true, :method =>'post' do  %>
+          <%= file_field_tag :picture_file , {accept: '.jpg', :class=>"standard" } %>
+          <div>
+            <%= submit_tag "Upload",  {:class=>"standard", :style =>"width: 80px"} %>
+            <%= submit_tag "Rotate left" , :class=>"standard" %>
+            <%= submit_tag "Rotate right" , :class=>"standard" %>
+            <%= submit_tag "Delete" , :class=>"standard" %>
+          </div>
+      <% end %>
+    </td>
+  </tr>
+
+
+  <tr>
+    <td style="text-align: center; vertical-align: middle;">
+      <% if @brochure.has_content? %>
+        <%= link_to(image_tag("pdf.gif", :title => "Download pdf for job", :width => "70" ), download_content_path, :style => "margin-left: 5px" ) =%>
+      <% end %>
+    </td>
+    <td>
+      <%= form_tag broch_upload_pdf_path(@brochure), :multipart => true, :method =>'post' do  %>
+          <%= file_field_tag :picture_file , {accept: '.pdf', :class=>"standard" } %>
+          <div>
+            <%= submit_tag "Upload",  {:class=>"standard", :style =>"width: 80px"} %>
+            <%= submit_tag "Delete" , :class=>"standard" %>
+          </div>
+      <% end %>
+    </td>
+  </tr>
+</table>
