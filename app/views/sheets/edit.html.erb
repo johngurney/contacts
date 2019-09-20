@@ -1,6 +1,9 @@
 <h1>Client Sheet</h1>
 
 <%= render 'form', sheet: @sheet %>
+QR Code
+
+<%= image_tag get_qr_code_path(@sheet), :width => "200" %>
 
 <div class="select_box_wrapper" style="margin-top: 4px; background-color: yellow;height: 200px ">
   <div style="font-weight: bold">Contacts for sheet</div><br/>

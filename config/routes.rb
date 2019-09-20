@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   post 'upload_picture/.:id' , to: 'contacts#upload_picture', as: :upload_picture
   get 'get_picture/.:id', to: 'contacts#get_picture', as: :get_picture
 
+  get 'get_qr_code/.:id', to: 'sheets#get_qr_code', as: :get_qr_code
 
   post 'contact_desc/.:id'=> 'contacts#desc', as: :contact_desc
 

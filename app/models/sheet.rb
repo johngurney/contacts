@@ -54,4 +54,39 @@ class Sheet < ApplicationRecord
   def max_brochure_order
     Broshejointable.where(:sheet_id => self.id).where.not(:order_number => nil).count == 0 ? 0 : (Broshejointable.where(:sheet_id => self.id).maximum(:order_number) + 1)
   end
+
+  def qr_code
+    #https://github.com/whomwah/rqrcode
+
+    require 'rqrcode'
+
+    qrcode = RQRCode::QRCode.new(Rails.application.routes.url_helpers.contact_sheet_url(:id => self.number))
+
+    # NOTE: showing with default options specified explicitly
+    # svg = qrcode.as_svg(
+    #   offset: 0,
+    #   color: '000',
+    #   shape_rendering: 'crispEdges',
+    #   module_size: 6,
+    #   standalone: true
+    # ).html_safe
+    #
+    png = qrcode.as_png(
+      bit_depth: 1,
+      border_modules: 4,
+      color_mode: ChunkyPNG::COLOR_GRAYSCALE,
+      color: 'black',
+      file: nil,
+      fill: 'white',
+      module_px_size: 6,
+      resize_exactly_to: false,
+      resize_gte_to: false,
+      size: 120
+    )
+
+    png
+
+  end
+
+
 end

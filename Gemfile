@@ -60,3 +60,5 @@ gem 'browser'
 gem 'griddler'
 gem 'griddler-sendgrid'
 gem 'jquery-rails'
+
+gem 'rqrcode'

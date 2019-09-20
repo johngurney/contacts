@@ -1,5 +1,5 @@
 class SheetsController < ApplicationController
-  before_action :set_sheet, only: [:show, :edit, :update, :destroy, :add_contact, :update_contact, :add_brochure, :update_brochure]
+  before_action :set_sheet, only: [:show, :edit, :update, :destroy, :add_contact, :update_contact, :add_brochure, :update_brochure, :get_qr_code]
 
   # GET /sheets
   # GET /sheets.json
@@ -240,6 +240,36 @@ class SheetsController < ApplicationController
       render 'sheet_number_error'
     end
 
+  end
+
+  def get_qr_code
+    require 'rqrcode'
+
+    qrcode = RQRCode::QRCode.new(contact_sheet_url(:id => @sheet.number))
+
+    # NOTE: showing with default options specified explicitly
+    # svg = qrcode.as_svg(
+    #   offset: 0,
+    #   color: '000',
+    #   shape_rendering: 'crispEdges',
+    #   module_size: 6,
+    #   standalone: true
+    # ).html_safe
+    #
+    png = qrcode.as_png(
+      bit_depth: 1,
+      border_modules: 2,
+      color_mode: ChunkyPNG::COLOR_GRAYSCALE,
+      color: 'black',
+      file: nil,
+      fill: 'white',
+      module_px_size: 6,
+      resize_exactly_to: false,
+      resize_gte_to: false,
+      size: 120
+    )
+
+    send_data png, :filename => "qr_code"
   end
 
   private
