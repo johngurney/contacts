@@ -17,24 +17,27 @@
   <col width="55%">
   <tr>
     <td class="standard_label">
-      Name
+      <h2>Client name</h2>
     </td>
     <td>
-      <%= form.text_field :client_name , :class=> "standard" %>
+      <%= form.text_field :client_name, :class => "standard", :style => "width: 300px; margin-left: 10px"%>
     </td>
     <td>
     </td>
   </tr>
   <tr>
     <td class="standard_label">
-      Password
+      <h2>Password</h2>
     </td>
     <td>
-      <%= form.text_field :password , :class=> "standard" %>
+      <%= form.text_field :password, :class => "standard", :style => "width: 200px; margin-left: 10px"%>
     </td>
     <td>
-      <%= form.submit "Update" , :class=> "standard" %>
+      <%= form.submit "Update", :class => "large_button" %>
     </td>
   </tr>
 </table>
+
+
+
 <% end %>

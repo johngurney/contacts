@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
 
-  before_action :check_cookie_consent, except: [:cookie_consent, :log_in ]
-  before_action :check_logged_in, except: [:cookie_consent, :log_in  ]
+  before_action :check_cookie_consent, except: [:cookie_consent, :log_in, :contact_sheet ]
+  before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet]
 
   def check_cookie_consent
     if cookies[:contacts_cookie_consent].blank?

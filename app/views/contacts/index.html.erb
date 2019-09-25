@@ -23,6 +23,30 @@
 
 <br>
 
+<style>
+  .btn-file1 {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file1 input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+</style>
+
 <%= button_to "Delete all", delete_all_contacts_path %>
 
 <%= form_tag upload_contacts_file_path, :multipart => true do  %>
@@ -30,11 +54,14 @@
     <span style="font-size: 12pt; font-family: Arial; margin-right: 25px">
     Upload file of users
     </span>
-    <%= file_field_tag :file , :style =>"width: 300px; font-size: 12pt;"%>
+    <span class="btn1 btn-large btn-warning btn-file">
+      Choose file
+      <%= file_field_tag :file %>
+    </span>
   </span>
-    <%= submit_tag "Upload",  {:class=>"large_button", :style =>"width: 120px; margin-left: 10px"} %>
+    <%= submit_tag "Upload",  {:class=>"standard_button", :style =>"width: 120px; margin-left: 10px"} %>
 <% end %>
 
 <br>
 
-<%= link_to 'New Contact', new_contact_path %>
+<%= button_to 'New Contact', new_contact_path , class: "standard_button" %>

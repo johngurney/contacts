@@ -29,6 +29,16 @@ class Contact < ApplicationRecord
     "pictures/picture"  + self.id.to_s + ".jpg"
   end
 
+  def get_description(sheet)
+    if self.descriptions.count > 0
+      description_lookups = Conshejointable.where(:contact_id => self.id, :sheet_id => sheet.id)
+      if description_lookups.count != 0
+        description_id = description_lookups.first.description_id
+        Description.find(description_id) if !description_id.blank?
+      end
+    end
+  end
+
   def set_selector(description_id)
     descs_in_order = self.descs_in_order
     if !descs_in_order.blank?

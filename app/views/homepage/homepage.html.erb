@@ -1,17 +1,25 @@
-<table style="width:100%; margin-top:30px" >
-  <col width="33%">
-  <col width="33%">
-  <col width="33%">
-  <tr>
-    <td>
-      <%= button_to "Contacts", contacts_path, method: :get %>
+<style>
 
-    </td>
-    <td>
-      <%= button_to "Sheets", sheets_path, method: :get %>
-    </td>
-    <td>
-      <%= button_to "Brochures", brochures_path, method: :get %>
-    </td>
-  </tr>
-</table>
+
+.container1 {
+    display: inline-flex;
+    flex-direction: row;
+    }
+
+.container1 div {
+    padding: 5px;
+    }
+
+
+</style>
+<div class="container1" style="margin-top:20px" >
+  <div>
+    <%= button_to "Contacts", contacts_path, method: :get, class: "standard_button" %>
+  </div>
+  <div>
+    <%= button_to "Sheets", sheets_path, method: :get, class: "standard_button" %>
+  </div>
+  <div>
+      <%= button_to "Brochures", brochures_path, method: :get, class: "standard_button" %>
+</div>
+</div>

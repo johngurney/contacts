@@ -29,8 +29,8 @@ Rails.application.routes.draw do
   get 'reset_cookie_consent' , to: 'homepage#reset_cookie_consent', as: :reset_cookie_consent
   get 'log_out' , to: 'homepage#log_out', as: :log_out
 
-  post 'upload_picture/.:id' , to: 'contacts#upload_picture', as: :upload_picture
-  get 'get_picture/.:id', to: 'contacts#get_picture', as: :get_picture
+  post 'upload_picture/.:id' , to: 'contacts#upload_picture', as: :cont_upload_picture
+  get 'get_picture/.:id', to: 'contacts#get_picture', as: :get_cont_picture
 
   get 'get_qr_code/.:id', to: 'sheets#get_qr_code', as: :get_qr_code
 

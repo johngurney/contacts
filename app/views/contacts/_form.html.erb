@@ -4,17 +4,6 @@
   <col width="15%">
   <tr>
     <td>
-      <% if contact.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
-
-          <ul>
-          <% contact.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-          </ul>
-        </div>
-      <% end %>
       <%= form_with(model: contact, local: true) do |form| %>
         <table style="width:80%; vertical-align: top;">
           <col width="50%">
@@ -92,33 +81,75 @@
         </table>
       <% end %>
 
-      <div class="standard_label" style="font-weight: bold">Picture</div>
 
-      <table>
-        <col width="30%">
-        <col width="70%">
-        <tr>
-          <td style="text-align: center; vertical-align: middle;">
-            <% if @contact.has_picture? %>
-              <%= image_tag get_picture_path(@contact), :width => "70" %>
-            <% end %>
-          </td>
-          <td>
+      <div class="select_box_wrapper" width="50%">
+        <h2 style="margin: 0px">Image</h2><br/>
+          <table width="800px" style="border1: blue solid 2px; margin-top:-10px;">
 
-            <%= form_tag upload_picture_path(@contact), :multipart => true, :method =>'post' do  %>
-                <%= file_field_tag :picture_file , {accept: '.jpg', :class=>"standard" } %>
-                <div>
-                  <%= submit_tag "Upload",  {:class=>"standard", :style =>"width: 80px"} %>
-                  <%= submit_tag "Rotate left" , :class=>"standard" %>
-                  <%= submit_tag "Rotate right" , :class=>"standard" %>
-                  <%= submit_tag "Delete" , :class=>"standard" %>
+            <col width="20%">
+            <col width="80%">
+
+            <tr>
+              <td style="text-align: center; vertical-align: middle; border: gray solid 1px;">
+                <% if @contact.has_picture? %>
+                  <%= image_tag get_cont_picture_path(@contact), :width => "100" %>
+
+                <% end %>
+              </td>
+
+              <td>
+                <%= form_tag cont_upload_picture_path(@contact), :multipart => true, :method =>'post' do  %>
+                <div class="file_field_tag_container2">
+
+                  <div class="file_field_tag_container1">
+                    <div>
+                      <label for="img_file-upload" class="make_button large_button">Browse</label>
+                      <%= file_field_tag :picture_file , {:accept => '.jpg', :class=>"standard", :id => "img_file-upload", :onchange=> 'file_field_tag_browse_click("img_")' } %>
+                    </div>
+
+                    <div id="img_file_field_path_div" class="large_button file_field_tag_container2" style="display: none; max-height: 54px"">
+                      <label class="file_field_tag_filename" >Filename </label>
+                      <label id="img_file_field_path_label" class="file_field_tag_filepath" >testtest.txt </label>
+                    </div>
+
+                    <div id="img_file_field_upload" style="display: none">
+                      <%= submit_tag "Upload",  {:class=>"large_button"} %>
+                    </div>
+                  </div>
+
+
+                  <div class="file_field_tag_container1">
+                    <div>
+                      <%= text_field_tag :picture_url, "", :class => "large_button", :style =>"width: 320px; text-align: left; padding: 6px"  %>
+                    </div>
+
+                    <div>
+                      <%= submit_tag "Upload from URL", {:class=>"large_button"} %>
+                    </div>
+                  </div>
+
+
+                  <div class="file_field_tag_container1">
+                    <div>
+                      <%= submit_tag "Rotate left" , :class=>"large_button" %>
+                    </div>
+                    <div>
+                      <%= submit_tag "Rotate right" , :class=>"large_button" %>
+                    </div>
+                    <div>
+                      <%= submit_tag "Delete" , :class=>"large_button" %>
+                    </div>
+
+                  </div>
                 </div>
-            <% end %>
-          </td>
-        </tr>
-      </table>
 
-    </td>
+                <% end %>
+
+                </td>
+            </tr>
+          </table>
+        </div>
+      </td>
 
     <td style="vertical-align: top;">
       <div style="font-size:20px;font-weight:bold">Descriptions</div>

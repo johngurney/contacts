@@ -251,6 +251,14 @@ class ContactsController < ApplicationController
       @contact.rotation = 3 if @contact.rotation < 0
       @contact.save
 
+    elsif  params[:commit] == "Upload from URL"
+      require 'open-uri'
+      url = params[:picture_url]
+      uri = URI.parse(url)
+      image_data = uri.read
+      @contact.image = image_data
+      @contact.save
+
     elsif  params[:commit] == "Rotate right"
       @contact.rotation += 1
       @contact.rotation = 0 if @contact.rotation > 3

@@ -40,15 +40,8 @@ class BrochuresController < ApplicationController
   # PATCH/PUT /brochures/1
   # PATCH/PUT /brochures/1.json
   def update
-    respond_to do |format|
-      if @brochure.update(brochure_params)
-        format.html { redirect_to @brochure, notice: 'Brochure was successfully updated.' }
-        format.json { render :show, status: :ok, location: @brochure }
-      else
-        format.html { render :edit }
-        format.json { render json: @brochure.errors, status: :unprocessable_entity }
-      end
-    end
+    @brochure.update(brochure_params)
+    redirect_to edit_brochure_path(@brochure)
   end
 
   # DELETE /brochures/1
@@ -114,6 +107,14 @@ class BrochuresController < ApplicationController
       @brochure.rotation = 0 if @brochure.rotation > 3
       @brochure.save
 
+    elsif  params[:commit] == "Upload from URL"
+      require 'open-uri'
+      url = params[:picture_url]
+      uri = URI.parse(url)
+      image_data = uri.read
+      @brochure.image = image_data
+      @brochure.save
+
     elsif  params[:commit] == "Delete"
       @brochure.image = nil
       @brochure.save
@@ -160,7 +161,7 @@ class BrochuresController < ApplicationController
       # Dir.mkdir(dirname) unless Dir.exist?(dirname)
       #
 
-      uploaded_io = params[:picture_file]
+      uploaded_io = params[:pdf_file]
 
       if File.extname(uploaded_io.original_filename).downcase == ".pdf"
         image_data = uploaded_io.read

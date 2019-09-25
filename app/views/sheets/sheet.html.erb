@@ -30,14 +30,16 @@
 
 
 <table width="100%" style="margin-top: 20px">
-  <col width="30%">
-  <col width="20%">
-  <col width="20%">
+  <col width="22%">
+  <col width="18%">
+  <col width="15%">
+  <col width="15%">
   <col width="20%">
   <col width="10%">
   <% @sheet.contacts_in_order.each do |contact| %>
     <tr>
-      <%= @sheet.qr_code %>
+      <td><%= contact.name %></td>
+      <td><%= contact.position %></td>
       <td><%= link_to contact.tel_number, "tel:" + contact.tel_number %></td>
       <td><%= link_to contact.mobile_number, "tel:" + contact.mobile_number %></td>
       <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
@@ -53,13 +55,14 @@
 
     <tr id="details<%=contact.id.to_s %>" style="display: none">
       <% if contact.has_picture? %>
+      <% puts "*****"  + contact.id.to_s %>
         <td>
           <table>
             <col width="20%">
             <col width="80%">
             <tr>
-              <td><%= image_tag get_picture_path(contact), :width => "70" %></td>
-              <td><%= Description.find(Conshejointable.where(:contact_id => contact.id, :sheet_id => @sheet.id).first.description_id).text if contact.descriptions.count > 0 %></td>
+              <td><%= image_tag get_cont_picture_path(contact), :width => "70" %></td>
+              <td><%= contact.get_description(@sheet) %></td>
             </tr>
           </table>
         </td>
@@ -73,8 +76,8 @@
 <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %>
 
 <table width="100%" style="margin-top: 10px">
-  <col width="15%">
-  <col width="85%">
+  <col width="5%">
+  <col width="95%">
   <% @sheet.brochures_in_order.each do |brochure| %>
     <tr>
       <td>
