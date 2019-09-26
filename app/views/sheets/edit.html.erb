@@ -58,7 +58,7 @@
   </tr>
 </table>
 
-<table style="border: 1px red solid;">
+<table>
   <col width="50%">
   <col width="50%">
   <tr>
@@ -85,7 +85,7 @@
                     <td><%= link_to contact.name, edit_contact_path(contact) %></td>
                     <td>
                       <% descs_in_order = contact.descs_in_order %>
-                      <%= select_tag "select"+contact.id.to_s, options_for_select(descs_in_order.map{ |description| [description.name, description.id]}, Conshejointable.where(:sheet_id => @sheet.id, :contact_id => contact.id).first.description_id), :style => "width:80px" %></td>
+                      <%= select_tag "select"+contact.id.to_s, options_for_select(descs_in_order.map{ |description| [description.name, description.id]}, Conshejointable.where(:sheet_id => @sheet.id, :contact_id => contact.id).first.description_id), :class=> "small_button", :style => "width: 80px; height:20px; margin: 0px" %></td>
                     <td><% if contact != contacts.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
                     <td><% if contact != contacts.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
                     <td><% if contact != contacts.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
@@ -126,7 +126,7 @@
 </table>
 
 
-<table width="100%" style="border: 1px red solid;">
+<table width="100%">
   <col width="50%">
   <col width="50%">
   <tr>
@@ -150,7 +150,7 @@
                 <% brochures.each do |brochure| %>
                   <tr>
                     <td><%= check_box_tag 'check'+ brochure.id.to_s %></td>
-                    <td><%= link_to brochure.name, edit_brochure_path(brochure) %>(<%= brochure.order_number(@sheet)%>)</td>
+                    <td><%= link_to brochure.name, edit_brochure_path(brochure) %></td>
                     <td><% if brochure != brochures.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
                     <td><% if brochure != brochures.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
                     <td><% if brochure != brochures.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
@@ -178,7 +178,7 @@
               <% if @sheet.brochures.where(:id => brochure.id).count == 0 %>
                 <span style="white-space: nowrap;">
                   <%= check_box_tag 'check'+ brochure.id.to_s %>
-                  <%= brochure.name %>
+                  <%= link_to brochure.name, edit_brochure_path(brochure) %>
                 </span>
               <% end %>
             <% end %>
@@ -190,14 +190,7 @@
   </tr>
 </table>
 
-
-
-
-
-
-
-
-<div class=""
-
-<% if !@sheet.number.blank? %> <%= button_to 'Show', contact_sheet_path(:id => @sheet.number),:method=>:get ,:class=>"large_button" %><% end %>
-<%= button_to 'Sheets', sheets_path,:method=>:get ,:class=>"large_button" %>
+<div class="file_field_tag_container1">
+  <% if !@sheet.number.blank? %> <%= button_to 'Show', contact_sheet_path(:id => @sheet.number),:method=>:get ,:class=>"large_button make_button" %><% end %>
+  <%= button_to 'Sheets', sheets_path,:method=>:get ,:class=>"large_button make_button" %>
+</div>

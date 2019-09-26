@@ -34,7 +34,7 @@ class Contact < ApplicationRecord
       description_lookups = Conshejointable.where(:contact_id => self.id, :sheet_id => sheet.id)
       if description_lookups.count != 0
         description_id = description_lookups.first.description_id
-        Description.find(description_id) if !description_id.blank?
+        Description.find(description_id).text if !description_id.blank?
       end
     end
   end

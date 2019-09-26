@@ -14,6 +14,24 @@
 
   }
 </script>
+<style>
+  .small_button{
+    width: 80px;
+    height: 22px;
+    max-height: 22px;
+    font-family: Arial;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 9pt;
+    border: 1px solid blue;
+    color: black;
+    background: white;
+  }
+
+
+</style>
 
 <body style="background-color: #d3d3e0; font-family: Arial;" >
 
@@ -45,29 +63,40 @@
       <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
       <td>
         <div id="show_button<%=contact.id.to_s %>">
-          <button onclick="show_further_details(<%=contact.id.to_s %>)">Details</button>
+          <button onclick="show_further_details(<%=contact.id.to_s %>)" class="small_button">Details</button>
         </div>
         <div id="hide_button<%=contact.id.to_s %>" style="display: none">
-          <button onclick="hide_further_details(<%=contact.id.to_s %>)">Hide</button>
+          <button onclick="hide_further_details(<%=contact.id.to_s %>)" class="small_button">Hide</button>
         </div>
       </td>
     </tr>
 
     <tr id="details<%=contact.id.to_s %>" style="display: none">
       <% if contact.has_picture? %>
-      <% puts "*****"  + contact.id.to_s %>
-        <td>
+        <td colspan="6">
           <table>
-            <col width="20%">
-            <col width="80%">
+            <col width="10%">
+            <col width="90%">
             <tr>
               <td><%= image_tag get_cont_picture_path(contact), :width => "70" %></td>
-              <td><%= contact.get_description(@sheet) %></td>
+              <td>
+                <div style="display: inline">
+                  <%= contact.get_description(@sheet) %>
+                  <% if !contact.url.blank? && contact.url != "" %>
+                    <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
+                  <% end %>
+                </div>
+              </td>
             </tr>
           </table>
         </td>
       <% else %>
-        <td><%= contact.descriptions.first.text if contact.descriptions.count > 0 %></td>
+        <td>
+          <%= contact.get_description(@sheet) %>
+          <% if !contact.url.blank? && contact.url != "" %>
+            <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
+          <% end %>
+        </td>
       <% end %>
 
     </tr>

@@ -231,7 +231,7 @@ class SheetsController < ApplicationController
     sheet_number = params[:id]
     if Sheet.where(:number => sheet_number).count > 0
       @sheet = Sheet.where(:number => sheet_number).first
-      if mobile?
+      if mobile? or true
         render "sheet_mobile" , :layout => false
       else
         render "sheet" , :layout => false

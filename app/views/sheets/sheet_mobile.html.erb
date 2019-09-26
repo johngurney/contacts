@@ -1,5 +1,41 @@
 <div class="sheet_box" style="overflow:auto; height: 90%; border-color: #606060; border-style: solid; border-width: 6px; border-radius: 10px; padding: 6px" >
-  Mobile version
+  <script type="text/javascript">
+
+    function show_further_details(contact_number) {
+        document.getElementById("details" + contact_number).style.display = "table-row";
+        document.getElementById("show_button" + contact_number).style.display = "none";
+        document.getElementById("hide_button" + contact_number).style.display = "block";
+
+    }
+
+    function hide_further_details(contact_number) {
+        document.getElementById("details" + contact_number).style.display = "none";
+        document.getElementById("show_button" + contact_number).style.display = "block";
+        document.getElementById("hide_button" + contact_number).style.display = "none";
+
+    }
+  </script>
+  <style>
+    .small_button{
+      width: 80px;
+      height: 22px;
+      max-height: 22px;
+      font-family: Arial;
+      text-align: center;
+      line-height: 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 9pt;
+      border: 1px solid blue;
+      color: black;
+      background: white;
+    }
+
+
+  </style>
+
+  <body style="background-color: #d3d3e0; font-family: Arial;" >
+
 
   <table width="100%">
     <col width="15%">
@@ -11,33 +47,79 @@
   </table>
 
 
-    <table width="100%" style="margin-top: 20px">
-      <col width="30%">
-      <col width="20%">
-      <col width="20%">
-      <col width="20%">
-      <col width="10%">
-      <% @sheet.contacts_in_order.each do |contact| %>
-        <tr>
-          <td><%= contact.name %></td>
-          <td><%= link_to contact.tel_number, "tel:" + contact.tel_number %></td>
-          <td><%= link_to contact.mobile_number, "tel:" + contact.mobile_number %></td>
-          <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
-          <td>
-            <div id="show_button<%=contact.id.to_s %>">
-              <button onclick="show_further_details(<%=contact.id.to_s %>)">Details</button>
-            </div>
-            <div id="hide_button<%=contact.id.to_s %>" style="display: none">
-              <button onclick="hide_further_details(<%=contact.id.to_s %>)">Hide</button>
-            </div>
+
+  <table width="100%" style="margin-top: 20px">
+    <col width="22%">
+    <col width="18%">
+    <col width="15%">
+    <col width="15%">
+    <col width="20%">
+    <col width="10%">
+    <% @sheet.contacts_in_order.each do |contact| %>
+      <tr>
+        <td><%= contact.name %></td>
+        <td><%= contact.position %></td>
+        <td><%= link_to contact.tel_number, "tel:" + contact.tel_number %></td>
+        <td><%= link_to contact.mobile_number, "tel:" + contact.mobile_number %></td>
+        <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
+        <td>
+          <div id="show_button<%=contact.id.to_s %>">
+            <button onclick="show_further_details(<%=contact.id.to_s %>)" class="small_button">Details</button>
+          </div>
+          <div id="hide_button<%=contact.id.to_s %>" style="display: none">
+            <button onclick="hide_further_details(<%=contact.id.to_s %>)" class="small_button">Hide</button>
+          </div>
+        </td>
+      </tr>
+
+      <tr id="details<%=contact.id.to_s %>" style="display: none">
+        <% if contact.has_picture? %>
+          <td colspan="6">
+            <table>
+              <col width="10%">
+              <col width="90%">
+              <tr>
+                <td><%= image_tag get_cont_picture_path(contact), :width => "70" %></td>
+                <td>
+                  <div style="display: inline">
+                    <%= contact.get_description(@sheet) %>
+                    <% if !contact.url.blank? && contact.url != "" %>
+                      <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            </table>
           </td>
-        </tr>
-        <tr id="details<%=contact.id.to_s %>" style="display: none">
-          <td><%= contact.name %></td>
-        </tr>
-      <% end %>
-    </table>
+        <% else %>
+          <td>
+            <%= contact.get_description(@sheet) %>
+            <% if !contact.url.blank? && contact.url != "" %>
+              <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
+            <% end %>
+          </td>
+        <% end %>
+
+      </tr>
+    <% end %>
+  </table>
   <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %>
+
+  <table width="100%" style="margin-top: 10px">
+    <col width="5%">
+    <col width="95%">
+    <% @sheet.brochures_in_order.each do |brochure| %>
+      <tr>
+        <td>
+          <%= link_to(image_tag( brochure.has_picture? ? get_broch_picture_path(brochure) : "pdf.gif", :title => "Download pdf for job", :width => "70" ), download_content_path(brochure), :style => "margin-left: 5px" ) =%>
+
+        </td>
+        <td>
+          <%= link_to brochure.name, download_content_path(brochure) %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
 
 
   </body>
