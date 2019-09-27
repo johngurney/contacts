@@ -34,8 +34,9 @@ class Contact < ApplicationRecord
       description_lookups = Conshejointable.where(:contact_id => self.id, :sheet_id => sheet.id)
       if description_lookups.count != 0
         description_id = description_lookups.first.description_id
-        Description.find(description_id).text if !description_id.blank?
+        return Description.find(description_id).text if !description_id.blank?
       end
+      self.descriptions.first.text
     end
   end
 
@@ -45,6 +46,11 @@ class Contact < ApplicationRecord
       descs_in_order.first.id if description_id == 0
       ApplicationController.helpers.select_tag :select, ApplicationController.helpers.options_for_select(descs_in_order.map{ |description| [description.name, description.id]}, description_id).html_safe,  {:class => "standard", :onchange => "document.getElementById(\'select_button\').click();".html_safe }
     end
+  end
+
+  def test
+    "hello" if true
+    "goodbye"
   end
 
 

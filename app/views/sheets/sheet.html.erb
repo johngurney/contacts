@@ -91,7 +91,7 @@
           </table>
         </td>
       <% else %>
-        <td>
+        <td colspan="6">
           <%= contact.get_description(@sheet) %>
           <% if !contact.url.blank? && contact.url != "" %>
             <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
