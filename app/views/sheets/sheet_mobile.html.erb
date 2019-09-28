@@ -37,11 +37,14 @@
       font-weight: normal;
       font-family: Arial;
     }
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
 
 
   </style>
 
-  <body style="background-color: #d3d3e0; font-family: Arial;" >
+  <body style="background-color: #d3d3e0; font-family: Arial; " >
 
 
   <table width="100%">
@@ -91,7 +94,7 @@
                   <div style="display: inline">
                     <%= contact.get_description(@sheet) %>
                     <% if !contact.url.blank? && contact.url != "" %>
-                      <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
+                      <button class="small_button" style="margin-left: 10px; width: 110px" onclick="location.href = '<%= contact.url %>'">Online profile</button>
                     <% end %>
                   </div>
                 </td>
