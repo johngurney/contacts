@@ -31,6 +31,13 @@
       background: white;
     }
 
+    .sheet_text {
+      vertical-align: top;
+      font-size: 10pt;
+      font-weight: normal;
+      font-family: Arial;
+    }
+
 
   </style>
 
@@ -73,13 +80,13 @@
       </tr>
 
       <tr id="details<%=contact.id.to_s %>" class="sheet_text" style="display: none">
-        <% if contact.has_picture? %>
-          <td colspan="6">
+        <td colspan="6">
+          <% if contact.has_picture? %>
             <table>
               <col width="10%">
               <col width="90%">
-              <tr>
-                <td><%= image_tag get_cont_picture_path(contact), :width => "70" %></td>
+              <tr class="sheet_text" >
+                <td><%= image_tag get_cont_picture_path(contact), :width => "70", :style => "border: 2  px gray solid" %></td>
                 <td>
                   <div style="display: inline">
                     <%= contact.get_description(@sheet) %>
@@ -90,15 +97,13 @@
                 </td>
               </tr>
             </table>
-          </td>
-        <% else %>
-          <td>
+          <% else %>
             <%= contact.get_description(@sheet) %>
             <% if !contact.url.blank? && contact.url != "" %>
               <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
             <% end %>
-          </td>
-        <% end %>
+          <% end %>
+        </td>
 
       </tr>
     <% end %>
