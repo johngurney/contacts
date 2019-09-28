@@ -36,8 +36,9 @@ class Contact < ApplicationRecord
         description_id = description_lookups.first.description_id
         return Description.find(description_id).text if !description_id.blank?
       end
-      self.descriptions.first.text
+      return self.descriptions.first.text
     end
+    ""
   end
 
   def set_selector(description_id)
