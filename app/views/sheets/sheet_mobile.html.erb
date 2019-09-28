@@ -92,16 +92,16 @@
                 <td><%= image_tag get_cont_picture_path(contact), :width => "70", :style => "border: 2px gray solid" %></td>
                 <td>
                   <div style="display: inline">
-                    <%= contact.get_description(@sheet) %>
+                    <%= contact.get_description(@sheet).strip %>
                     <% if !contact.url.blank? && contact.url != "" %>
-                      <button class="small_button" style="margin-left: 10px; width: 110px" onclick="location.href = '<%= contact.url %>'">Online profile</button>
+                      &nbsp<button class="small_button" style="margin-left: 5px; width: 110px" onclick="location.href = '<%= contact.url %>'">Online profile</button>
                     <% end %>
                   </div>
                 </td>
               </tr>
             </table>
           <% else %>
-            <%= contact.get_description(@sheet) %>
+            <%= contact.get_description(@sheet).strip %>
             <% if !contact.url.blank? && contact.url != "" %>
               <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
             <% end %>
