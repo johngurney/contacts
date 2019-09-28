@@ -56,7 +56,7 @@
     <col width="20%">
     <col width="10%">
     <% @sheet.contacts_in_order.each do |contact| %>
-      <tr>
+      <tr class="sheet_text">
         <td><%= contact.name %></td>
         <td><%= contact.position %></td>
         <td><%= link_to contact.tel_number, "tel:" + contact.tel_number %></td>
@@ -72,7 +72,7 @@
         </td>
       </tr>
 
-      <tr id="details<%=contact.id.to_s %>" style="display: none">
+      <tr id="details<%=contact.id.to_s %>" class="sheet_text" style="display: none">
         <% if contact.has_picture? %>
           <td colspan="6">
             <table>

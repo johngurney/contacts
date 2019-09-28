@@ -31,6 +31,15 @@
      margin-top: 4px;
    }
 
+   .sheet_text {
+     font-size: 10pt;
+     color: black;
+     font-weight: normal;
+     font-family: Arial;
+   }
+
+   }
+
    .standard_label {
      font-size: 12pt;
    }
@@ -40,6 +49,7 @@
      font-weight: bold;
      padding-top: 24px;
    }
+
 h1 {
   font-size: 26pt;
   color: #404060;
