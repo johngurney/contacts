@@ -4,14 +4,14 @@ class ApplicationController < ActionController::Base
   before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet]
 
   def check_cookie_consent
-    if cookies[:capacity_cookie_consent].blank?
+    if cookies[:contacts_cookie_consent].blank?
       render 'general/cookie_consent'
       false
     end
   end
 
   def check_logged_in
-    if cookies.signed[:capacity_logged_in].blank?
+    if cookies.signed[:contacts_logged_in].blank?
       render 'general/password'
       false
     end

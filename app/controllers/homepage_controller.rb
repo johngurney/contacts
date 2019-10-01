@@ -19,7 +19,7 @@ class HomepageController < ApplicationController
   end
 
   def log_in
-    cookies.permanent.signed[:capacity_logged_in] = true if params[:password] == Rails.configuration.system_password
+    cookies.permanent.signed[:contacts_logged_in] = true if params[:password] == Rails.configuration.system_password
     redirect_to root_path
   end
 
