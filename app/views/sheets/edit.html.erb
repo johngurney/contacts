@@ -19,19 +19,8 @@
               <%= text_field_tag :client_name, @sheet.client_name, :class => "standard", :style => "width: 300px; margin-left: 10px"%>
             </td>
             <td>
-            </td>
-          </tr>
-          <tr>
-            <td class="standard_label">
-              <h2>Password</h2>
-            </td>
-            <td>
-              <%= text_field_tag :password, @sheet.password, :class => "standard", :style => "width: 200px; margin-left: 10px"%>
-            </td>
-            <td>
               <%= submit_tag "Update", :class => "large_button" %>
             </td>
-          </tr>
         </table>
 
       <% end %>
@@ -94,8 +83,8 @@
                 <% end %>
               </table>
             </div>
-            <%= submit_tag "Remove contacts", :class => "small_button" %>
-            <%= submit_tag "Update", :class => "small_button" %>
+            <%= submit_tag "Remove selected contacts", :class => "small_button", :style =>"width: 170px" %>
+            <%= submit_tag "Update", :class => "small_button", :style =>"margin-left: 95px" %>
           <% end %>
 
         <% else %>
@@ -118,7 +107,7 @@
               <% end %>
             <% end %>
           </div>
-          <%= submit_tag "Add contact(s)", :class => "small_button" %>
+          <%= submit_tag "Add selected contact(s)", :class => "small_button", :style =>"width: 170px"  %>
         <% end %>
       </div>
     </td>
@@ -159,7 +148,7 @@
                 <% end %>
               </table>
             </div>
-            <%= submit_tag "Remove brochures", :class => "small_button", :style => "width: 130px"%>
+            <%= submit_tag "Remove selected brochures", :class => "small_button", :style => "width: 130px", :style =>"width: 170px" %>
           <% end %>
 
           <% else %>
@@ -183,7 +172,7 @@
               <% end %>
             <% end %>
           </div>
-          <%= submit_tag "Add brochure(s)", :class => "small_button" %>
+          <%= submit_tag "Add selected brochure(s)", :class => "small_button", :style =>"width: 170px"  %>
         <% end %>
       </div>
     </td>

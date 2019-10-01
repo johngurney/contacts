@@ -11,7 +11,7 @@
   <tbody>
     <% @sheets.each do |sheet| %>
       <tr>
-        <td><%= sheet.client_name %>(<%= sheet.id.to_s %>)</td>
+        <td><%= sheet.client_name %></td>
         <td><% if !sheet.number.blank? %> <%= link_to 'Show', contact_sheet_path(:id => sheet.number) %><% end %></td>
         <td><%= link_to 'Edit', edit_sheet_path(sheet) %></td>
         <td><%= link_to 'Delete', sheet, method: :delete, data: { confirm: 'Are you sure?' } %></td>

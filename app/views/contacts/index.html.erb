@@ -10,9 +10,9 @@
   </thead>
 
   <tbody>
-    <% @contacts.each do |contact| %>
+    <% @contacts.order(:last_name, :first_name).each do |contact| %>
       <tr>
-        <td><%= contact.name %>(<%= contact.id.to_s %>)</td>
+        <td><%= contact.name %></td>
 
         <td><%= link_to 'Edit', edit_contact_path(contact) %></td>
         <td><%= link_to 'Delete', contact, method: :delete, data: { confirm: 'Are you sure?' } %></td>
