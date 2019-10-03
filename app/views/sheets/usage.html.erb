@@ -1,0 +1,56 @@
+<script type="text/javascript">
+
+  window.onload = update_charts;
+
+  (function() {
+    update_charts();
+    }).call(this);
+
+
+  function update_charts() {
+      var date_stgs = [<%= @sheet.usage_months.html_safe %>];
+      var values = [<%= @sheet.usage_values.html_safe %>];
+      var max_value = <%= @sheet.max_value.html_safe %>;
+
+
+      var c = document.getElementById("usage_canvas");
+      var ctx = c.getContext("2d");
+      // ctx.lineWidth = "0";
+      // ctx.fillStyle = "red";
+      // ctx.fillRect(0 , c.height * .2 , c.width * .6, c.height * 0.4);
+      var x0 = c.width * .1, xright = c.width * .9;
+      var y0 = c.height * .9, ytop = c.height * .2;
+      var graph_w = xright - x0, graph_h = ytop - y0;
+
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.stroke();
+      ctx.lineTo(xright, y0);
+      ctx.stroke();
+
+      ctx.textAlign = "center";
+      var n1 = 0, n2 = date_stgs.length;
+
+      var bar_width = graph_w / n2 * .75;
+
+      date_stgs.forEach (function(date_stg) {
+        var x = x0 +  graph_w * n1 / (n2 - 1);
+        h = graph_h * values[n1] / max_value;
+        ctx.fillStyle = "gray";
+        ctx.fillRect(x - bar_width/2 , y0 , bar_width , h);
+        ctx.fillStyle = "black";
+        ctx.font = "14px Arial";
+        ctx.fillText(date_stg, x, y0 + 30);
+        ctx.font = "14px Arial";
+        ctx.fillText(values[n1], x, y0 + h - 5);
+        n1 += 1;
+      })
+
+      ctx.font = "20px Arial";
+      ctx.textAlign = "left";
+      ctx.fillText("Hits per month", c.width * .02, c.height * .06 );
+    }
+</script>
+
+<h1>Usage for <%= @sheet.client_name %></h1>
+<canvas id="usage_canvas" width="700" height="500" style="border:1px solid #000000; background-color:white; "></canvas>

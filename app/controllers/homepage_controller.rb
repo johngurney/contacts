@@ -37,5 +37,18 @@ class HomepageController < ApplicationController
     redirect_to root_path
   end
 
+  def test
+
+    prng = Random.new
+    (1..1000).each do |n|
+      log = Log.create(:sheet_id => 3, :ip_address => "123")
+      log.created_at = 7.months.ago - prng.rand(100).days
+      log.save
+    end
+
+
+    redirect_to root_path
+  end
+
 
 end

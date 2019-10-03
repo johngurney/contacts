@@ -5,7 +5,10 @@ Rails.application.routes.draw do
   resources :brochures
 
 
-  get 'contact_sheet/:id' , to: 'sheets#sheet', as: :contact_sheet
+  get 'contact_sheet/:id' , to: 'sheets#contact_sheet', as: :contact_sheet
+  get 'contact_sheet_internal/:id' , to: 'sheets#contact_sheet_no_log', as: :contact_sheet_no_log
+
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'homepage#homepage'
   post 'add_contact' => 'homepage#add_contact', as: :add_contact
@@ -41,6 +44,10 @@ Rails.application.routes.draw do
 
   get 'get_broch_picture/.:id', to: 'brochures#get_picture', as: :get_broch_picture
   get 'download_content/.:id' , to: 'brochures#download_content', as: :download_content
+  get 'usage/.:id' , to: 'sheets#usage', as: :usage
+  get 'usage_image/.:id' , to: 'sheets#usage_image', as: :usage_image
+
+  get 'test' , to: 'homepage#test', as: :test
 
   mount_griddler
   #https://github.com/thoughtbot/griddler

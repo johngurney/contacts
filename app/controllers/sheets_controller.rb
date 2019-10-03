@@ -1,5 +1,5 @@
 class SheetsController < ApplicationController
-  before_action :set_sheet, only: [:show, :edit, :update, :destroy, :add_contact, :update_contact, :add_brochure, :update_brochure, :get_qr_code]
+  before_action :set_sheet, only: [:show, :edit, :update, :destroy, :add_contact, :update_contact, :add_brochure, :update_brochure, :get_qr_code, :usage, :usage_image]
 
   # GET /sheets
   # GET /sheets.json
@@ -227,10 +227,19 @@ class SheetsController < ApplicationController
     redirect_to edit_sheet_path(sheet_id)
   end
 
-  def sheet
+  def contact_sheet
+    contact_sheet1(true)
+  end
+
+  def contact_sheet_no_log
+    contact_sheet1(false)
+  end
+
+  def contact_sheet1(log_flag)
     sheet_number = params[:id]
     if Sheet.where(:number => sheet_number).count > 0
       @sheet = Sheet.where(:number => sheet_number).first
+      Log.create(:sheet_id => @sheet.id, :ip_address => request.remote_ip) if log_flag
       if mobile? or true
         render "sheet_mobile" , :layout => false
       else
@@ -270,6 +279,20 @@ class SheetsController < ApplicationController
     )
 
     send_data png, :filename => "qr_code"
+  end
+
+  def usage
+
+  end
+
+  def usage_image
+    # filename = "C:\\Users\\Dan\\Pictures\\airbnb picture.jpg"
+    # image = MiniMagick::Image.open(filename)
+
+    image = MiniMagick::Image.new(100,100)
+    #image.format = "png"
+    send_data image.to_blob, :filename => "picture"    # , :type => "application/pdf"
+
   end
 
   private

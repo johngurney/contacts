@@ -27,8 +27,11 @@
           Contacts sheets
         </td>
 
-        <td align="center" style="font-size: 6pt; font-weight: bold">
-          <%= link_to "Reset cookie consent", reset_cookie_consent_path %><br/>
+        <td align="center" style="font-weight: bold">
+          <% if false %>
+            <%= link_to "Reset cookie consent", reset_cookie_consent_path %><br/>
+            <%= link_to "Test", test_path %><br/>
+          <% end %>
           <% if !cookies.signed[:logged_in].blank? %>
             <%= link_to "Log out", log_out_path %>
           <% end %>

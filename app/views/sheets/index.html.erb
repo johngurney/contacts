@@ -2,8 +2,9 @@
 
 <h1>Sheets</h1>
 
-<table width="500px">
+<table width="50%">
   <col width="40%">
+  <col width="20%">
   <col width="20%">
   <col width="20%">
   <col width="20%">
@@ -12,7 +13,8 @@
     <% @sheets.each do |sheet| %>
       <tr>
         <td><%= sheet.client_name %></td>
-        <td><% if !sheet.number.blank? %> <%= link_to 'Show', contact_sheet_path(:id => sheet.number) %><% end %></td>
+        <td><% if !sheet.number.blank? %> <%= link_to 'Show', contact_sheet_no_log_path(:id => sheet.number) %><% end %></td>
+        <td><%= link_to 'View usage', usage_path(sheet) %></td>
         <td><%= link_to 'Edit', edit_sheet_path(sheet) %></td>
         <td><%= link_to 'Delete', sheet, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

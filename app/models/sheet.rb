@@ -88,5 +88,37 @@ class Sheet < ApplicationRecord
 
   end
 
+  def usage_months
+    number_of_months = 0..11
+    stg = ""
+    number_of_months.to_a.reverse.each do |month_offset|
+      stg += ", " if stg != ""
+      stg += "\"" + month_offset.months.ago.strftime("%b %y") + "\""
+    end
+    stg
+  end
+
+  def usage_values
+    number_of_months = 0..11
+    stg = ""
+    number_of_months.to_a.reverse.each do |month_offset|
+      stg += ", " if stg != ""
+      m = month_offset.months.ago
+      stg += Log.where(:sheet_id => self.id).where("created_at >= ? and created_at <= ?", m.beginning_of_month, m.end_of_month).count.to_s
+    end
+    stg
+  end
+
+  def max_value
+    number_of_months = 0..11
+    v = 1
+    number_of_months.to_a.reverse.each do |month_offset|
+      m = month_offset.months.ago
+      n =  Log.where(:sheet_id => self.id).where("created_at >= ? and created_at <= ?", m.beginning_of_month, m.end_of_month).count
+      v = n if n > v
+      puts "******" + n.to_s + " " + v.to_s
+    end
+    v.to_s
+  end
 
 end
