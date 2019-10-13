@@ -32,7 +32,7 @@ class SheetsController < ApplicationController
 
     o = [('0'..'9')].map(&:to_a).flatten
     loop do
-      number = (1..6).map { o[SecureRandom.random_number(o.length)] }.join
+      number = (1..10).map { o[SecureRandom.random_number(o.length)] }.join
       if Sheet.where(:number => number).count == 0
         @sheet.number = number
         break
@@ -233,7 +233,7 @@ class SheetsController < ApplicationController
     if Sheet.where(:number => sheet_number).count > 0
       @sheet = Sheet.where(:number => sheet_number).first
       Log.create(:sheet_id => @sheet.id, :ip_address => request.remote_ip) if log_flag
-      if mobile? or true
+      if mobile?
         render "sheet_mobile" , :layout => false
       else
         render "sheet" , :layout => false
