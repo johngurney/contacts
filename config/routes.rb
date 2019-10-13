@@ -51,4 +51,10 @@ Rails.application.routes.draw do
 
   mount_griddler
   #https://github.com/thoughtbot/griddler
+
+
+  post 'position', to:  "homepage#position"
+  get "location", to:  "homepage#location", as: :location
+
+
 end

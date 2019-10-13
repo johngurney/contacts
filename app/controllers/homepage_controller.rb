@@ -1,4 +1,7 @@
 class HomepageController < ApplicationController
+
+  skip_before_action :verify_authenticity_token, only: [:position]
+
   def homepage
   end
 
@@ -48,6 +51,15 @@ class HomepageController < ApplicationController
 
 
     redirect_to root_path
+  end
+
+  def position
+    puts "test" + request.raw_post
+
+    render :plain => "Ok"
+  end
+
+  def location
   end
 
 

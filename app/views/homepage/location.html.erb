@@ -1,0 +1,63 @@
+<script>
+  var interval = setInterval(timerTick, 10000);
+
+  function timerTick() {
+    alert("test");
+    getLocation();
+  }
+
+  function turn_on() {
+    timerTick();
+    interval = setInterval(timerTick, 10000);
+  }
+
+  function turn_off() {
+    clearInterval(interval);
+  }
+
+  window.onload = start_up;
+
+
+  var x = document.getElementById("demo");
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(sendPosition);
+    } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+    return;
+  }
+
+  function showPosition(position) {
+    // alert("cba");
+    // alert(position.coords.latitude);
+    // alert(position.coords.longitude);
+    // x.innerHTML = "Latitude: " + position.coords.latitude +
+    // "<br>Longitude: " + position.coords.longitude;
+    // return;
+  }
+
+
+  function sendPosition(position) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "position", true);
+    var d = new Date();
+    var time_sting = d.toLocaleTimeString().replace(/\s/g, '');
+    xhr.send(time_sting + " " + position.coords.latitude + " " + position.coords.longitude);
+  }
+
+function test() {
+  alert("test");
+  getLocation();
+}
+
+
+</script>
+
+This is the homepage1
+
+<button onclick="turn_on()" style="width: 150px; height: 50px">On</button>
+<button onclick="turn_off()" style="width: 150px; height: 50px">Off</button>
+
+<div id= "demo"></div>
