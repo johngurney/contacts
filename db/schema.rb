@@ -10,21 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_03_090755) do
+ActiveRecord::Schema.define(version: 2019_10_13_200124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "areas", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "areas_users", id: false, force: :cascade do |t|
-    t.integer "area_id"
-    t.integer "user_id"
-  end
 
   create_table "brochures", force: :cascade do |t|
     t.binary "content"
@@ -41,23 +30,6 @@ ActiveRecord::Schema.define(version: 2019_10_03_090755) do
     t.integer "order_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "capacitycodes", force: :cascade do |t|
-    t.string "text"
-    t.integer "capacity_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "capacitylogs", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "comment"
-    t.integer "capacity_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "absent"
-    t.datetime "return_date"
   end
 
   create_table "conshejointables", force: :cascade do |t|
@@ -92,12 +64,6 @@ ActiveRecord::Schema.define(version: 2019_10_03_090755) do
     t.integer "description_id"
   end
 
-  create_table "departments", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "descriptions", force: :cascade do |t|
     t.text "text"
     t.integer "contact_id"
@@ -106,17 +72,10 @@ ActiveRecord::Schema.define(version: 2019_10_03_090755) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "locations", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "loginlogs", force: :cascade do |t|
+  create_table "locationlogs", force: :cascade do |t|
+    t.decimal "latitude"
+    t.decimal "longitude"
     t.integer "user_id"
-    t.string "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "logs", force: :cascade do |t|
@@ -126,27 +85,20 @@ ActiveRecord::Schema.define(version: 2019_10_03_090755) do
     t.integer "sheet_id"
   end
 
+  create_table "positionlogs", force: :cascade do |t|
+    t.decimal "latitude"
+    t.decimal "longitude"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "sheets", force: :cascade do |t|
     t.string "client_name", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "number", default: "000000"
     t.string "password"
-  end
-
-  create_table "users", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.string "user_type"
-    t.string "position"
-    t.integer "capacity_status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "telephone"
-    t.string "email"
-    t.string "password"
-    t.integer "location_id"
-    t.integer "department_id"
   end
 
 end

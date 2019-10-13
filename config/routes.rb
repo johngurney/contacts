@@ -55,6 +55,7 @@ Rails.application.routes.draw do
 
   post 'position', to:  "homepage#position"
   get "location", to:  "homepage#location", as: :location
+  get "location_log", to:  "homepage#location_log", as: :location_log
 
 
 end

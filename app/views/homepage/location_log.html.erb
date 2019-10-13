@@ -1,0 +1,18 @@
+Location log
+<table width="50%">
+  <col width = 40%>
+  <col width = 30%>
+  <col width = 30%>
+  <tr>
+    <td>Time</td>
+    <td>Longitude</td>
+    <td>Latitude</td>
+  </tr>
+   <% Positionlog.all.each do |log| %>
+     <tr>
+       <td><%= log.created_at.to_s%></td>
+       <td><%= log.longitude.to_s%></td>
+       <td><%= log.latitude.to_s%></td>
+     </tr>
+  <% end %>
+</table>

@@ -1,0 +1,2 @@
+class Positionlog < ApplicationRecord
+end

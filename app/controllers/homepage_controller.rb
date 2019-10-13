@@ -55,6 +55,10 @@ class HomepageController < ApplicationController
 
   def position
     puts "test" + request.raw_post
+    arry = request.raw_post.split(" ")
+
+    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d )
+    log.save
 
     render :plain => "Ok"
   end
@@ -62,5 +66,7 @@ class HomepageController < ApplicationController
   def location
   end
 
+  def location_log
+  end
 
 end
