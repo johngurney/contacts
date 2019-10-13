@@ -1,14 +1,13 @@
 <script>
-  var interval = setInterval(timerTick, 10000);
+  var interval = setInterval(timerTick, 60000);
 
   function timerTick() {
-    alert("test");
     getLocation();
   }
 
   function turn_on() {
     timerTick();
-    interval = setInterval(timerTick, 10000);
+    interval = setInterval(timerTick, 60000);
   }
 
   function turn_off() {
