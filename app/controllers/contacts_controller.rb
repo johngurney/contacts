@@ -207,7 +207,7 @@ class ContactsController < ApplicationController
 
     if !@contact.image.blank?
 
-      file_name = "app\\assets\\images\\cms.png"
+      file_name = Rails.root.join('app', 'assets', 'images', 'cms.png')
       # image = MiniMagick::Image.open(filename)
 
       image = MiniMagick::Image.read(@contact.image )
