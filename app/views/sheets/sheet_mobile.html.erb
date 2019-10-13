@@ -58,7 +58,7 @@
       <td>
         <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Please call [] as soon as possible." %>
       </td>
-      <td><%= image_tag "cms.png", :width => "70", :style => "border: 2px gray solid" %></td>
+      <td><%= image_tag get_cont_picture_path(Contact.where(:last_name => "Tench").first), :width => "70", :style => "border: 2px gray solid" %></td>
 
   </tr>
   </table>

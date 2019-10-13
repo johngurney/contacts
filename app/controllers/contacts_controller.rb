@@ -235,7 +235,7 @@ class ContactsController < ApplicationController
       end
 
       image.resize width.to_s + "x" + height.to_s + ">"
-      send_data image.to_blob, :filename => "picture"    # , :type => "application/pdf"
+      send_data image.to_blob, :filename => "picture"  , :type => "image/jpg"
     end
   end
 
