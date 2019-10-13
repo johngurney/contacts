@@ -237,9 +237,7 @@ class ContactsController < ApplicationController
       image.resize width.to_s + "x" + height.to_s + ">"
 
 
-      image = File.open(file_name, "rb")
-      # send_data image.to_blob, :filename => "picture"  , :type => "image/png"
-      send_data image.read, :filename => "picture.png", :type => "image/png"
+      send_data image.to_blob, :filename => "picture.jpg", :type => "image/jpg"
     end
   end
 

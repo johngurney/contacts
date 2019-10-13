@@ -271,7 +271,7 @@ class SheetsController < ApplicationController
       size: 120
     )
 
-    send_data png, :filename => "qr_code"
+    send_data png, :filename => "qr_code.png", :type => "image/jpg"
   end
 
   def usage

@@ -86,7 +86,7 @@ class BrochuresController < ApplicationController
       end
 
       image.resize width.to_s + "x" + height.to_s + ">"
-      send_data image.to_blob, :filename => "picture"    # , :type => "application/pdf"
+      send_data image.to_blob, :filename => "picture.jpg", :type => "image/jpg"
     end
   end
 
@@ -185,7 +185,7 @@ class BrochuresController < ApplicationController
 
   def download_content
     if @brochure.has_content?
-      send_data(
+        send_data(
         @brochure.content,
         filename: @brochure.name + ".pdf",
         type: "application/pdf" )
