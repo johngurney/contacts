@@ -239,7 +239,7 @@ class ContactsController < ApplicationController
 
       image = File.open(file_name, "rb")
       # send_data image.to_blob, :filename => "picture"  , :type => "image/png"
-      send_data image.read, :filename => "picture.png"  , :type => "image/png"
+      send_data image.read, :filename => "picture.png", :type => "image/png"
     end
   end
 
