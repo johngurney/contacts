@@ -53,15 +53,8 @@ class SheetsController < ApplicationController
   # PATCH/PUT /sheets/1
   # PATCH/PUT /sheets/1.json
   def update
-    respond_to do |format|
-      if @sheet.update(sheet_params)
-        format.html { redirect_to @sheet, notice: 'Sheet was successfully updated.' }
-        format.json { render :show, status: :ok, location: @sheet }
-      else
-        format.html { render :edit }
-        format.json { render json: @sheet.errors, status: :unprocessable_entity }
-      end
-    end
+    @sheet.update(sheet_params)
+    redirect_to sheets_path
   end
 
   # DELETE /sheets/1

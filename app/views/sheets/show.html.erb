@@ -5,17 +5,10 @@
   <%= @sheet.client_name %><br/>
   <strong>Internal ID :</strong>
   <%= @sheet.number %><br/>
-  <strong>ID number :</strong>
-  <%= @sheet.id.to_s %>
 </p>
 
-<% if !@sheet.number.blank? %>
-  <%= link_to "See sheet",  contact_sheet_no_log_path_path(@sheet.number) %><br/><br/>
-<% end %>
-
-<% @sheet.contacts.each do|contact| %>
-  <%= contact.name %><br/>
-<% end %>
-
-<%= link_to 'Edit', edit_sheet_path(@sheet) %> |
-<%= link_to 'Back', sheets_path %>
+<div class="file_field_tag_container1">
+  <% if !@sheet.number.blank? %> <%= button_to 'Show', contact_sheet_no_log_path(:id => @sheet.number),:method=>:get ,:class=>"large_button make_button" %><% end %>
+  <%= button_to 'Edit', edit_sheet_path(@sheet) ,:method=>:get ,:class=>"large_button make_button" %>
+  <%= button_to 'Sheets', sheets_path,:method=>:get ,:class=>"large_button make_button" %>
+</div>

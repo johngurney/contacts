@@ -5,7 +5,7 @@
   <col width="28%">
   <tr>
     <td>
-      <%= form_tag(@sheet) do |form| %>
+      <%= form_with(model: @sheet) do |form| %>
 
         <table width="100%">
           <col width="25%">
@@ -16,10 +16,10 @@
               <h2>Client name</h2>
             </td>
             <td>
-              <%= text_field_tag :client_name, @sheet.client_name, :class => "standard", :style => "width: 300px; margin-left: 10px"%>
+              <%= form.text_field :client_name, :class => "standard", :style => "width: 300px; margin-left: 10px"%>
             </td>
             <td>
-              <%= submit_tag "Update", :class => "large_button" %>
+              <%= form.submit "Update", :class => "large_button" %>
             </td>
         </table>
 
@@ -47,7 +47,7 @@
   </tr>
 </table>
 
-<table>
+<table width="100%">
   <col width="50%">
   <col width="50%">
   <tr>
@@ -87,8 +87,6 @@
             <%= submit_tag "Update", :class => "small_button", :style =>"margin-left: 95px" %>
           <% end %>
 
-        <% else %>
-          None
         <% end %>
       </div>
     </td>
@@ -180,6 +178,6 @@
 </table>
 
 <div class="file_field_tag_container1">
-  <% if !@sheet.number.blank? %> <%= button_to 'Show', contact_sheet_no_log_path_path(:id => @sheet.number),:method=>:get ,:class=>"large_button make_button" %><% end %>
+  <% if !@sheet.number.blank? %> <%= button_to 'Show', contact_sheet_no_log_path(:id => @sheet.number),:method=>:get ,:class=>"large_button make_button" %><% end %>
   <%= button_to 'Sheets', sheets_path,:method=>:get ,:class=>"large_button make_button" %>
 </div>

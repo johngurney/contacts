@@ -144,8 +144,8 @@
       <table width="100%" style="margin-top: 10px">
         <col width="5%">
         <col width="95%">
-        <% (0..0).each do %>
-          <% @sheet.brochures_in_order.each do |brochure| %>
+        <% @sheet.brochures_in_order.each do |brochure| %>
+          <% if brochure.has_content? %>
             <tr>
               <td>
                 <%= link_to(image_tag( brochure.has_picture? ? get_broch_picture_path(brochure) : "pdf.gif", :title => "Download pdf for job", :width => "70" ), download_content_path(brochure), :style => "margin-left: 5px" ) =%>

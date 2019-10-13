@@ -108,15 +108,17 @@
   <col width="5%">
   <col width="95%">
   <% @sheet.brochures_in_order.each do |brochure| %>
-    <tr>
-      <td>
-        <%= link_to(image_tag( brochure.has_picture? ? get_broch_picture_path(brochure) : "pdf.gif", :title => "Download pdf for job", :width => "70" ), download_content_path(brochure), :style => "margin-left: 5px" ) =%>
+    <% if brochure.has_content? %>
+      <tr>
+        <td>
+          <%= link_to(image_tag( brochure.has_picture? ? get_broch_picture_path(brochure) : "pdf.gif", :title => "Download pdf for job", :width => "70" ), download_content_path(brochure), :style => "margin-left: 5px" ) =%>
 
-      </td>
-      <td>
-        <%= link_to brochure.name, download_content_path(brochure) %>
-      </td>
-    </tr>
+        </td>
+        <td>
+          <%= link_to brochure.name, download_content_path(brochure) %>
+        </td>
+      </tr>
+    <% end %>
   <% end %>
 </table>
 

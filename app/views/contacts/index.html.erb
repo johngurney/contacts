@@ -29,7 +29,7 @@
     overflow: hidden;
 }
 
-.btn-file1 input[type=file] {
+.btn-file1 input[type="file"] {
     position: absolute;
     top: 0;
     right: 0;
@@ -45,23 +45,37 @@
     display: block;
 }
 
+.container1 {
+    display: inline-flex;
+    flex-direction: row;
+    }
+
+.container1 div {
+    padding: 5px;
+    }
+
+
 </style>
 
-<%= button_to "Delete all", delete_all_contacts_path %>
+<div class="container1" style="margin-top:20px" >
+  <%= button_to "Delete all", delete_all_contacts_path, class: "standard_button" %>
 
-<%= form_tag upload_contacts_file_path, :multipart => true do  %>
-  <span class="small_user" >
-    <span style="font-size: 12pt; font-family: Arial; margin-right: 25px">
-    Upload file of users
-    </span>
-    <span class="btn1 btn-large btn-warning btn-file">
-      Choose file
-      <%= file_field_tag :file %>
-    </span>
-  </span>
-    <%= submit_tag "Upload",  {:class=>"standard_button", :style =>"width: 120px; margin-left: 10px"} %>
-<% end %>
+  <%= form_tag upload_contacts_file_path, :multipart => true do  %>
+    <div style="border: 2px solid blue; border-radius: 25px; background: white; width: 630px; margin-left: 10px">
+      <span class="small_user1" >
+        <span style="font-size: 12pt; font-family: Arial; margin-left: 10px; margin-right: 10px">
+          Upload file of users
+        </span>
+        <span class1="btn-file3">
+          Choose file
+          <%= file_field_tag :file %>
+        </span>
+      </span>
+      <%= submit_tag "Upload",  {:class=>"small_button", :style =>"width: 80px; margin-left: 0px"} %>
+    </div>
+  <% end %>
 
-<br>
+  <br>
 
-<%= button_to 'New Contact', new_contact_path , class: "standard_button" %>
+  <%= button_to 'New Contact', new_contact_path , class: "standard_button", style: "margin-left: 10px" %>
+</div>
