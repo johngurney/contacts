@@ -49,7 +49,8 @@
 
   <table width="100%">
     <col width="15%">
-    <col width="75%">
+    <col width="65%">
+    <col width="10%">
     <col width="10%">
     <tr>
       <td><%= image_tag "cms.png" %></td>
@@ -57,6 +58,8 @@
       <td>
         <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Please call [] as soon as possible." %>
       </td>
+      <td><%= image_tag get_cont_picture_path(Contact.where(:last_name => "Tench").first), :width => "70", :style => "border: 2px gray solid" %></td>
+
   </tr>
   </table>
 
@@ -89,52 +92,50 @@
             Email
           </td>
         </tr>
-        <% (0..0).each do %>
-          <% @sheet.contacts_in_order.each do |contact| %>
-            <tr class="sheet_text">
-              <td><%= contact.name %></td>
-              <td><%= contact.position %></td>
-              <td><%= link_to contact.tel_number, "tel:" + contact.tel_number %></td>
-              <td><%= link_to contact.mobile_number, "tel:" + contact.mobile_number %></td>
-              <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
-              <td>
-                <div id="show_button<%=contact.id.to_s %>">
-                  <button onclick="show_further_details(<%=contact.id.to_s %>)" class="small_button">Details</button>
-                </div>
-                <div id="hide_button<%=contact.id.to_s %>" style="display: none">
-                  <button onclick="hide_further_details(<%=contact.id.to_s %>)" class="small_button">Hide</button>
-                </div>
-              </td>
-            </tr>
+        <% @sheet.contacts_in_order.each do |contact| %>
+          <tr class="sheet_text">
+            <td><%= contact.name %></td>
+            <td><%= contact.position %></td>
+            <td><%= link_to contact.tel_number, "tel:" + contact.tel_number %></td>
+            <td><%= link_to contact.mobile_number, "tel:" + contact.mobile_number %></td>
+            <td><%= mail_to contact.email_address , nil , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Plese call [] as soon as possible." %></td>
+            <td>
+              <div id="show_button<%=contact.id.to_s %>">
+                <button onclick="show_further_details(<%=contact.id.to_s %>)" class="small_button">Details</button>
+              </div>
+              <div id="hide_button<%=contact.id.to_s %>" style="display: none">
+                <button onclick="hide_further_details(<%=contact.id.to_s %>)" class="small_button">Hide</button>
+              </div>
+            </td>
+          </tr>
 
-            <tr id="details<%=contact.id.to_s %>" class="sheet_text" style="display: none">
-              <td colspan="6">
-                <% if contact.has_picture? %>
-                  <table>
-                    <col width="10%">
-                    <col width="90%">
-                    <tr class="sheet_text" >
-                      <td><%= image_tag get_cont_picture_path(contact), :width => "70", :style => "border: 2px gray solid" %></td>
-                      <td>
-                        <div style="display: inline">
-                          <%= contact.get_description(@sheet).strip %>
-                          <% if !contact.url.blank? && contact.url != "" %>
-                            &nbsp<button class="small_button" style="margin-left: 5px; width: 110px" onclick="location.href = '<%= contact.url %>'">Online profile</button>
-                          <% end %>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                <% else %>
-                  <%= contact.get_description(@sheet).strip %>
-                  <% if !contact.url.blank? && contact.url != "" %>
-                    <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
-                  <% end %>
+          <tr id="details<%=contact.id.to_s %>" class="sheet_text" style="display: none">
+            <td colspan="6">
+              <% if contact.has_picture? %>
+                <table>
+                  <col width="10%">
+                  <col width="90%">
+                  <tr class="sheet_text" >
+                    <td><%= image_tag get_cont_picture_path(contact), :width => "70", :style => "border: 2px gray solid" %></td>
+                    <td>
+                      <div style="display: inline">
+                        <%= contact.get_description(@sheet).strip %>
+                        <% if !contact.url.blank? && contact.url != "" %>
+                          &nbsp<button class="small_button" style="margin-left: 5px; width: 110px" onclick="location.href = '<%= contact.url %>'">Online profile</button>
+                        <% end %>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              <% else %>
+                <%= contact.get_description(@sheet).strip %>
+                <% if !contact.url.blank? && contact.url != "" %>
+                  <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
                 <% end %>
-              </td>
+              <% end %>
+            </td>
 
-            </tr>
-          <% end %>
+          </tr>
         <% end %>
       </table>
     </div>
