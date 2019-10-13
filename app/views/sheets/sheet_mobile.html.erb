@@ -49,16 +49,14 @@
 
   <table width="100%">
     <col width="15%">
-    <col width="65%">
-    <col width="10%">
-    <col width="10%">
+    <col width="70%">
+    <col width="15%">
     <tr>
       <td><%= image_tag "cms.png" %></td>
       <td style="font-size: 40px;font-weight: bold">Contact details for <%= @sheet.client_name %></td>
       <td>
         <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Please call [] as soon as possible." %>
       </td>
-      <td><%= image_tag get_cont_picture_path(Contact.where(:last_name => "Tench").first), :width => "70", :style => "border: 2px gray solid" %></td>
 
   </tr>
   </table>
