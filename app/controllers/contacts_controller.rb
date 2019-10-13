@@ -207,7 +207,7 @@ class ContactsController < ApplicationController
 
     if !@contact.image.blank?
 
-      # filename = "D:\\projects\\contacts\\public\\pictures\\picture" + @contact.id.to_s + ".jpg"
+      file_name = "app\\assets\\images\\cms.png"
       # image = MiniMagick::Image.open(filename)
 
       image = MiniMagick::Image.read(@contact.image )
@@ -235,7 +235,11 @@ class ContactsController < ApplicationController
       end
 
       image.resize width.to_s + "x" + height.to_s + ">"
-      send_data image.to_blob, :filename => "picture"  , :type => "image/jpg"
+
+
+      image = File.open(file_name, "rb")
+      # send_data image.to_blob, :filename => "picture"  , :type => "image/png"
+      send_data image.read, :filename => "picture"  , :type => "image/png"
     end
   end
 
