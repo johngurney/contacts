@@ -28,6 +28,25 @@
     border: 1px solid blue;
     color: black;
     background: white;
+    cursor: pointer;
+
+  }
+
+  .very_small_button{
+    width: 70px;
+    height: 18px;
+    max-height: 18px;
+    font-family: Arial;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 6pt;
+    border: 1px solid blue;
+    color: black;
+    background: white;
+    cursor: pointer;
+
   }
 
 
@@ -78,12 +97,13 @@
             <col width="10%">
             <col width="90%">
             <tr>
-              <td><%= image_tag get_cont_picture_path(contact), :width => "70" %></td>
+              <td><%= image_tag get_cont_picture_path(contact), :width => "70", :style => "border: 2px gray solid" %></td>
+
               <td>
                 <div style="display: inline">
                   <%= contact.get_description(@sheet) %>
                   <% if !contact.url.blank? && contact.url != "" %>
-                    <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
+                    <button class="very_small_button" onclick="window.location.href='<%= contact.url %>'">Online profile</button>
                   <% end %>
                 </div>
               </td>

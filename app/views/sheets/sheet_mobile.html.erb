@@ -31,6 +31,23 @@
       background: white;
     }
 
+    .very_small_button{
+      width: 70px;
+      height: 18px;
+      max-height: 18px;
+      font-family: Arial;
+      text-align: center;
+      line-height: 18px;
+      border-radius: 3px;
+      font-weight: bold;
+      font-size: 6pt;
+      border: 1px solid blue;
+      color: black;
+      background: white;
+      cursor: pointer;
+
+    }
+
     .sheet_text {
       vertical-align: top;
       font-size: 10pt;
@@ -52,7 +69,9 @@
     <col width="70%">
     <col width="15%">
     <tr>
-      <td><%= image_tag "cms.png" %></td>
+      <td>
+        <%= image_tag "cms.png" %>
+      </td>
       <td style="font-size: 40px;font-weight: bold">Contact details for <%= @sheet.client_name %></td>
       <td>
         <%= mail_to @sheet.contacts_emails , "Email all" , subject: @sheet.client_name + " - Urgent query" , body: "We have an urgent query.  Please call [] as soon as possible." %>
@@ -119,7 +138,7 @@
                       <div style="display: inline">
                         <%= contact.get_description(@sheet).strip %>
                         <% if !contact.url.blank? && contact.url != "" %>
-                          &nbsp<button class="small_button" style="margin-left: 5px; width: 110px" onclick="location.href = '<%= contact.url %>'">Online profile</button>
+                          &nbsp<button class="very_small_button" style="margin-left: 5px; width: 110px" onclick="location.href = '<%= contact.url %>'">Online profile</button>
                         <% end %>
                       </div>
                     </td>
@@ -128,7 +147,7 @@
               <% else %>
                 <%= contact.get_description(@sheet).strip %>
                 <% if !contact.url.blank? && contact.url != "" %>
-                  <%= button_to "Online profile", contact.url , :class => "small_button", :style => "width: 120px" %>
+                  <button class="small_button" onclick="window.location.href='<%= contact.url %>'">Online profile</button>
                 <% end %>
               <% end %>
             </td>
