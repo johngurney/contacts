@@ -14,7 +14,7 @@
     clearInterval(interval);
   }
 
-  window.onload = start_up;
+  window.onload = timerTick;
 
 
   var x = document.getElementById("demo");
@@ -28,15 +28,6 @@
     return;
   }
 
-  function showPosition(position) {
-    // alert("cba");
-    // alert(position.coords.latitude);
-    // alert(position.coords.longitude);
-    // x.innerHTML = "Latitude: " + position.coords.latitude +
-    // "<br>Longitude: " + position.coords.longitude;
-    // return;
-  }
-
 
   function sendPosition(position) {
     var xhr = new XMLHttpRequest();
@@ -46,10 +37,6 @@
     xhr.send(time_sting + " " + position.coords.latitude + " " + position.coords.longitude);
   }
 
-function test() {
-  alert("test");
-  getLocation();
-}
 
 
 </script>
