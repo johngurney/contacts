@@ -79,4 +79,13 @@ class HomepageController < ApplicationController
     redirect_to location_log_path
   end
 
+  def download_location_logs
+    stg = ""
+    Positionlog.all.order(:created_at).each do |log|
+      stg += log.user_name  + "\t" + log.created_at.to_s  + "\t" + log.longitude.to_s + "\t" + log.latitude.to_s + "\r\n"
+    end
+    send_data stg, :filename => "logs.txt" # , :type => "application/pdf"
+
+  end
+
 end

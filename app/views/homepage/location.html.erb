@@ -47,7 +47,7 @@ This is the location<br/>
 Cheat login<br/>
 User: <%= cookies[:location_user].to_s %><br/>
 <%= form_tag  location_cheat_log_in_path, id: "cheat_login" do %>
-  <%= select_tag :user, options_for_select(["Laptop","Mobile","User 1","User 2"], cookies[:location_user].to_s) , {:class=> "input", :onchange => "cheat_login.submit();",  :style => "width:150px;"} %>
+  <%= select_tag :user, options_for_select(["Home laptop","Work laptop","Mobile","User 1","User 2"], cookies[:location_user].to_s) , {:class=> "input", :onchange => "cheat_login.submit();",  :style => "width:150px;"} %>
 <% end %>
 
 

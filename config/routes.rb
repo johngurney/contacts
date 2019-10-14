@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   get "location_log", to:  "homepage#location_log", as: :location_log
   post "location_cheat_log_in", to:  "homepage#location_cheat_log_in", as: :location_cheat_log_in
   post "clear_all_location_logs", to:  "homepage#clear_all_location_logs", as: :clear_all_location_logs
+  post "download_location_logs", to:  "homepage#download_location_logs", as: :download_location_logs
 
 
 
