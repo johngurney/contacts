@@ -74,4 +74,9 @@ class HomepageController < ApplicationController
     redirect_to location_path
   end
 
+  def clear_all_location_logs
+    Positionlog.delete_all
+    redirect_to location_log_path
+  end
+
 end
