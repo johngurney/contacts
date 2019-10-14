@@ -31,17 +31,25 @@
 
   function sendPosition(position) {
     var xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
     xhr.open("POST", "position", true);
     var d = new Date();
-    var time_sting = d.toLocaleTimeString().replace(/\s/g, '');
-    xhr.send(time_sting + " " + position.coords.latitude + " " + position.coords.longitude);
+    var time_string = d.toLocaleTimeString().replace(/\s/g, '');
+    xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " " + "<%= cookies[:location_user].to_s %>");
   }
 
 
 
 </script>
 
-This is the location homepage
+This is the location<br/>
+
+Cheat login<br/>
+User: <%= cookies[:location_user].to_s %><br/>
+<%= form_tag  location_cheat_log_in_path, id: "cheat_login" do %>
+  <%= select_tag :user, options_for_select(["Laptop","Mobile","User 1","User 2"], cookies[:location_user].to_s) , {:class=> "input", :onchange => "cheat_login.submit();",  :style => "width:150px;"} %>
+<% end %>
+
 
 <button onclick="turn_on()" style="width: 150px; height: 50px">On</button>
 <button onclick="turn_off()" style="width: 150px; height: 50px">Off</button>

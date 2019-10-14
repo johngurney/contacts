@@ -57,7 +57,7 @@ class HomepageController < ApplicationController
     puts "test" + request.raw_post
     arry = request.raw_post.split(" ")
 
-    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d )
+    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_name => arry[3].to_s )
     log.save
 
     render :plain => "Ok"
@@ -67,6 +67,11 @@ class HomepageController < ApplicationController
   end
 
   def location_log
+  end
+
+  def location_cheat_log_in
+    cookies.permanent[:location_user] = params[:user]
+    redirect_to location_path
   end
 
 end
