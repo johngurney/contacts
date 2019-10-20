@@ -1,112 +1,112 @@
 <script>
-  var interval_period = <%= @user ? update_frequency_values(@user.update_frequency) : 60 %> * 1000;
-  var interval = setInterval(timerTick, interval_period);
-
-  function timerTick() {
-    getLocation();
-  }
-
-  function turn_on() {
-    timerTick();
-    interval = setInterval(timerTick, interval_period);
-  }
-
-  function turn_off() {
-    clearInterval(interval);
-  }
-
-  window.onload = timerTick;
-
-
-  var x = document.getElementById("demo");
-
-  function getLocation() {
-    if (false)
-    {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendPosition);
-      } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-      }
-      return;
-
-    }
-  }
-
-
-  function sendPosition(position) {
-    var xhr = new XMLHttpRequest();
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "position", true);
-    var d = new Date();
-    var time_string = d.toLocaleTimeString().replace(/\s/g, '');
-    xhr.onload = function () {
-          var jsonResponse = JSON.parse(xhr.responseText);
-          var pos = new google.maps.LatLng(51.544328 + (51.536808-51.544328) * jsonResponse.counter / 10 ,-0.106652);
-          marker.setPosition (pos);
-         };
-            xhr.onerror = function () {
-             alert(xhr.statusText);
-        };
-    xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " " + "<%= cookies[:location_user_id].to_s %>");
-  }
-
-  var map, marker, barnsbury_ne, barnsbury_sw;
-
-  function initMap() {
-    //London Stadium 51.538611, -0.016389
-    //St Paul's 51.513611, -0.098056
-    //Cornwall 50.4, -4.9
-    //Stonehenge 51.178889, -1.826111
-
-    barnsbury_ne = new google.maps.LatLng(51.544328, -0.106652)
-    barnsbury_sw = new google.maps.LatLng(51.536808, -0.116385)
-
-    var ne = new google.maps.LatLng(51.538611,-0.016389);
-    //var sw = new google.maps.LatLng(51.513611, -0.098056);
-    var sw = new google.maps.LatLng(50.4, -4.9);
-    var sh = new google.maps.LatLng(51.178889, -1.826111);
-
-    var bounds =  new google.maps.LatLngBounds(barnsbury_sw, barnsbury_ne);
-
-    //https://developers.google.com/maps/documentation/javascript/reference/map#Map
-
-    map = new google.maps.Map(document.getElementById('map'), {
-      draggable: true,
-      heading: 90
-
-    });
-    // var bounds = new google.maps.LatLngBounds();
-    // bounds.extend(ne);
-    // bounds.extend(sw);
-    map.fitBounds(bounds,0);
-
-    marker = new google.maps.Marker({
-        position: barnsbury_ne,
-        map: map,
-        title: 'barnsbury_ne'
-      });
-    //   var marker2 = new google.maps.Marker({
-    //       position: barnsbury_sw,
-    //       map: map,
-    //       animation: google.maps.Animation.BOUNCE,
-    //       title: 'barnsbury_sw',
-    //       label: "Test"
-    //     });
-  }
-
-  var expanded = false;
-
-  function showCheckboxes() {
-    var checkboxes = document.getElementById("checkboxes");
-    if (!expanded) {
-      checkboxes.style.display = "block";
-      expanded = true;
-    } else {
-      checkboxes.style.display = "none";
-      expanded = false;
-    }
-  }
+  // var interval_period = <%= @user ? update_frequency_values(@user.update_frequency) : 60 %> * 1000;
+  // var interval = setInterval(timerTick, interval_period);
+  //
+  // function timerTick() {
+  //   getLocation();
+  // }
+  //
+  // function turn_on() {
+  //   timerTick();
+  //   interval = setInterval(timerTick, interval_period);
+  // }
+  //
+  // function turn_off() {
+  //   clearInterval(interval);
+  // }
+  //
+  // window.onload = timerTick;
+  //
+  //
+  // var x = document.getElementById("demo");
+  //
+  // function getLocation() {
+  //   if (false)
+  //   {
+  //     if (navigator.geolocation) {
+  //       navigator.geolocation.getCurrentPosition(sendPosition);
+  //     } else {
+  //       x.innerHTML = "Geolocation is not supported by this browser.";
+  //     }
+  //     return;
+  //
+  //   }
+  // }
+  //
+  //
+  // function sendPosition(position) {
+  //   var xhr = new XMLHttpRequest();
+  //   var xhr = new XMLHttpRequest();
+  //   xhr.open("POST", "position", true);
+  //   var d = new Date();
+  //   var time_string = d.toLocaleTimeString().replace(/\s/g, '');
+  //   xhr.onload = function () {
+  //         var jsonResponse = JSON.parse(xhr.responseText);
+  //         var pos = new google.maps.LatLng(51.544328 + (51.536808-51.544328) * jsonResponse.counter / 10 ,-0.106652);
+  //         marker.setPosition (pos);
+  //        };
+  //           xhr.onerror = function () {
+  //            alert(xhr.statusText);
+  //       };
+  //   xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " " + "<%= cookies[:location_user_id].to_s %>");
+  // }
+  //
+  // var map, marker, barnsbury_ne, barnsbury_sw;
+  //
+  // function initMap() {
+  //   //London Stadium 51.538611, -0.016389
+  //   //St Paul's 51.513611, -0.098056
+  //   //Cornwall 50.4, -4.9
+  //   //Stonehenge 51.178889, -1.826111
+  //
+  //   barnsbury_ne = new google.maps.LatLng(51.544328, -0.106652)
+  //   barnsbury_sw = new google.maps.LatLng(51.536808, -0.116385)
+  //
+  //   var ne = new google.maps.LatLng(51.538611,-0.016389);
+  //   //var sw = new google.maps.LatLng(51.513611, -0.098056);
+  //   var sw = new google.maps.LatLng(50.4, -4.9);
+  //   var sh = new google.maps.LatLng(51.178889, -1.826111);
+  //
+  //   var bounds =  new google.maps.LatLngBounds(barnsbury_sw, barnsbury_ne);
+  //
+  //   //https://developers.google.com/maps/documentation/javascript/reference/map#Map
+  //
+  //   map = new google.maps.Map(document.getElementById('map'), {
+  //     draggable: true,
+  //     heading: 90
+  //
+  //   });
+  //   // var bounds = new google.maps.LatLngBounds();
+  //   // bounds.extend(ne);
+  //   // bounds.extend(sw);
+  //   map.fitBounds(bounds,0);
+  //
+  //   marker = new google.maps.Marker({
+  //       position: barnsbury_ne,
+  //       map: map,
+  //       title: 'barnsbury_ne'
+  //     });
+  //   //   var marker2 = new google.maps.Marker({
+  //   //       position: barnsbury_sw,
+  //   //       map: map,
+  //   //       animation: google.maps.Animation.BOUNCE,
+  //   //       title: 'barnsbury_sw',
+  //   //       label: "Test"
+  //   //     });
+  // }
+  //
+  // var expanded = false;
+  //
+  // function showCheckboxes() {
+  //   var checkboxes = document.getElementById("checkboxes");
+  //   if (!expanded) {
+  //     checkboxes.style.display = "block";
+  //     expanded = true;
+  //   } else {
+  //     checkboxes.style.display = "none";
+  //     expanded = false;
+  //   }
+  // }
 
 </script>
 
