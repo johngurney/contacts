@@ -66,15 +66,6 @@ class HomepageController < ApplicationController
 
   end
 
-  def setup_users
-    User.delete_all
-    User.create(:name => "Gabriella")
-    User.create(:name => "Dan")
-    User.create(:name => "Adele")
-    User.create(:name => "Guy")
-    location
-  end
-
   def location
     # User.delete_all
     # User.create(:name => "Gabriella")
@@ -93,7 +84,13 @@ class HomepageController < ApplicationController
   end
 
   def location_controls
-    if  params[:user_id].to_i != 0
+    if  params[:commit] == "Set up users"
+      User.delete_all
+      User.create(:name => "Gabriella")
+      User.create(:name => "Dan")
+      User.create(:name => "Adele")
+      User.create(:name => "Guy")
+    elsif  params[:user_id].to_i != 0
       user = User.find(params[:user_id])
       if cookies.permanent[:location_user_id] != params[:user_id]
         cookies.permanent[:location_user_id] = params[:user_id]

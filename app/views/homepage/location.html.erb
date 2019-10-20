@@ -188,10 +188,10 @@
               <table width="100%">
                 <col width="50%">
                 <col width="50%">
-                <% if User.count == 0 %>
+                <% if User.count == 0 or true %>
                   <tr>
                     <td>
-                      <%= button_to "Set up users", setup_users_path, :class=> "location_input" %>
+                      <%= submit_tag "Set up users", :class=> "location_input" %>
                     </td>
                     <td>
                     </td>

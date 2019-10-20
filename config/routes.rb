@@ -60,8 +60,6 @@ Rails.application.routes.draw do
   post "clear_all_location_logs", to:  "homepage#clear_all_location_logs", as: :clear_all_location_logs
   post "download_location_logs", to:  "homepage#download_location_logs", as: :download_location_logs
 
-  post "setup_users", to:  "homepage#setup_users", as: :setup_users
-
 
 
 end
