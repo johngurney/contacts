@@ -188,6 +188,15 @@
               <table width="100%">
                 <col width="50%">
                 <col width="50%">
+                <% if User.count == 0 %>
+                  <tr>
+                    <td>
+                      <%= button_to "Set up users", setup_users_path, :class=> "location_input" %>
+                    </td>
+                    <td>
+                    </td>
+                  </tr>
+                <% end %>
 
                 <% if @user %>
                   <tr>
@@ -200,16 +209,16 @@
                   </tr>
                 <% end %>
 
-                <% if @user %>
-                  <tr>
-                    <td>
-                      Who are you?
-                    </td>
-                    <td align="left">
-                      <%= select_tag :user_id, options_for_select( User.all.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:class=> "location_input", :onchange => "controls.submit();"} %>
-                    </td>
-                  </tr>
+                <tr>
+                  <td>
+                    Who are you?
+                  </td>
+                  <td align="left">
+                    <%= select_tag :user_id, options_for_select( User.all.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                  </td>
+                </tr>
 
+                <% if @user %>
                   <tr>
                     <td>
                       Following

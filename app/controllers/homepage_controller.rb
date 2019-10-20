@@ -66,6 +66,15 @@ class HomepageController < ApplicationController
 
   end
 
+  def setup_users
+    User.delete_all
+    User.create(:name => "Gabriella")
+    User.create(:name => "Dan")
+    User.create(:name => "Adele")
+    User.create(:name => "Guy")
+    location
+  end
+
   def location
     # User.delete_all
     # User.create(:name => "Gabriella")
