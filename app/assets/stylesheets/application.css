@@ -111,7 +111,7 @@ h1 {
        font-size: 75%;
        }
 
-     .file_field_tag_container1 {
+     .file_field_tag_container1 .flex_row {
          height: 60px;
          display: inline-flex;
          flex-direction: row;
@@ -119,7 +119,7 @@ h1 {
          padding: 10px;
          }
 
-     .file_field_tag_container2 {
+     .file_field_tag_container2 .flex_col {
          display: inline-flex;
          flex-direction: column;
          }

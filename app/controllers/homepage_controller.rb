@@ -1,8 +1,9 @@
 class HomepageController < ApplicationController
-
+  @@counter = 0
   skip_before_action :verify_authenticity_token, only: [:position]
 
   def homepage
+    @@counter = 0
   end
 
   def add_contact
@@ -57,20 +58,53 @@ class HomepageController < ApplicationController
     puts "test" + request.raw_post
     arry = request.raw_post.split(" ")
 
-    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_name => arry[3].to_s )
+    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_id => arry[3].to_s )
     log.save
 
-    render :plain => "Ok"
+    render json: {:latitude => "1234", :longitude => "9876", :counter => @@counter}
+    @@counter += 1
+
   end
 
   def location
+    # User.delete_all
+    # User.create(:name => "Gabriella")
+    # User.create(:name => "Dan")
+    # User.create(:name => "Adele")
+    # User.create(:name => "Guy")
+    @@counter = 0
+    user_id= cookies[:location_user_id].to_i
+    @user = User.find(user_id) if user_id > 0 && User.where(:id == user_id).count > 0
+
+    render "location" , :layout => "location"
+
   end
 
   def location_log
   end
 
-  def location_cheat_log_in
-    cookies.permanent[:location_user] = params[:user]
+  def location_controls
+    if  params[:user_id].to_i != 0
+      user = User.find(params[:user_id])
+      if cookies.permanent[:location_user_id] != params[:user_id]
+        cookies.permanent[:location_user_id] = params[:user_id]
+      else
+        user.allow_monitoring = params[:allow_monitoring] == "1"
+        user.update_frequency = params[:update_frequency].to_i
+        user.last_posting_within = params[:last_posting_within].to_i
+        user.save
+        User.all.each do |user_mon|
+          puts "+++" + user_mon.id.to_s
+          if params["user" + user_mon.id.to_s] =="1"
+            puts "***" + user_mon.id.to_s
+            Following.create(:following_user_id => user.id, :monitored_user_id => user_mon.id) if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count == 0
+          else
+            Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).delete_all if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count > 0
+          end
+        end
+      end
+    end
+
     redirect_to location_path
   end
 
@@ -87,5 +121,6 @@ class HomepageController < ApplicationController
     send_data stg, :filename => "logs.txt" # , :type => "application/pdf"
 
   end
+
 
 end

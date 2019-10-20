@@ -1,0 +1,2 @@
+class Locationgroup < ApplicationRecord
+end
