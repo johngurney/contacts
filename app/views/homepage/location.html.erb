@@ -1,5 +1,5 @@
 <script>
-  var interval_period = <%= @user ? update_frequency_values(@user.update_frequency) : 60 %> * 1000;
+  var interval_period = <%= @user ? update_frequency_values(@user.update_frequency)[0] : 60 %> * 1000;
   var interval = setInterval(timerTick, interval_period);
 
   function timerTick() {
@@ -182,7 +182,7 @@
       <td>
 
         <div class="dropdown">
-          <%# <%= image_tag "menu1",:align=>"right", :size =>"20x20" %><br/><br/> %>
+          xx
           <div class="dropdown-content">
             <%= form_tag  location_controls_path, id: "controls" do %>
               <table width="100%">
