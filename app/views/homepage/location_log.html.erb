@@ -1,0 +1,97 @@
+Location log
+<%= button_to "Clear all", clear_all_location_logs_path %>
+<%= button_to "Download all", download_location_logs_path %>
+<table width="70%">
+  <col width = 20%>
+  <col width = 30%>
+  <col width = 25%>
+  <col width = 25%>
+  <tr>
+    <td>User</td>
+    <td>Time</td>
+    <td>Longitude</td>
+    <td>Latitude</td>
+  </tr>
+   <% Positionlog.all.each do |log| %>
+     <tr>
+       <td><%= log.user_name %></td>
+       <td><%= log.created_at.to_s %></td>
+       <td><%= log.longitude.to_s %></td>
+       <td><%= log.latitude.to_s %></td>
+     </tr>
+  <% end %>
+</table>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 300px;
+        width : 60%;
+        margin: 0 auto;
+
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map;
+      function initMap() {
+        //London Stadium 51.538611, -0.016389
+        //St Paul's 51.513611, -0.098056
+        //Cornwall 50.4, -4.9
+        //Stonehenge 51.178889, -1.826111
+
+        var barnsbury_ne = new google.maps.LatLng(51.544328, -0.106652)
+        var barnsbury_sw = new google.maps.LatLng(51.536808, -0.116385)
+
+      	var ne = new google.maps.LatLng(51.538611,-0.016389);
+      	//var sw = new google.maps.LatLng(51.513611, -0.098056);
+        var sw = new google.maps.LatLng(50.4, -4.9);
+        var sh = new google.maps.LatLng(51.178889, -1.826111);
+
+      	var bounds =  new google.maps.LatLngBounds(barnsbury_sw, barnsbury_ne);
+
+        //https://developers.google.com/maps/documentation/javascript/reference/map#Map
+
+        map = new google.maps.Map(document.getElementById('map'), {
+          draggable: true,
+          heading: 90
+
+        });
+        // var bounds = new google.maps.LatLngBounds();
+        // bounds.extend(ne);
+        // bounds.extend(sw);
+        map.fitBounds(bounds,0);
+
+        var marker1 = new google.maps.Marker({
+            position: barnsbury_ne,
+            map: map,
+            title: 'barnsbury_ne'
+          });
+          var marker2 = new google.maps.Marker({
+              position: barnsbury_sw,
+              map: map,
+              animation: google.maps.Animation.BOUNCE,
+              title: 'barnsbury_sw',
+              label: "Test"
+            });
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-MiNsHFnMMt2RS_MzZeKZTUoUS-ITdFI&callback=initMap"
+    async defer></script>
+  </body>
+</html>
