@@ -116,8 +116,8 @@
   /* Always set the map height explicitly to define the size of the div
    * element that contains the map. */
   #map {
-    height: 300px;
-    width : 60%;
+    height: 90%;
+    width : 98%;
     margin: 0 auto;
 
   }
@@ -182,7 +182,7 @@
       <td>
 
         <div class="dropdown">
-          <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :size => "20x20" %>
+          <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 1cm; height: auto" %>
           <div class="dropdown-content">
             <%= form_tag  location_controls_path, id: "controls" do %>
               <table width="100%">
@@ -271,7 +271,5 @@
       </td>
     </tr>
   </table>
-
-Number of users: <%= User.count.to_s %>
 
 <div id="map"></div>
