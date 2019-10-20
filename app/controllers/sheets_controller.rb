@@ -25,6 +25,12 @@ class SheetsController < ApplicationController
   def edit
   end
 
+  def location
+    render "test" #{}"location" #, :layout => "location"
+
+  end
+
+
   # POST /sheets
   # POST /sheets.json
   def create
