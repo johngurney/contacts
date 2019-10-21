@@ -1,7 +1,8 @@
 <script>
   var interval_period = <%= @user ? update_frequency_values(@user.update_frequency)[0] : 60 %> * 1000;
-  var interval = setInterval(timerTick, interval_period);
-
+  <% if @user && @user.allow_monitoring %>
+    var interval = setInterval(timerTick, interval_period);
+  <% end %>
   function timerTick() {
     getLocation();
   }
@@ -21,7 +22,7 @@
   var x = document.getElementById("demo");
 
   function getLocation() {
-    if (false)
+    if (<%= (@user.present? && @user.allow_monitoring).to_s %>)
     {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(sendPosition);
@@ -42,8 +43,22 @@
     var time_string = d.toLocaleTimeString().replace(/\s/g, '');
     xhr.onload = function () {
           var jsonResponse = JSON.parse(xhr.responseText);
+          if (jsonResponse == ""){
+            alert("null");
+          } else {
+            n = 0;
+            var pos
+            jsonResponse.forEach (function(position) {
+              pos = new google.maps.LatLng(position.latitude, position.longitude);
+              markers[n].setPosition (pos);
+              markers[n].setTitle (position.name);
+              markers[n].setLabel (position.name);
+              n++;
+            })
+
+          }
           var pos = new google.maps.LatLng(51.544328 + (51.536808-51.544328) * jsonResponse.counter / 10 ,-0.106652);
-          marker.setPosition (pos);
+          //marker.setPosition (pos);
          };
             xhr.onerror = function () {
              alert(xhr.statusText);
@@ -52,6 +67,7 @@
   }
 
   var map, marker, barnsbury_ne, barnsbury_sw;
+  var markers = [];
 
   function initMap() {
     //London Stadium 51.538611, -0.016389
@@ -80,19 +96,18 @@
     // bounds.extend(ne);
     // bounds.extend(sw);
     map.fitBounds(bounds,0);
+    for (n = 0 ; n < <%= Following.where(:following_user_id => @user.id).count.to_s %> ; n++) {
+      marker = new google.maps.Marker({
+          // position: barnsbury_ne,
+          map: map,
+          icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/library_maps.png'
+          // title: 'barnsbury_ne'
+        });
+        markers.push(marker);
+    }
+    markers[0].setPosition(barnsbury_ne);
+    markers[1].setPosition(barnsbury_sw);
 
-    marker = new google.maps.Marker({
-        position: barnsbury_ne,
-        map: map,
-        title: 'barnsbury_ne'
-      });
-    //   var marker2 = new google.maps.Marker({
-    //       position: barnsbury_sw,
-    //       map: map,
-    //       animation: google.maps.Animation.BOUNCE,
-    //       title: 'barnsbury_sw',
-    //       label: "Test"
-    //     });
   }
 
   var expanded = false;
@@ -173,103 +188,107 @@
 </style>
 
 
-  <table width="100%">
-    <col width="*">
-    <col width="300px">
-    <tr>
-      <td>
-      </td>
-      <td>
+<table width="100%">
+  <col width="*">
+  <col width="300px">
+  <tr>
+    <td style="font-size:20px; font-weight: bold; color: blue">
+      <% if @user && @user.allow_monitoring %>
+        Monitoring on
+      <% end %>
 
-        <div class="dropdown">
-          <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 2cm; height: auto" %>
-          <div class="dropdown-content">
-            <%= form_tag  location_controls_path, id: "controls" do %>
-              <table width="100%">
-                <col width="50%">
-                <col width="50%">
-                <% if User.count == 0 %>
-                  <tr>
-                    <td>
-                      <%= submit_tag "Set up users", :class=> "location_input" %>
-                    </td>
-                    <td>
-                    </td>
-                  </tr>
-                <% end %>
+    </td>
+    <td>
 
-                <% if User.count > 0 %>
-                  <% if @user %>
-                    <tr>
-                      <td>
-                        Allow monitoring
-                      </td>
-                      <td align="left">
-                        On <%= radio_button_tag :allow_monitoring, "1", @user.allow_monitoring , :onchange => "controls.submit()" %><%= radio_button_tag :allow_monitoring, "0", !@user.allow_monitoring, :onchange => "controls.submit()" %>Off
-                      </td>
-                    </tr>
-                  <% end %>
-                <% end %>
-
+      <div class="dropdown">
+        <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 2cm; height: auto" %>
+        <div class="dropdown-content">
+          <%= form_tag  location_controls_path, id: "controls" do %>
+            <table width="100%">
+              <col width="50%">
+              <col width="50%">
+              <% if User.count == 0 %>
                 <tr>
                   <td>
-                    Who are you?
+                    <%= submit_tag "Set up users", :class=> "location_input" %>
                   </td>
-                  <td align="left">
-                    <%= select_tag :user_id, options_for_select( User.all.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                  <td>
                   </td>
                 </tr>
+              <% end %>
 
+              <% if User.count > 0 %>
                 <% if @user %>
                   <tr>
                     <td>
-                      Following
+                      Allow monitoring
                     </td>
                     <td align="left">
-                        <div class="multiselect" text-align="right">
-                        <div class="selectBox" style="width: 100px" onclick="showCheckboxes()">
-                          <select>
-                            <option>Select</option>
-                          </select>
-                          <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes">
-                          <% User.all.each do |user| %>
-                            <label for="user<%= user.id.to_s %>">
-                              <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id).count > 0, :id => "user" + user.id.to_s, :onchange => "controls.submit()" %>
-                              <%= user.name %>
-                            </label>
-                          <% end %>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      Last posting within
-                    </td>
-                    <td align="left">
-                      <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :onchange => "controls.submit();"} %>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      Update every
-                    </td>
-                    <td align="left">
-                      <%= select_tag :update_frequency, options_for_select( update_frequency_options, @user.update_frequency) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                      On <%= radio_button_tag :allow_monitoring, "1", @user.allow_monitoring , :onchange => "controls.submit()" %><%= radio_button_tag :allow_monitoring, "0", !@user.allow_monitoring, :onchange => "controls.submit()" %>Off
                     </td>
                   </tr>
                 <% end %>
+              <% end %>
 
-              </table>
-            <% end %>
-          </div>
+              <tr>
+                <td>
+                  Who are you?
+                </td>
+                <td align="left">
+                  <%= select_tag :user_id, options_for_select( User.all.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                </td>
+              </tr>
+
+              <% if @user %>
+                <tr>
+                  <td>
+                    Following
+                  </td>
+                  <td align="left">
+                      <div class="multiselect" text-align="right">
+                      <div class="selectBox" style="width: 100px" onclick="showCheckboxes()">
+                        <select>
+                          <option>Select</option>
+                        </select>
+                        <div class="overSelect"></div>
+                      </div>
+                      <div id="checkboxes">
+                        <% User.all.each do |user| %>
+                          <label for="user<%= user.id.to_s %>">
+                            <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id).count > 0, :id => "user" + user.id.to_s, :onchange => "controls.submit()" %>
+                            <%= user.name %>
+                          </label>
+                        <% end %>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    Last posting within
+                  </td>
+                  <td align="left">
+                    <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    Update every
+                  </td>
+                  <td align="left">
+                    <%= select_tag :update_frequency, options_for_select( update_frequency_options, @user.update_frequency) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                  </td>
+                </tr>
+              <% end %>
+
+            </table>
+          <% end %>
         </div>
-      </td>
-    </tr>
-  </table>
+      </div>
+    </td>
+  </tr>
+</table>
 
 <div id="map"></div>

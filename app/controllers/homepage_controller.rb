@@ -56,22 +56,35 @@ class HomepageController < ApplicationController
 
   def position
     puts "test" + request.raw_post
-    arry = request.raw_post.split(" ")
 
-    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_id => arry[3].to_s )
+
+    arry = request.raw_post.split(" ")
+    user_id = arry[3].to_i
+    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_id => user_id.to_s )
     log.save
 
-    render json: {:latitude => "1234", :longitude => "9876", :counter => @@counter}
+    a = []
+
+    n = 0
+
+    Following.where(:following_user_id => user_id).each do |following|
+      position = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last
+      if position.present?
+        a << {latitude: position.latitude + n * 0.001, longitude: position.longitude - n * 0.001, name: User.find(following.monitored_user_id).name}
+      end
+      n+= 1
+    end
+    puts "&&&" + a.to_s
+    a = "" if a.blank?
+
+
+    # render json: {:latitude => "1234", :longitude => "9876", :counter => @@counter}
+    render json: a
     @@counter += 1
 
   end
 
   def location
-    # User.delete_all
-    # User.create(:name => "Gabriella")
-    # User.create(:name => "Dan")
-    # User.create(:name => "Adele")
-    # User.create(:name => "Guy")
     @@counter = 0
     user_id= cookies[:location_user_id].to_i
     @user = User.find(user_id) if user_id > 0 && User.where(:id == user_id).count > 0
