@@ -52,7 +52,9 @@
               pos = new google.maps.LatLng(position.latitude, position.longitude);
               markers[n].setPosition (pos);
               markers[n].setTitle (position.name);
-              markers[n].setLabel (position.name);
+              labels[n].text = position.name;
+              markers[n].setLabel (labels[n]);
+//              markers[n].setLabel (position.name);
               n++;
             })
 
@@ -66,8 +68,8 @@
     xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " " + "<%= cookies[:location_user_id].to_s %>");
   }
 
-  var map, marker, barnsbury_ne, barnsbury_sw;
-  var markers = [];
+  var map, marker, label, barnsbury_ne, barnsbury_sw;
+  var markers = [], labels = [];
 
   function initMap() {
     //London Stadium 51.538611, -0.016389
@@ -85,26 +87,34 @@
 
     var bounds =  new google.maps.LatLngBounds(barnsbury_sw, barnsbury_ne);
 
-    //https://developers.google.com/maps/documentation/javascript/reference/map#Map
-
     map = new google.maps.Map(document.getElementById('map'), {
       draggable: true,
       heading: 90
 
     });
-    // var bounds = new google.maps.LatLngBounds();
-    // bounds.extend(ne);
-    // bounds.extend(sw);
+
     map.fitBounds(bounds,0);
+
+    var icon = {
+        url: 'https://contacts.lawontime.com/stick_man.png',
+        scaledSize: new google.maps.Size(30, 30),
+        labelOrigin: new google.maps.Point(0, 0)
+      };
+
     for (n = 0 ; n < <%= Following.where(:following_user_id => @user.id).count.to_s %> ; n++) {
       marker = new google.maps.Marker({
-          // position: barnsbury_ne,
           map: map,
-          //icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/library_maps.png'
-          icon: 'https://contacts.lawontime.com/stick_man.png'
-          // title: 'barnsbury_ne'
+          // icon: 'https://contacts.lawontime.com/stick_man.png'
+          icon: icon
         });
         markers.push(marker);
+
+        label = {
+          color: "blue",
+          fontWeight: "bold",
+          text: ""
+          };
+        labels.push(label);
     }
     markers[0].setPosition(barnsbury_ne);
     markers[1].setPosition(barnsbury_sw);
