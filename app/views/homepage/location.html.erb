@@ -205,6 +205,11 @@
       <% if @user && @user.allow_monitoring %>
         Monitoring on
       <% end %>
+      <% if mobile? %>
+      Mobile
+      <% else %>
+      PC
+      <% end %>
 
     </td>
     <td>

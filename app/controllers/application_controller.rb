@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
       self.class.helpers.link_to tel_no, "#{tel_no_mod.join '-'}"
   end
 
-  helper_method :telephone_link
+  helper_method :telephone_link, :mobile?
 
   def mobile?
     require "browser/aliases"
