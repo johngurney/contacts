@@ -55,13 +55,15 @@ class HomepageController < ApplicationController
   end
 
   def position
-    puts "test" + request.raw_post
 
 
     arry = request.raw_post.split(" ")
     user_id = arry[3].to_i
-    log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_id => user_id.to_s )
-    log.save
+
+    if arry[1] != "null"
+      log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_id => user_id.to_s )
+      log.save
+    end
 
     a = []
 
@@ -70,7 +72,7 @@ class HomepageController < ApplicationController
     Following.where(:following_user_id => user_id).each do |following|
       position = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last
       if position.present?
-        a << {latitude: position.latitude + n * 0.001, longitude: position.longitude - n * 0.001, name: User.find(following.monitored_user_id).name}
+        a << {latitude: position.latitude + n * 0.001, longitude: position.longitude - n * 0.001, name: User.find(following.monitored_user_id).map_name}
       end
       n+= 1
     end
@@ -145,6 +147,14 @@ class HomepageController < ApplicationController
   def stick_man
     filename = Rails.root.join("public", "stick_man1.png").to_s
     image = MiniMagick::Image.open(filename )
+    pixels = image.get_pixels
+    for n1 in 0...image.height
+      stg = ""
+      for n2 in 0...image.width
+        stg += pixels[n2][n1][0].to_s + " "
+      end
+      puts stg
+    end
     send_data image.to_blob, :filename => "stick_man.png", :type => "image/png"
   end
 

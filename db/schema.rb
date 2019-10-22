@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_19_203612) do
+ActiveRecord::Schema.define(version: 2019_10_22_200629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,6 +122,7 @@ ActiveRecord::Schema.define(version: 2019_10_19_203612) do
     t.integer "update_frequency", default: 1
     t.integer "last_posting_within", default: 1
     t.boolean "allow_monitoring", default: false
+    t.string "map_name"
   end
 
 end

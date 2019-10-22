@@ -1,8 +1,7 @@
 <script>
   var interval_period = <%= @user ? update_frequency_values(@user.update_frequency)[0] : 60 %> * 1000;
-  <% if @user && @user.allow_monitoring %>
-    var interval = setInterval(timerTick, interval_period);
-  <% end %>
+  var interval = setInterval(timerTick, interval_period);
+
   function timerTick() {
     getLocation();
   }
@@ -22,50 +21,49 @@
   var x = document.getElementById("demo");
 
   function getLocation() {
-    if (<%= (@user.present? && @user.allow_monitoring).to_s %>)
-    {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendPosition);
-      } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-      }
-      return;
-
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(sendPosition);
+    } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
     }
+    return;
   }
 
 
   function sendPosition(position) {
     var xhr = new XMLHttpRequest();
-    var xhr = new XMLHttpRequest();
     xhr.open("POST", "position", true);
     var d = new Date();
     var time_string = d.toLocaleTimeString().replace(/\s/g, '');
     xhr.onload = function () {
-          var jsonResponse = JSON.parse(xhr.responseText);
-          if (jsonResponse == ""){
-            alert("null");
-          } else {
-            n = 0;
-            var pos
-            jsonResponse.forEach (function(position) {
-              pos = new google.maps.LatLng(position.latitude, position.longitude);
-              markers[n].setPosition (pos);
-              markers[n].setTitle (position.name);
-              labels[n].text = position.name;
-              markers[n].setLabel (labels[n]);
-//              markers[n].setLabel (position.name);
-              n++;
-            })
+      var jsonResponse = JSON.parse(xhr.responseText);
+      if (jsonResponse == ""){
+        alert("null");
+      } else {
+        n = 0;
+        var pos
+        jsonResponse.forEach (function(position) {
+          pos = new google.maps.LatLng(position.latitude, position.longitude);
+          markers[n].setPosition (pos);
+          markers[n].setTitle (position.name);
+          labels[n].text = position.name;
+          markers[n].setLabel (labels[n]);
+          n++;
+        })
 
-          }
-          var pos = new google.maps.LatLng(51.544328 + (51.536808-51.544328) * jsonResponse.counter / 10 ,-0.106652);
-          //marker.setPosition (pos);
-         };
-            xhr.onerror = function () {
-             alert(xhr.statusText);
-        };
-    xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " " + "<%= cookies[:location_user_id].to_s %>");
+      }
+      var pos = new google.maps.LatLng(51.544328 + (51.536808-51.544328) * jsonResponse.counter / 10 ,-0.106652);
+      //marker.setPosition (pos);
+     };
+        xhr.onerror = function () {
+         alert(xhr.statusText);
+    };
+
+    <% if @user && @user.allow_monitoring %>
+      xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " " + "<%= cookies[:location_user_id].to_s %>");
+    <% else %>
+      xhr.send(time_string + " null null " + "<%= cookies[:location_user_id].to_s %>");
+    <% end %>
   }
 
   var map, marker, label, barnsbury_ne, barnsbury_sw;
