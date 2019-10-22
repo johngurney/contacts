@@ -96,9 +96,9 @@
     map.fitBounds(bounds,0);
 
     var icon = {
-        url: 'https://contacts.lawontime.com/stick_man.png',
+        url: 'https://contacts.lawontime.com/stick_man1.png',
         scaledSize: new google.maps.Size(30, 30),
-        labelOrigin: new google.maps.Point(0, 0)
+        labelOrigin: new google.maps.Point(15, 30)
       };
 
     for (n = 0 ; n < <%= Following.where(:following_user_id => @user.id).count.to_s %> ; n++) {

@@ -142,4 +142,10 @@ class HomepageController < ApplicationController
   end
 
 
+  def stick_man
+    image = MiniMagick::Image.open("public\\stick_man1.png" )
+    send_data image.to_blob, :filename => "stick_man.png", :type => "image/png"
+  end
+
+
 end
