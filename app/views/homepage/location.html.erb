@@ -2,6 +2,11 @@
   var interval_period = <%= @user ? update_frequency_values(@user.update_frequency)[0] : 60 %> * 1000;
   var interval = setInterval(timerTick, interval_period);
 
+  // function test() {
+  //   a = "123.4  ";
+  //   alert(Number(a) + 1);
+  // }
+
   function timerTick() {
     getLocation();
   }
@@ -40,11 +45,25 @@
       if (jsonResponse == ""){
         alert("null");
       } else {
-        n = 0;
-        var pos
+        var n = 0;
         jsonResponse.forEach (function(position) {
-          pos = new google.maps.LatLng(position.latitude, position.longitude);
+          if (position.trace != "") {
+            var unparsed_trace = JSON.parse(position.trace);
+            var path = [];
+            unparsed_trace.forEach (function(coordinate) {
+              path.push({lat: Number(coordinate[0]), lng: Number(coordinate[1])});
+            });
+            console.log(path);
+            console.log(flightPlanCoordinates);
+
+            lines[n].setPath(path);
+            lines[n].setMap(map);
+
+          }
+          var pos = new google.maps.LatLng(position.latitude, position.longitude);
           markers[n].setPosition (pos);
+          markers[n].setMap (map
+          );
           markers[n].setTitle (position.name);
           labels[n].text = position.name;
           markers[n].setLabel (labels[n]);
@@ -52,8 +71,7 @@
         })
 
       }
-      var pos = new google.maps.LatLng(51.544328 + (51.536808-51.544328) * jsonResponse.counter / 10 ,-0.106652);
-      //marker.setPosition (pos);
+
      };
         xhr.onerror = function () {
          alert(xhr.statusText);
@@ -66,8 +84,9 @@
     <% end %>
   }
 
-  var map, marker, label, barnsbury_ne, barnsbury_sw;
-  var markers = [], labels = [];
+  var map, marker, label, line, barnsbury_ne, barnsbury_sw;
+  var markers = [], labels = [], lines = [], flightPlanCoordinates;
+  var flightPath;
 
   function initMap() {
     //London Stadium 51.538611, -0.016389
@@ -101,13 +120,22 @@
 
     for (n = 0 ; n < <%= Following.where(:following_user_id => @user.id).count.to_s %> ; n++) {
       marker = new google.maps.Marker({
-          map: map,
+          map: null,
           // icon: 'https://contacts.lawontime.com/stick_man.png'
           icon: icon
         });
         markers.push(marker);
 
-        label = {
+        line = new google.maps.Polyline({
+          geodesic: true,
+          strokeColor: '#0000ff',
+          strokeOpacity: 1.0,
+          strokeWeight: 4
+        });
+        line.setMap(map);
+        lines.push(line);
+
+          label = {
           color: "blue",
           fontWeight: "bold",
           text: ""
@@ -116,6 +144,29 @@
     }
     markers[0].setPosition(barnsbury_ne);
     markers[1].setPosition(barnsbury_sw);
+
+    // var flightPlanCoordinates = [
+    //     {lat: 51.544328, lng: -0.106652},
+    //     {lat: 51.536808, lng: -0.116385}
+    //   ];
+
+    flightPlanCoordinates = [];
+    flightPlanCoordinates.push({lat: 51.544328, lng: -0.106652});
+    flightPlanCoordinates.push({lat: 51.536808, lng: -0.116385});
+
+    flightPath = new google.maps.Polyline({
+      // path: flightPlanCoordinates,
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+
+      // flightPath.setMap(map);
+      // flightPath.setPath(flightPlanCoordinates);
+
+
+
 
   }
 
@@ -231,6 +282,17 @@
                 </tr>
               <% end %>
 
+              <% if false %>
+                <tr>
+                  <td>
+                    <%= submit_tag "Set paths", :class=> "location_input" %>
+                  </td>
+                  <td>
+                  </td>
+                </tr>
+              <% end %>
+
+
               <% if User.count > 0 %>
                 <% if @user %>
                   <tr>
@@ -280,6 +342,15 @@
 
                 <tr>
                   <td>
+                    Trace
+                  </td>
+                  <td align="left">
+                    On <%= radio_button_tag :trace, "1", @user.trace , :onchange => "controls.submit()" %><%= radio_button_tag :trace, "0", !@user.trace, :onchange => "controls.submit()" %>Off
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
                     Last posting within
                   </td>
                   <td align="left">
@@ -304,5 +375,4 @@
     </td>
   </tr>
 </table>
-
 <div id="map"></div>

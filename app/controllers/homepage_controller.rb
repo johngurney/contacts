@@ -67,18 +67,22 @@ class HomepageController < ApplicationController
 
     a = []
 
-    n = 0
-
     Following.where(:following_user_id => user_id).each do |following|
       position = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last
       if position.present?
-        a << {latitude: position.latitude + n * 0.001, longitude: position.longitude - n * 0.001, name: User.find(following.monitored_user_id).map_name}
+        trace = []
+        if User.find(user_id).trace
+          Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(50).each do |log|
+            trace << [log.latitude, log.longitude]
+          end
+        end
+        a << {latitude: position.latitude, longitude: position.longitude, name: User.find(following.monitored_user_id).map_name,  trace: trace.to_json}
       end
-      n+= 1
     end
-    puts "&&&" + a.to_s
+
     a = "" if a.blank?
 
+    puts a.to_s
 
     # render json: {:latitude => "1234", :longitude => "9876", :counter => @@counter}
     render json: a
@@ -105,12 +109,34 @@ class HomepageController < ApplicationController
       User.create(:name => "Dan")
       User.create(:name => "Adele")
       User.create(:name => "Guy")
+    elsif  params[:commit] == "Set paths"
+      Positionlog.delete_all
+
+      latitude_north = 51.544328
+      latitude_south = 51.536808
+      longitude_west = -0.116385
+      longitude_east = -0.106652
+
+      latitude_height = latitude_north - latitude_south
+      longitude_width  = longitude_east - longitude_west
+
+      # gaby = [[0.1,0.1], [0.3,0.1]]
+      gaby = [[0.87,0.14], [0.84, 0.05], [0.7,0.12], [0.61742,0.120826], [0.607845745, 0.148053016], [0.597606383, 0.1665468], [0.577659574, 0.183088462], [0.538829787, 0.186273503], [0.535239362, 0.296208774], [0.428058511, 0.291174355], [0.421808511, 0.510942156], [0.421409574, 0.557279359], [0.396143617, 0.701119901], [0.310106383, 0.673584712], [0.258643617, 0.663104901], [0.251595745, 0.676358779], [0.263164894, 0.774992294]]
+      gaby.each do |coordinate|
+        latitude = latitude_south + latitude_height * coordinate[0]
+        longitude = longitude_west + longitude_width * coordinate[1]
+        Positionlog.create(:latitude => latitude, :longitude => longitude, :user_id => User.where(:name => "Gabriella").first.id)
+      end
+
+
+
     elsif  params[:user_id].to_i != 0
       user = User.find(params[:user_id])
       if cookies.permanent[:location_user_id] != params[:user_id]
         cookies.permanent[:location_user_id] = params[:user_id]
       else
         user.allow_monitoring = params[:allow_monitoring] == "1"
+        user.trace = params[:trace] == "1"
         user.update_frequency = params[:update_frequency].to_i
         user.last_posting_within = params[:last_posting_within].to_i
         user.save
