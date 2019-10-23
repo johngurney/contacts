@@ -199,7 +199,7 @@
 
 <table width="100%">
   <col width="*">
-  <col width="300px">
+  <col width="600px">
   <tr>
     <td style="font-size:20px; font-weight: bold; color: blue">
       <% if @user && @user.allow_monitoring %>
@@ -260,8 +260,8 @@
                   </td>
                   <td align="left">
                       <div class="multiselect" text-align="right">
-                      <div class="selectBox" style="width: 100px" onclick="showCheckboxes()">
-                        <select>
+                      <div class="selectBox" style="width: 200px" onclick="showCheckboxes()">
+                        <select style="font-size:30px">
                           <option>Select</option>
                         </select>
                         <div class="overSelect"></div>
@@ -283,7 +283,7 @@
                     Last posting within
                   </td>
                   <td align="left">
-                    <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                    <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :style => "padding: 5px", :onchange => "controls.submit();"} %>
                   </td>
                 </tr>
 
