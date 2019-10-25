@@ -113,10 +113,7 @@ class HomepageController < ApplicationController
 
 
   def location
-    @@counter = 0
-    user_id= cookies[:location_user_id].to_i
-    @user = User.find(user_id) if user_id > 0 && User.where(:id == user_id).count > 0
-    render "location", :layout => "location"
+    redirect_to users_path
   end
 
   def location_log
