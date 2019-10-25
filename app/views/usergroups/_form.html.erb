@@ -1,0 +1,126 @@
+<%= form_with(model: usergroup, local: true) do |form| %>
+  <% if usergroup.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(usergroup.errors.count, "error") %> prohibited this usergroup from being saved:</h2>
+
+      <ul>
+      <% usergroup.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <table width="70%">
+    <col width="15%">
+    <col width="35%">
+    <col width="15%">
+    <col width="35%">
+    <tr>
+      <td>
+        Name
+      </td>
+      <td>
+        <%= form.text_field :name, :class => "standard" %>
+      </td>
+      <td>
+        URL
+      </td>
+      <td>
+        <%= form.text_field :url, :class => "standard" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h3>Map borders</h3>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Bespoke
+      </td>
+      <td>
+        <%= form.check_box :bespoke %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        North
+      </td>
+      <td>
+        <%= form.text_field :north, :class => "standard" %>
+      </td>
+      <td>
+        South
+      </td>
+      <td>
+        <%= form.text_field :south, :class => "standard" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        West
+      </td>
+      <td>
+        <%= form.text_field :west, :class => "standard" %>
+      </td>
+      <td>
+        East
+      </td>
+      <td>
+        <%= form.text_field :east, :class => "standard" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Draggable
+      </td>
+      <td>
+        <%= form.check_box :draggable %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <%= form.submit "Update details", :class => "small_button" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h2>Users</h2>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="select_box_wrapper">
+        <div style="font-weight: bold; margin-bottom: 4px">Users in group</div>
+
+        <div class="select_box_list" style="height:50px">
+          <% usergroup.users.each do |user| %>
+            <span style="white-space: nowrap;">
+              <%= link_to user.name , edit_user_path(user) %>
+              <%= form.check_box "user" + user.id.to_s %>
+            </span>
+          <% end %>
+        </div>
+        <%= form.submit "Remove users", :class => "small_button" %>
+      </td>
+      <td colspan="2" class="select_box_wrapper">
+        <div style="font-weight: bold; margin-bottom: 4px">Other users</div>
+        <div class="select_box_list" style="height:50px">
+          <% User.all.each do |user| %>
+            <% if !usergroup.users.include?(user) %>
+              <span style="white-space: nowrap;">
+                <%= link_to user.name , edit_user_path(user) %>
+                <%= form.check_box "user" + user.id.to_s %>
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+        <%= form.submit "Add users", :class => "small_button" %>
+      </td>
+    </tr>
+</table>
+
+<% end %>

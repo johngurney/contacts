@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :usergroups
   resources :sheets
   resources :contacts
   resources :brochures
@@ -56,10 +57,14 @@ Rails.application.routes.draw do
   post 'position', to:  "homepage#position"
   get "location", to:  "homepage#location", as: :location
   get "location_log", to:  "homepage#location_log", as: :location_log
-  post "location_controls", to:  "homepage#location_controls", as: :location_controls
+  post "location_controls/.:id", to:  "homepage#location_controls", as: :location_controls
   post "clear_all_location_logs", to:  "homepage#clear_all_location_logs", as: :clear_all_location_logs
   post "download_location_logs", to:  "homepage#download_location_logs", as: :download_location_logs
 
   get "stick_man", to:  "homepage#stick_man"
+
+  resources :usergroups
+  resources :users
+  match  "*path", to:"homepage#catch_all", via: :get
 
 end

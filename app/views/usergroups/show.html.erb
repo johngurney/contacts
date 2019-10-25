@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @usergroup.name %>
+</p>
+
+<p>
+  <strong>Bespoke:</strong>
+  <%= @usergroup.bespoke %>
+</p>
+
+<p>
+  <strong>North:</strong>
+  <%= @usergroup.north %>
+</p>
+
+<p>
+  <strong>South:</strong>
+  <%= @usergroup.south %>
+</p>
+
+<p>
+  <strong>West:</strong>
+  <%= @usergroup.west %>
+</p>
+
+<p>
+  <strong>East:</strong>
+  <%= @usergroup.east %>
+</p>
+
+<p>
+  <strong>Draggable:</strong>
+  <%= @usergroup.draggable %>
+</p>
+
+<%= link_to 'Edit', edit_usergroup_path(@usergroup) %> |
+<%= link_to 'Back', usergroups_path %>

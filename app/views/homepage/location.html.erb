@@ -1,27 +1,14 @@
 <script>
-  var interval_period = <%= @user ? update_frequency_values(@user.update_frequency)[0] : 60 %> * 1000;
-  var interval = setInterval(timerTick, interval_period);
-
-  // function test() {
-  //   a = "123.4  ";
-  //   alert(Number(a) + 1);
-  // }
+  var timeout_period = <%= @user ? update_frequency_values(@user.update_frequency)[0] : 60 %> * 1000;
 
   function timerTick() {
+    if (timeout_period > 0){
+      var timeout = setTimeout(timerTick, timeout_period);
+    }
     getLocation();
   }
 
-  function turn_on() {
-    timerTick();
-    interval = setInterval(timerTick, interval_period);
-  }
-
-  function turn_off() {
-    clearInterval(interval);
-  }
-
   window.onload = timerTick;
-
 
   var x = document.getElementById("demo");
 
@@ -34,7 +21,6 @@
     return;
   }
 
-
   function sendPosition(position) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "position", true);
@@ -46,6 +32,7 @@
         alert("null");
       } else {
         var n = 0;
+        var bounds;
         jsonResponse.forEach (function(position) {
           if (position.trace != "") {
             var unparsed_trace = JSON.parse(position.trace);
@@ -53,28 +40,44 @@
             unparsed_trace.forEach (function(coordinate) {
               path.push({lat: Number(coordinate[0]), lng: Number(coordinate[1])});
             });
-            console.log(path);
-            console.log(flightPlanCoordinates);
-
             lines[n].setPath(path);
             lines[n].setMap(map);
 
           }
           var pos = new google.maps.LatLng(position.latitude, position.longitude);
           markers[n].setPosition (pos);
-          markers[n].setMap (map
-          );
+          markers[n].setMap (map);
           markers[n].setTitle (position.name);
+
+          <% if !@usergroup.bespoke %>
+            if (n==0){
+              bounds =  new google.maps.LatLngBounds(pos, pos);
+            } else {
+              bounds.extend(pos);
+            }
+          <% end %>
+
           labels[n].text = position.name;
           markers[n].setLabel (labels[n]);
           n++;
         })
 
+        <% if @usergroup.bespoke %>
+          var pos_ne = new google.maps.LatLng(<%= @usergroup.north %>, <%= @usergroup.east %>);
+          var pos_sw = new google.maps.LatLng(<%= @usergroup.south %>, <%= @usergroup.west %>);
+          bounds =  new google.maps.LatLngBounds(pos_sw, pos_ne);
+        <% end %>
+
+        map.fitBounds(bounds,0);
+        if (map.getZoom() > 16) {
+          map.setZoom(16);
+        }
+
       }
 
      };
         xhr.onerror = function () {
-         alert(xhr.statusText);
+         alert("&&&" + xhr.statusText);
     };
 
     <% if @user && @user.allow_monitoring %>
@@ -102,15 +105,16 @@
     var sw = new google.maps.LatLng(50.4, -4.9);
     var sh = new google.maps.LatLng(51.178889, -1.826111);
 
-    var bounds =  new google.maps.LatLngBounds(barnsbury_sw, barnsbury_ne);
 
     map = new google.maps.Map(document.getElementById('map'), {
-      draggable: true,
-      heading: 90
+      draggable: <%= @usergroup.draggable.to_s %>,
+      heading: 90,
+      zoomControl: <%= @usergroup.draggable.to_s %>
 
     });
 
-    map.fitBounds(bounds,0);
+    // var bounds =  new google.maps.LatLngBounds(barnsbury_sw, barnsbury_ne);
+    // map.fitBounds(bounds,0);
 
     var icon = {
         url: 'https://contacts.lawontime.com/stick_man',
@@ -118,57 +122,47 @@
         labelOrigin: new google.maps.Point(15, 30)
       };
 
-    for (n = 0 ; n < <%= Following.where(:following_user_id => @user.id).count.to_s %> ; n++) {
-      marker = new google.maps.Marker({
-          map: null,
-          // icon: 'https://contacts.lawontime.com/stick_man.png'
-          icon: icon
-        });
-        markers.push(marker);
+    <% if @user %>
+      for (n = 0 ; n < <%= Following.where(:following_user_id => @user.id).count.to_s %> ; n++) {
+        marker = new google.maps.Marker({
+            map: null,
+            // icon: 'https://contacts.lawontime.com/stick_man.png'
+            icon: icon
+          });
+          markers.push(marker);
 
-        line = new google.maps.Polyline({
-          geodesic: true,
-          strokeColor: '#0000ff',
-          strokeOpacity: 1.0,
-          strokeWeight: 4
-        });
-        line.setMap(map);
-        lines.push(line);
+          line = new google.maps.Polyline({
+            geodesic: true,
+            strokeColor: '#0000ff',
+            strokeOpacity: 1.0,
+            strokeWeight: 4
+          });
+          line.setMap(map);
+          lines.push(line);
 
-          label = {
-          color: "blue",
-          fontWeight: "bold",
-          text: ""
-          };
-        labels.push(label);
+            label = {
+            color: "blue",
+            fontWeight: "bold",
+            text: ""
+            };
+          labels.push(label);
+      }
+      markers[0].setPosition(barnsbury_ne);
+      markers[1].setPosition(barnsbury_sw);
+
+      flightPlanCoordinates = [];
+      flightPlanCoordinates.push({lat: 51.544328, lng: -0.106652});
+      flightPlanCoordinates.push({lat: 51.536808, lng: -0.116385});
+
+      flightPath = new google.maps.Polyline({
+        // path: flightPlanCoordinates,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
     }
-    markers[0].setPosition(barnsbury_ne);
-    markers[1].setPosition(barnsbury_sw);
-
-    // var flightPlanCoordinates = [
-    //     {lat: 51.544328, lng: -0.106652},
-    //     {lat: 51.536808, lng: -0.116385}
-    //   ];
-
-    flightPlanCoordinates = [];
-    flightPlanCoordinates.push({lat: 51.544328, lng: -0.106652});
-    flightPlanCoordinates.push({lat: 51.536808, lng: -0.116385});
-
-    flightPath = new google.maps.Polyline({
-      // path: flightPlanCoordinates,
-      geodesic: true,
-      strokeColor: '#FF0000',
-      strokeOpacity: 1.0,
-      strokeWeight: 2
-    });
-
-      // flightPath.setMap(map);
-      // flightPath.setPath(flightPlanCoordinates);
-
-
-
-
-  }
+  <% end %>
 
   var expanded = false;
 
@@ -235,24 +229,46 @@
     border-width: 1px;
     border-radius: 2px;
     border-color: blue;
+    padding: 4px;
   }
 
   #checkboxes label {
     display: block;
+    font-size: 28px;
+    height: 30px;
   }
 
   #checkboxes label:hover {
     background-color: #1e90ff;
   }
 
+  .fixedheight {
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .fixedheight tr {
+      height: 50px;
+      line-height: 50px;
+      overflow: hidden;
+      padding:0px;
+      margin: 0px;
+}
+
+.fixedheight td {
+    padding:5px;
+    margin: 0px;
+}
+
 </style>
 
 
 <table width="100%">
   <col width="*">
-  <col width="600px">
+  <col width="500px">
   <tr>
     <td style="font-size:20px; font-weight: bold; color: blue">
+      <%= @user.update_frequency.to_s if @user %>
       <% if @user && @user.allow_monitoring %>
         Monitoring on
       <% end %>
@@ -268,8 +284,8 @@
       <div class="dropdown">
         <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 2cm; height: auto" %>
         <div class="dropdown-content">
-          <%= form_tag  location_controls_path, id: "controls" do %>
-            <table width="100%">
+          <%= form_tag  location_controls_path(@usergroup), id: "controls" do %>
+            <table width="100%" class="fixedheight">
               <col width="50%">
               <col width="50%">
               <% if User.count == 0 %>
@@ -300,7 +316,22 @@
                       Allow monitoring
                     </td>
                     <td align="left">
-                      On <%= radio_button_tag :allow_monitoring, "1", @user.allow_monitoring , :onchange => "controls.submit()" %><%= radio_button_tag :allow_monitoring, "0", !@user.allow_monitoring, :onchange => "controls.submit()" %>Off
+                      <table>
+                        <tr>
+                          <td style="padding:10px">
+                            On
+                          </td>
+                          <td style="padding:10px">
+                            <%= radio_button_tag :allow_monitoring, "1", @user.allow_monitoring, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                          </td>
+                          <td style="padding:10px">
+                            <%= radio_button_tag :allow_monitoring, "0", !@user.allow_monitoring, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                          </td>
+                          <td style="padding:10px">
+                            Off
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                   </tr>
                 <% end %>
@@ -311,7 +342,7 @@
                   Who are you?
                 </td>
                 <td align="left">
-                  <%= select_tag :user_id, options_for_select( User.all.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                  <%= select_tag :user_id, options_for_select( @usergroup.users.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:class=> "location_input", :style=>"min-width: 180px",:onchange => "controls.submit();"} %>
                 </td>
               </tr>
 
@@ -345,7 +376,23 @@
                     Trace
                   </td>
                   <td align="left">
-                    On <%= radio_button_tag :trace, "1", @user.trace , :onchange => "controls.submit()" %><%= radio_button_tag :trace, "0", !@user.trace, :onchange => "controls.submit()" %>Off
+                    <table>
+                      <tr>
+                        <td style="padding:10px">
+                          On
+                        </td>
+                        <td style="padding:10px">
+                          <%= radio_button_tag :trace, "1", @user.trace, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                        </td>
+                        <td style="padding:10px">
+                          <%= radio_button_tag :trace, "0", !@user.trace, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                        </td>
+                        <td style="padding:10px">
+                          Off
+                        </td>
+                      </tr>
+                    </table>
+
                   </td>
                 </tr>
 
@@ -354,7 +401,7 @@
                     Last posting within
                   </td>
                   <td align="left">
-                    <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :style => "padding: 5px", :onchange => "controls.submit();"} %>
+                    <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :style => "padding: 5px",:style=>"min-width: 180px", :onchange => "controls.submit();"} %>
                   </td>
                 </tr>
 
@@ -363,9 +410,20 @@
                     Update every
                   </td>
                   <td align="left">
-                    <%= select_tag :update_frequency, options_for_select( update_frequency_options, @user.update_frequency) , {:class=> "location_input", :onchange => "controls.submit();"} %>
+                    <%= select_tag :update_frequency, options_for_select( update_frequency_options, @user.update_frequency) , {:class=> "location_input",:style=>"min-width: 180px", :onchange => "controls.submit();"} %>
                   </td>
                 </tr>
+
+                <% if @user.admin_user %>
+                  <tr>
+                    <td>
+                      <%= submit_tag "Admin", :class=> "location_input" %>
+                    </td>
+                    <td>
+                    </td>
+                  </tr>
+                <% end %>
+
               <% end %>
 
             </table>

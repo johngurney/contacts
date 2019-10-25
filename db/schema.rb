@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_23_061740) do
+ActiveRecord::Schema.define(version: 2019_10_24_194946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +114,26 @@ ActiveRecord::Schema.define(version: 2019_10_23_061740) do
     t.string "password"
   end
 
+  create_table "usergroups", force: :cascade do |t|
+    t.string "name"
+    t.boolean "bespoke"
+    t.decimal "north"
+    t.decimal "south"
+    t.decimal "west"
+    t.decimal "east"
+    t.boolean "draggable"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+  end
+
+  create_table "usergroups_users", id: false, force: :cascade do |t|
+    t.bigint "usergroup_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "usergroup_id"], name: "index_usergroups_users_on_user_id_and_usergroup_id"
+    t.index ["usergroup_id", "user_id"], name: "index_usergroups_users_on_usergroup_id_and_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.integer "group_id"
@@ -124,6 +144,7 @@ ActiveRecord::Schema.define(version: 2019_10_23_061740) do
     t.boolean "allow_monitoring", default: false
     t.string "map_name"
     t.boolean "trace"
+    t.boolean ""
   end
 
 end

@@ -72,7 +72,7 @@ class HomepageController < ApplicationController
       if position.present?
         trace = []
         if User.find(user_id).trace
-          Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(50).each do |log|
+          Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(200).each do |log|
             trace << [log.latitude, log.longitude]
           end
         end
@@ -90,13 +90,33 @@ class HomepageController < ApplicationController
 
   end
 
+  def catch_all
+    puts "***" + request.original_fullpath.tr("\\\/","")
+    @usergroup = Usergroup.where('lower(url) = ?', request.original_fullpath.tr("\\\/","")).first
+
+    if @usergroup.blank?
+      redirect_to root_path
+    else
+
+      if cookies[:location_user_id].present?
+        user_id = cookies[:location_user_id].to_i
+        if @usergroup.users.include?(User.find(user_id))
+          @user = User.find(user_id) if user_id > 0 && User.where(:id == user_id).count > 0
+        else
+          user_id = nil
+        end
+      end
+
+      render "location", :layout => "location"
+    end
+  end
+
+
   def location
     @@counter = 0
     user_id= cookies[:location_user_id].to_i
     @user = User.find(user_id) if user_id > 0 && User.where(:id == user_id).count > 0
-
     render "location", :layout => "location"
-
   end
 
   def location_log
@@ -128,6 +148,9 @@ class HomepageController < ApplicationController
         Positionlog.create(:latitude => latitude, :longitude => longitude, :user_id => User.where(:name => "Gabriella").first.id)
       end
 
+    elsif  params[:commit] == "Admin"
+      redirect_to users_path
+      return
 
 
     elsif  params[:user_id].to_i != 0
@@ -152,7 +175,7 @@ class HomepageController < ApplicationController
       end
     end
 
-    redirect_to location_path
+    redirect_to "/" + Usergroup.find(params[:id].to_i).url #location_path
   end
 
   def clear_all_location_logs
@@ -183,6 +206,7 @@ class HomepageController < ApplicationController
     end
     send_data image.to_blob, :filename => "stick_man.png", :type => "image/png"
   end
+
 
 
 end
