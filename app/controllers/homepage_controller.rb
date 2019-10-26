@@ -59,39 +59,53 @@ class HomepageController < ApplicationController
 
     arry = request.raw_post.split(" ")
     user_id = arry[3].to_i
+    usergroup_id = arry[4].to_i
+    positions = []
+    last_posting_times = ""
 
-    if arry[1] != "null"
-      log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_id => user_id.to_s )
-      log.save
-    end
+    if user_id > 0
 
-    a = []
+      user = User.find(user_id)
 
-    Following.where(:following_user_id => user_id).each do |following|
-      position = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last
-      if position.present?
-        trace = []
-        if User.find(user_id).trace
-          Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(200).each do |log|
-            trace << [log.latitude, log.longitude]
-          end
+      if arry[1] != "null"
+        log = Positionlog.create(:latitude => arry[1].to_d, :longitude => arry[2].to_d, :user_id => user_id.to_s )
+        log.save
+      end
+
+      last_posting_value = helpers.last_posting_values(user.last_posting_within)[0]
+
+      Following.where(:following_user_id => user_id, :usergroup_id => usergroup_id).each do |following|
+        if last_posting_value == 0
+          logs = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(30)
+        else
+          logs = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(30)
+          # logs = Positionlog.where(:user_id => following.monitored_user_id).where("created_at >= ?", last_posting_value.seconds.ago).order(:created_at).last(30)
         end
-        a << {latitude: position.latitude, longitude: position.longitude, name: User.find(following.monitored_user_id).map_name,  trace: trace.to_json}
+        position = logs.last
+        if position.present?
+          trace = []
+          if user.trace
+            logs.each do |log|
+              trace << [log.latitude, log.longitude]
+            end
+          end
+          positions << {latitude: position.latitude, longitude: position.longitude, name: User.find(following.monitored_user_id).map_name,  trace: trace.to_json}
+          t = logs.last.created_at
+          last_posting_times += User.find(following.monitored_user_id).map_name + " (at " + t.strftime("%H:%M:%S on %d:%m:%Y") + "; " + helpers.time_ago_in_words(t) + " ago); "
+        end
       end
     end
 
-    a = "" if a.blank?
-
-    puts a.to_s
-
-    # render json: {:latitude => "1234", :longitude => "9876", :counter => @@counter}
-    render json: a
-    @@counter += 1
+    if positions.blank?
+      render json: ""
+    else
+      render json: {positions: positions, last_posting_times: last_posting_times}
+    end
 
   end
 
   def catch_all
-    puts "***" + request.original_fullpath.tr("\\\/","")
+
     @usergroup = Usergroup.where('lower(url) = ?', request.original_fullpath.tr("\\\/","")).first
 
     if @usergroup.blank?
@@ -127,23 +141,26 @@ class HomepageController < ApplicationController
       User.create(:name => "Adele")
       User.create(:name => "Guy")
     elsif  params[:commit] == "Set paths"
-      Positionlog.delete_all
+      # Positionlog.delete_all
+      #
+      # latitude_north = 51.544328
+      # latitude_south = 51.536808
+      # longitude_west = -0.116385
+      # longitude_east = -0.106652
+      #
+      # latitude_height = latitude_north - latitude_south
+      # longitude_width  = longitude_east - longitude_west
+      #
+      # # gaby = [[0.1,0.1], [0.3,0.1]]
+      # gaby = [[0.87,0.14], [0.84, 0.05], [0.7,0.12], [0.61742,0.120826], [0.607845745, 0.148053016], [0.597606383, 0.1665468], [0.577659574, 0.183088462], [0.538829787, 0.186273503], [0.535239362, 0.296208774], [0.428058511, 0.291174355], [0.421808511, 0.510942156], [0.421409574, 0.557279359], [0.396143617, 0.701119901], [0.310106383, 0.673584712], [0.258643617, 0.663104901], [0.251595745, 0.676358779], [0.263164894, 0.774992294]]
+      # gaby.each do |coordinate|
+      #   latitude = latitude_south + latitude_height * coordinate[0]
+      #   longitude = longitude_west + longitude_width * coordinate[1]
+      #   Positionlog.create(:latitude => latitude, :longitude => longitude, :user_id => User.where(:name => "Gabriella").first.id)
+      # end
 
-      latitude_north = 51.544328
-      latitude_south = 51.536808
-      longitude_west = -0.116385
-      longitude_east = -0.106652
+      cookies.permanent[:location_user_id] = nil
 
-      latitude_height = latitude_north - latitude_south
-      longitude_width  = longitude_east - longitude_west
-
-      # gaby = [[0.1,0.1], [0.3,0.1]]
-      gaby = [[0.87,0.14], [0.84, 0.05], [0.7,0.12], [0.61742,0.120826], [0.607845745, 0.148053016], [0.597606383, 0.1665468], [0.577659574, 0.183088462], [0.538829787, 0.186273503], [0.535239362, 0.296208774], [0.428058511, 0.291174355], [0.421808511, 0.510942156], [0.421409574, 0.557279359], [0.396143617, 0.701119901], [0.310106383, 0.673584712], [0.258643617, 0.663104901], [0.251595745, 0.676358779], [0.263164894, 0.774992294]]
-      gaby.each do |coordinate|
-        latitude = latitude_south + latitude_height * coordinate[0]
-        longitude = longitude_west + longitude_width * coordinate[1]
-        Positionlog.create(:latitude => latitude, :longitude => longitude, :user_id => User.where(:name => "Gabriella").first.id)
-      end
 
     elsif  params[:commit] == "Admin"
       redirect_to users_path
@@ -152,6 +169,7 @@ class HomepageController < ApplicationController
 
     elsif  params[:user_id].to_i != 0
       user = User.find(params[:user_id])
+      usergroup = Usergroup.find(params[:id])
       if cookies.permanent[:location_user_id] != params[:user_id]
         cookies.permanent[:location_user_id] = params[:user_id]
       else
@@ -164,9 +182,9 @@ class HomepageController < ApplicationController
           puts "+++" + user_mon.id.to_s
           if params["user" + user_mon.id.to_s] =="1"
             puts "***" + user_mon.id.to_s
-            Following.create(:following_user_id => user.id, :monitored_user_id => user_mon.id) if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count == 0
+            Following.create(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id) if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count == 0
           else
-            Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).delete_all if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count > 0
+            Following.where(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id).delete_all if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count > 0
           end
         end
       end

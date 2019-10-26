@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_24_194946) do
+ActiveRecord::Schema.define(version: 2019_10_26_063944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 2019_10_24_194946) do
     t.integer "monitored_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "usergroup_id"
   end
 
   create_table "locationgroups", force: :cascade do |t|
@@ -144,7 +145,7 @@ ActiveRecord::Schema.define(version: 2019_10_24_194946) do
     t.boolean "allow_monitoring", default: false
     t.string "map_name"
     t.boolean "trace"
-    t.boolean ""
+    t.boolean "admin_user"
   end
 
 end

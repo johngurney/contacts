@@ -33,7 +33,9 @@
       } else {
         var n = 0;
         var bounds;
-        jsonResponse.forEach (function(position) {
+        document.getElementById("last_posting_times").innerHTML = jsonResponse.last_posting_times;
+
+        jsonResponse.positions.forEach (function(position) {
           if (position.trace != "") {
             var unparsed_trace = JSON.parse(position.trace);
             var path = [];
@@ -81,9 +83,9 @@
     };
 
     <% if @user && @user.allow_monitoring %>
-      xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " " + "<%= cookies[:location_user_id].to_s %>");
+      xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " <%= cookies[:location_user_id].to_s %> <%= @usergroup.id.to_s %>");
     <% else %>
-      xhr.send(time_string + " null null " + "<%= cookies[:location_user_id].to_s %>");
+      xhr.send(time_string + " null null <%= cookies[:location_user_id].to_s %> <%= @usergroup.id.to_s %>");
     <% end %>
   }
 
@@ -264,22 +266,24 @@
 
 
 <table width="100%">
-  <col width="*">
-  <col width="500px">
+  <col style="width: 350px">
+  <col >
+  <col style="width: 450px">
+
   <tr>
     <td style="font-size:20px; font-weight: bold; color: blue">
-      <%= @user.update_frequency.to_s if @user %>
       <% if @user && @user.allow_monitoring %>
         Monitoring on
       <% end %>
-      <% if mobile? %>
-      Mobile
-      <% else %>
-      PC
-      <% end %>
-
     </td>
-    <td>
+    <td class="select_box_wrapper" style="vertical-align: top">
+      <div style="font-weight: bold"> Last postings</div>
+      <div id="last_posting_times" class="select_box_list" style="height: 50px">
+
+      </div>
+    </td>
+
+    <td >
 
       <div class="dropdown">
         <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 2cm; height: auto" %>
@@ -297,17 +301,6 @@
                   </td>
                 </tr>
               <% end %>
-
-              <% if true %>
-                <tr>
-                  <td>
-                    <%= submit_tag "Set paths", :class=> "location_input" %>
-                  </td>
-                  <td>
-                  </td>
-                </tr>
-              <% end %>
-
 
               <% if User.count > 0 %>
                 <% if @user %>
@@ -342,7 +335,7 @@
                   Who are you?
                 </td>
                 <td align="left">
-                  <%= select_tag :user_id, options_for_select( @usergroup.users.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:class=> "location_input", :style=>"min-width: 180px",:onchange => "controls.submit();"} %>
+                  <%= select_tag :user_id, options_for_select( @usergroup.users.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:include_blank => "None", :class=> "location_input", :style=>"min-width: 180px",:onchange => "controls.submit();"} %>
                 </td>
               </tr>
 
@@ -420,6 +413,11 @@
                       <%= submit_tag "Admin", :class=> "location_input" %>
                     </td>
                     <td>
+
+                      <% if true %>
+                        <%= submit_tag "Set paths", :class=> "location_input" %>
+                      <% end %>
+
                     </td>
                   </tr>
                 <% end %>

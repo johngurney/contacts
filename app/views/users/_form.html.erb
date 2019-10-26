@@ -23,15 +23,50 @@
       <td>
         <%= form.text_field :name, :class => "standard" %>
       </td>
+      <td>
+        Name on map
+      </td>
+      <td>
+        <%= form.text_field :map_name, :class => "standard" %>
+      </td>
     </tr>
     <tr>
       <td>
         Administrator
       </td>
       <td>
-        <%= form.check_box :admin_user %>
+        <%= form.check_box :admin_user, :style => "width: 20px; height: 20px" %>
       </td>
     </tr>
+    <tr>
+      <td>
+        Allow monitoring
+      </td>
+      <td>
+        <%= form.check_box :allow_monitoring, :style => "width: 20px; height: 20px" %>
+      </td>
+      <td>
+        Trace users' positions
+      </td>
+      <td>
+        <%= form.check_box :trace, :style => "width: 20px; height: 20px" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Last posting within
+      </td>
+      <td>
+        <%= form.select :last_posting_within, options_for_select( last_posting_options, user.last_posting_within), {}, {:class=> "standard", :style => "width:200px" } %>
+      </td>
+      <td>
+        Update frequency
+      </td>
+      <td>
+        <%= form.select :update_frequency, options_for_select( update_frequency_options, user.update_frequency), {}, {:class=> "standard", :style => "width:200px" } %>
+      </td>
+    </tr>
+
     <tr>
       <td>
         <%= form.submit "Update details", :class => "small_button" %>
