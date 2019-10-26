@@ -91,7 +91,7 @@ class HomepageController < ApplicationController
           end
           positions << {latitude: position.latitude, longitude: position.longitude, name: User.find(following.monitored_user_id).map_name,  trace: trace.to_json}
           t = logs.last.created_at
-          last_posting_times += User.find(following.monitored_user_id).map_name + " (at " + t.strftime("%H:%M:%S on %d:%m:%Y") + "; " + helpers.time_ago_in_words(t) + " ago); "
+          last_posting_times += User.find(following.monitored_user_id).map_name + " (at " + t.in_time_zone(user.time_zone).strftime("%H:%M:%S on %e %b %Y") + "; " + helpers.time_ago_in_words(t) + " ago); "
         end
       end
     end
@@ -174,6 +174,7 @@ class HomepageController < ApplicationController
         user.trace = params[:trace] == "1"
         user.update_frequency = params[:update_frequency].to_i
         user.last_posting_within = params[:last_posting_within].to_i
+        user.time_zone = params[:time_zone]
         user.save
         User.all.each do |user_mon|
           puts "+++" + user_mon.id.to_s

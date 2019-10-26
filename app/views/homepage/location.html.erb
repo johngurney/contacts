@@ -409,6 +409,17 @@
                   </td>
                 </tr>
 
+                <tr>
+                  <td>
+                    Your Time zone
+                  </td>
+                  <td align="left">
+                    <%= select_tag "time_zone", options_for_select(ActiveSupport::TimeZone.all.map{|zone| [zone, zone.name]}, @user.time_zone) , {include_blank: 'Please choose' ,  onchange: "timing_form.submit();" , :class=> "location_input", :style => "font-size: 14px; width:150px;", :onchange => "controls.submit();"} %>
+                  </td>
+                </tr>
+
+
+
                 <% if @user.admin_user %>
                   <tr>
                     <td>
