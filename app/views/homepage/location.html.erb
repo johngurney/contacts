@@ -236,8 +236,10 @@
 
   #checkboxes label {
     display: block;
-    font-size: 28px;
-    height: 30px;
+    font-size: 20px;
+    height: 24px;
+    max-height: 24px;
+    white-space: nowrap;
   }
 
   #checkboxes label:hover {
@@ -335,7 +337,7 @@
                   Who are you?
                 </td>
                 <td align="left">
-                  <%= select_tag :user_id, options_for_select( @usergroup.users.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:include_blank => "None", :class=> "location_input", :style=>"min-width: 180px",:onchange => "controls.submit();"} %>
+                  <%= select_tag :user_id, options_for_select( @usergroup.users.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:include_blank => "None", :class=> "location_input", :style=>"min-width: 160px; max-width: 210px",:onchange => "controls.submit();"} %>
                 </td>
               </tr>
 
@@ -353,7 +355,7 @@
                         <div class="overSelect"></div>
                       </div>
                       <div id="checkboxes">
-                        <% User.all.each do |user| %>
+                        <% @usergroup.users.each do |user| %>
                           <label for="user<%= user.id.to_s %>">
                             <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id, :usergroup_id => @usergroup.id).count > 0, :id => "user" + user.id.to_s, :onchange => "controls.submit()" %>
                             <%= user.name %>
