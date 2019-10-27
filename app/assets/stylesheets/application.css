@@ -111,27 +111,26 @@ h1 {
        font-size: 75%;
        }
 
-     .file_field_tag_container1 .flex_row {
+     .flex_row {
          height: 60px;
          display: inline-flex;
          flex-direction: row;
          align-items: center;
-         padding: 10px;
+         padding: 0px;
          }
 
-     .file_field_tag_container2 .flex_col {
+       .flex_col {
          display: inline-flex;
          flex-direction: column;
          }
 
-     input[type="file1"] {
+     input[type="file"] {
              display: none;
          }
 
    .make_button {
       cursor: pointer;
       }
-
 
    .select_box_wrapper {
      /* display: inline-block; */
@@ -162,7 +161,6 @@ h1 {
    }
 
    .standard_button {
-       width: 100;
        border-radius: 25px;
        font-weight: bold;
        font-size: 5mm;

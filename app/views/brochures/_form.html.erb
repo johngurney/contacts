@@ -11,124 +11,92 @@
     </div>
   <% end %>
 
-  <div class="file_field_tag_container1">
+  <div class="flex_row">
     <h2>Brochure title</h2>
     <%= form.text_field :name, :class => "standard", :style => "width: 450px; margin-left: 10px"%>
-    <%= form.submit "Update", :class => "large_button" %>
+    <%= form.submit "Update", :class => "small_button" %>
   </div>
 <% end %>
 
 <% if !@brochure.id.blank? %>
-  <div class="file_field_tag_container2">
+  <div class="flex_col">
 
-    <div class="file_field_tag_container2" >
+    <div class="flex_col" >
 
 
-    <div class="select_box_wrapper" width="50%">
+    <div class="select_box_wrapper" style="width: 620px">
       <h2 style="margin: 0px">Image</h2><br/>
-        <table width="800px" style="border1: blue solid 2px; margin-top:-10px;">
+      <table width="600px" style="border1: blue solid 2px; margin-top:-10px;">
 
-          <col width="20%">
-          <col width="80%">
+        <col width="30%">
+        <col width="70%">
 
-          <tr>
-            <td style="text-align: center; vertical-align: middle; border: gray solid 1px;">
-              <% if @brochure.has_picture? %>
-                <%= image_tag get_broch_picture_path(@brochure), :width => "100" %>
+        <tr>
+          <td style="text-align: center; vertical-align: middle; height: 200px; border: gray solid 1px;">
+            <% if @brochure.has_picture? %>
+              <%= image_tag get_broch_picture_path(@brochure), :width => "130" %>
 
-              <% end %>
-            </td>
+            <% end %>
+          </td>
 
-            <td>
-              <%= form_tag broch_upload_picture_path(@brochure), :multipart => true, :method =>'post' do  %>
-              <div class="file_field_tag_container2">
+          <td style= "vertical-align: top">
+            <%= form_tag broch_upload_picture_path(@brochure), :multipart => true, :method =>'post' do  %>
+            <div class="flex_col">
 
-                <div class="file_field_tag_container1">
-                  <div>
-                    <label for="img_file-upload" class="make_button large_button">Browse</label>
-                    <%= file_field_tag :picture_file , {:accept => '.jpg', :class=>"standard", :id => "img_file-upload", :onchange=> 'file_field_tag_browse_click("img_")' } %>
-                  </div>
-
-                  <div id="img_file_field_path_div" class="large_button file_field_tag_container2" style="display: none; max-height: 54px"">
-                    <label class="file_field_tag_filename" >Filename </label>
-                    <label id="img_file_field_path_label" class="file_field_tag_filepath" >testtest.txt </label>
-                  </div>
-
-                  <div id="img_file_field_upload" style="display: none">
-                    <%= submit_tag "Upload",  {:class=>"large_button"} %>
-                  </div>
-                </div>
-
-                <div class="file_field_tag_container1">
-                  <div>
-                    <%= text_field_tag :picture_url, "", :class => "large_button", :style =>"width: 320px; text-align: left; padding: 6px"  %>
-                  </div>
-
-                  <div>
-                    <%= submit_tag "Upload from URL", {:class=>"large_button"} %>
-                  </div>
-                </div>
-
-
-                <div class="file_field_tag_container1">
-                  <div>
-                    <%= submit_tag "Rotate left" , :class=>"large_button" %>
-                  </div>
-                  <div>
-                    <%= submit_tag "Rotate right" , :class=>"large_button" %>
-                  </div>
-                  <div>
-                    <%= submit_tag "Delete" , :class=>"large_button" %>
-                  </div>
-
-                </div>
+              <div>
+                <%= render "file_tag", title: "Upload picture", name: "img", tag: :picture_file, class_name: "large_button", height: 60, file_type: ".jpg" %>
               </div>
 
-              <% end %>
+              <div>
+                <%= render "get_url", tag: :picture_url %>
+              </div>
 
-              </td>
-          </tr>
-        </table>
-      </div>
+              <div class="flex_row" style="margin-left:10px">
+                <div>
+                  <%= submit_tag "Rotate left" , :class=>"small_button" %>
+                </div>
+                <div>
+                  <%= submit_tag "Rotate right" , :class=>"small_button" %>
+                </div>
+                <div>
+                  <%= submit_tag "Delete" , :class=>"small_button" %>
+                </div>
 
+              </div>
+            </div>
 
-    <div class="select_box_wrapper" width="50%" style="margin-top: 10px">
+            <% end %>
+
+            </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="select_box_wrapper" style="width: 620px; margin-top: 10px">
       <h2 style="margin: 0px">Document</h2><br/>
+      <table width="600px" style="border1: blue solid 2px; margin-top:-10px;">
 
-      <table width="800px" style="border1: blue solid 2px; margin-top:-10px;">
-
-        <col width="20%">
-        <col width="80%">
+        <col width="30%">
+        <col width="70%">
 
         <tr>
           <td style="text-align: center; vertical-align: middle; border: gray solid 1px;">
             <% if @brochure.has_content? %>
-              <%= link_to(image_tag("pdf.gif", :title => "Download pdf for job", :width => "100" ), download_content_path, :style => "margin-left: 5px" ) =%>
+              <%= link_to(image_tag("pdf.gif", :title => "Download pdf for job", :width => "140" ), download_content_path, :style => "margin-left: 5px" ) =%>
             <% end %>
           </td>
 
-          <td>
+          <td style= "vertical-align: top">
+
             <%= form_tag broch_upload_pdf_path(@brochure), :multipart => true, :method =>'post' do  %>
-              <div class="file_field_tag_container2">
+              <div class="flex_col">
 
-                <div class="file_field_tag_container1">
-                  <div>
-                    <label for="doc_file-upload" class="make_button large_button">Browse</label>
-                    <%= file_field_tag :pdf_file , {:accept => '.pdf', :class=>"standard", :id => "doc_file-upload", :onchange=> 'file_field_tag_browse_click("doc_")' } %>
-                  </div>
-
-                  <div id="doc_file_field_path_div" class="large_button file_field_tag_container2" style="display: none; max-height: 54px"">
-                    <label class="file_field_tag_filename" >Filename </label>
-                    <label id="doc_file_field_path_label" class="file_field_tag_filepath" >testtest.txt </label>
-                  </div>
-
-                  <div id="doc_file_field_upload" style="display: none">
-                    <%= submit_tag "Upload",  {:class=>"large_button"} %>
-                  </div>
+                <div>
+                  <%= render "file_tag", title: "Upload file", name: "pdf", tag: :pdf_file, class_name: "large_button", height: 60, file_type: ".pdf" %>
                 </div>
 
                 <div>
-                  <%= submit_tag "Delete" , :class=>"large_button" %>
+                  <%= submit_tag "Delete" , :class=>"small_button" %>
                 </div>
 
               </div>
@@ -144,4 +112,4 @@
 
 <% end %>
 
-<%= button_to "All brochures", brochures_path, {:method => :get, :class => "large_button", :style => "margin-top: 10px"} %>
+<%= button_to "All brochures", brochures_path, {:method => :get, :class => "small_button", :style => "margin-top: 10px"} %>

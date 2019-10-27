@@ -65,6 +65,7 @@ Rails.application.routes.draw do
 
   resources :usergroups
   resources :users
+  get 'temp', to: "contacts#temp"
   match  "*path", to:"homepage#catch_all", via: :get
 
 end

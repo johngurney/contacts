@@ -82,66 +82,46 @@
       <% end %>
 
 
-      <div class="select_box_wrapper" width="50%">
+      <div class="select_box_wrapper" style="width: 620px">
         <h2 style="margin: 0px">Image</h2><br/>
-          <table width="800px" style="border1: blue solid 2px; margin-top:-10px;">
+          <table width="600px" style="margin-top:-10px">
 
-            <col width="20%">
-            <col width="80%">
+            <col width="50%">
+            <col width="50%">
 
             <tr>
               <td style="text-align: center; vertical-align: middle; border: gray solid 1px;">
                 <% if @contact.has_picture? %>
-                  <%= image_tag get_cont_picture_path(@contact), :width => "100" %>
+                  <%= image_tag get_cont_picture_path(@contact), :width => "140" %>
 
                 <% end %>
               </td>
 
               <td>
                 <%= form_tag cont_upload_picture_path(@contact), :multipart => true, :method =>'post' do  %>
-                <div class="file_field_tag_container2">
+                  <div class="flex_col">
 
-                  <div class="file_field_tag_container1">
                     <div>
-                      <label for="img_file-upload" class="make_button large_button">Browse</label>
-                      <%= file_field_tag :picture_file , {:accept => '.jpg', :class=>"standard", :id => "img_file-upload", :onchange=> 'file_field_tag_browse_click("img_")' } %>
+                      <%= render "file_tag", title: "Upload file", name: "users", tag: :picture_file, class_name: "large_button", height: 60, file_type: ".jpg" %>
                     </div>
 
-                    <div id="img_file_field_path_div" class="large_button file_field_tag_container2" style="display: none; max-height: 54px"">
-                      <label class="file_field_tag_filename" >Filename </label>
-                      <label id="img_file_field_path_label" class="file_field_tag_filepath" >testtest.txt </label>
+                    <div>
+                      <%= render "get_url", tag: :picture_url %>
                     </div>
 
-                    <div id="img_file_field_upload" style="display: none">
-                      <%= submit_tag "Upload",  {:class=>"large_button"} %>
+                    <div class="flex_row" style="margin-left:10px">
+                      <div>
+                        <%= submit_tag "Rotate left" , :class=>"small_button" %>
+                      </div>
+                      <div>
+                        <%= submit_tag "Rotate right" , :class=>"small_button" %>
+                      </div>
+                      <div>
+                        <%= submit_tag "Delete" , :class=>"small_button" %>
+                      </div>
+
                     </div>
                   </div>
-
-
-                  <div class="file_field_tag_container1">
-                    <div>
-                      <%= text_field_tag :picture_url, "", :class => "large_button", :style =>"width: 320px; text-align: left; padding: 6px"  %>
-                    </div>
-
-                    <div>
-                      <%= submit_tag "Upload from URL", {:class=>"large_button"} %>
-                    </div>
-                  </div>
-
-
-                  <div class="file_field_tag_container1">
-                    <div>
-                      <%= submit_tag "Rotate left" , :class=>"large_button" %>
-                    </div>
-                    <div>
-                      <%= submit_tag "Rotate right" , :class=>"large_button" %>
-                    </div>
-                    <div>
-                      <%= submit_tag "Delete" , :class=>"large_button" %>
-                    </div>
-
-                  </div>
-                </div>
 
                 <% end %>
 

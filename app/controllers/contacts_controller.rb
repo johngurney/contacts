@@ -25,6 +25,11 @@ class ContactsController < ApplicationController
 
   end
 
+  def temp
+    render "temp"
+  end
+
+
   # POST /contacts
   # POST /contacts.json
   def create
@@ -81,53 +86,55 @@ class ContactsController < ApplicationController
   def upload_contacts_file
 
     uploaded_io = params[:file]
-    text = uploaded_io.read
+    if uploaded_io.present?
+      text = uploaded_io.read
 
-    flag = false
-    first_name_column = -1
-    last_name_column = -1
-    position_column = -1
-    tel_number_column = -1
-    mobile_number_column = -1
-    email_address_column = -1
+      flag = false
+      first_name_column = -1
+      last_name_column = -1
+      position_column = -1
+      tel_number_column = -1
+      mobile_number_column = -1
+      email_address_column = -1
 
-    text.each_line do |line|
-      line.gsub!("\r\n", '')
+      text.each_line do |line|
+        line.gsub!("\r\n", '')
 
-      values=line.split "\t"
-      if flag == false
-        puts values.to_s
-        first_name_column = find_in_array(values, "first_name")
-        last_name_column = find_in_array(values, "last_name")
-        position_column = find_in_array(values, "position")
-        tel_number_column = find_in_array(values, "tel_number")
-        mobile_number_column = find_in_array(values, "mobile_number")
-        email_address_column = find_in_array(values, "email_address")
-        flag=true
-      else
+        values=line.split "\t"
+        if flag == false
+          puts values.to_s
+          first_name_column = find_in_array(values, "first_name")
+          last_name_column = find_in_array(values, "last_name")
+          position_column = find_in_array(values, "position")
+          tel_number_column = find_in_array(values, "tel_number")
+          mobile_number_column = find_in_array(values, "mobile_number")
+          email_address_column = find_in_array(values, "email_address")
+          flag=true
+        else
 
-        contact = Contact.new
-        if first_name_column >= 0
-          contact.first_name = values[first_name_column]
-        end
-        if last_name_column >= 0
-          contact.last_name  = values[last_name_column]
-        end
-        if position_column >= 0
-          contact.position   = values[position_column]
-        end
-        if tel_number_column >= 0
-          contact.tel_number   = values[tel_number_column]
-        end
-        if mobile_number_column >= 0
-          contact.mobile_number   = values[mobile_number_column]
-        end
-        #puts "**" + email_address_column.to_s
-        if email_address_column >= 0
-          contact.email_address   = values[email_address_column]
-        end
-        contact.save if Contact.where("lower(email_address) = ?", contact.email_address).count == 0
+          contact = Contact.new
+          if first_name_column >= 0
+            contact.first_name = values[first_name_column]
+          end
+          if last_name_column >= 0
+            contact.last_name  = values[last_name_column]
+          end
+          if position_column >= 0
+            contact.position   = values[position_column]
+          end
+          if tel_number_column >= 0
+            contact.tel_number   = values[tel_number_column]
+          end
+          if mobile_number_column >= 0
+            contact.mobile_number   = values[mobile_number_column]
+          end
+          #puts "**" + email_address_column.to_s
+          if email_address_column >= 0
+            contact.email_address   = values[email_address_column]
+          end
+          contact.save if Contact.where("lower(email_address) = ?", contact.email_address).count == 0
 
+        end
       end
     end
 

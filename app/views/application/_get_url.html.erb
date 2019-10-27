@@ -1,0 +1,22 @@
+<% tag ||= "url" %>
+
+<div class="flex_row">
+
+  <div class="flex_row large_button" style="width: auto; padding: 0px" >
+
+    <div class="flex_col" style="width: 0px; height: 100%; padding: 0px">
+      <div style="font-weight: bold; font-size: 12px; white-space:nowrap; margin-left:10px; padding:0px">
+        Enter URL
+      </div>
+    </div>
+
+    <div class="flex_col" style="height: 100%; justify-content: center">
+      <div style="margin: 10px">
+        <%= text_field_tag tag, "", :style =>"width: 250px; text-align: left; padding: 6px"  %>
+      </div>
+  </div>
+
+  <div>
+    <%= submit_tag "Upload from URL", {:class=>"small_button"} %>
+  </div>
+</div>
