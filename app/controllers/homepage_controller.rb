@@ -78,13 +78,13 @@ class HomepageController < ApplicationController
       puts "last_posting_value = " + last_posting_value.to_s
 
       Following.where(:following_user_id => user_id, :usergroup_id => usergroup_id).each do |following|
+        puts "^^^^^^^^^^^   ^^^^^^^^^^^^^^"
         if last_posting_value == 0
           logs = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(30)
         else
           logs = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(30)
           # logs = Positionlog.where(:user_id => following.monitored_user_id).where("created_at >= ?", last_posting_value.seconds.ago).order(:created_at).last(30)
         end
-        puts "logs = " + logs.to_s
         position = logs.last
         if position.present?
           trace = []
