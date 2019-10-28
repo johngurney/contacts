@@ -184,7 +184,7 @@ class HomepageController < ApplicationController
         user.save
         User.all.each do |user_mon|
           if params["user" + user_mon.id.to_s] =="1"
-#            Following.create(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id) if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id, :usergroup_id => usergroup.id).count == 0
+            Following.create(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id) if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id, :usergroup_id => usergroup.id).count == 0
           else
             Following.where(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id).delete_all
           end
