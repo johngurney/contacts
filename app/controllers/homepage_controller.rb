@@ -84,6 +84,7 @@ class HomepageController < ApplicationController
           logs = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(30)
           # logs = Positionlog.where(:user_id => following.monitored_user_id).where("created_at >= ?", last_posting_value.seconds.ago).order(:created_at).last(30)
         end
+        puts "logs = " + logs.to_s
         position = logs.last
         if position.present?
           trace = []
