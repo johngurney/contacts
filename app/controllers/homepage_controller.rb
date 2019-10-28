@@ -59,6 +59,7 @@ class HomepageController < ApplicationController
 
     arry = request.raw_post.split(" ")
     user_id = arry[3].to_i
+
     usergroup_id = arry[4].to_i
     positions = []
     last_posting_times = ""
@@ -177,12 +178,10 @@ class HomepageController < ApplicationController
         user.time_zone = params[:time_zone]
         user.save
         User.all.each do |user_mon|
-          puts "+++" + user_mon.id.to_s
           if params["user" + user_mon.id.to_s] =="1"
-            puts "***" + user_mon.id.to_s
-            Following.create(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id) if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count == 0
+#            Following.create(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id) if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id, :usergroup_id => usergroup.id).count == 0
           else
-            Following.where(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id).delete_all if Following.where(:following_user_id => user.id, :monitored_user_id => user_mon.id).count > 0
+            Following.where(:usergroup_id => usergroup.id, :following_user_id => user.id, :monitored_user_id => user_mon.id).delete_all
           end
         end
       end
@@ -217,7 +216,6 @@ class HomepageController < ApplicationController
       for n2 in 0...image.width
         stg += pixels[n2][n1][0].to_s + " "
       end
-      puts stg
     end
     send_data image.to_blob, :filename => "stick_man.png", :type => "image/png"
   end

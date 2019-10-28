@@ -61,7 +61,7 @@ module HomepageHelper
     when 8
       return 7 * 24 * 60 * 60, "1 week"
     when 9
-      return 0, "ever"
+      return 0, "Ever"
     else
       return 0, ""
     end

@@ -13,7 +13,6 @@
     <% User.all.each do |user| %>
       <tr>
         <td><%= user.name %></td>
-        <td><%= link_to 'Show', user %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
@@ -21,11 +20,9 @@
   </tbody>
 </table>
 
-<br>
+<%= link_to 'New user', new_user_path %>
 
-<%= link_to 'New User', new_user_path %>
-
-<h1>User groups</h1>
+<h1 style="margin-top:60px">User groups</h1>
 
 <table>
   <thead>
@@ -38,7 +35,7 @@
     <% Usergroup.all.each do |usergroup| %>
       <tr>
         <td><%= usergroup.name %></td>
-        <td><%= link_to 'Show', usergroup %></td>
+        <td><%= link_to 'Show', usergroup.url, method: :get  %></td>
         <td><%= link_to 'Edit', edit_usergroup_path(usergroup) %></td>
         <td><%= link_to 'Destroy', usergroup, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
@@ -46,6 +43,4 @@
   </tbody>
 </table>
 
-<br>
-
-<%= link_to 'New Usergroup', new_usergroup_path %>
+<%= link_to 'New user group', new_usergroup_path %>
