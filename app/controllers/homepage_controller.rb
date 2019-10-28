@@ -76,6 +76,8 @@ class HomepageController < ApplicationController
       last_posting_value = helpers.last_posting_values(user.last_posting_within)[0]
 
       puts "last_posting_value = " + last_posting_value.to_s
+      puts "user_id = " + user_id.to_s
+      puts "usergroup_id = " + usergroup_id.to_s
 
       Following.where(:following_user_id => user_id, :usergroup_id => usergroup_id).each do |following|
         puts "^^^^^^^^^^^   ^^^^^^^^^^^^^^"
