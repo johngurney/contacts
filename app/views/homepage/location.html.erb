@@ -271,7 +271,6 @@
 
 <table width="100%">
   <col style="width: 350px">
-  <col >
   <col style="width: 450px">
 
   <tr>
@@ -280,37 +279,97 @@
         Monitoring on
       <% end %>
     </td>
-    <td class="select_box_wrapper" style="vertical-align: top">
-      <div style="font-weight: bold"> Last postings</div>
-      <div id="last_posting_times" class="select_box_list" style="height: 50px">
+    <td style="vertical-align: top">
+      <div class="flex_row">
+        <div class="select_box_wrapper">
+          <div style="font-weight: bold"> Last postings</div>
+          <div id="last_posting_times" class="select_box_list" style="height: 50px">
 
-      </div>
-    </td>
+          </div>
+        </div>
 
-    <td >
+        <div class="dropdown">
+          <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 2cm; height: auto" %>
+          <div class="dropdown-content">
+            <%= form_tag  location_controls_path(@usergroup), id: "controls" do %>
+              <table width="100%" class="fixedheight">
+                <col width="50%">
+                <col width="50%">
+                <% if User.count == 0 %>
+                  <tr>
+                    <td>
+                      <%= submit_tag "Set up users", :class=> "location_input" %>
+                    </td>
+                    <td>
+                    </td>
+                  </tr>
+                <% end %>
 
-      <div class="dropdown">
-        <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 2cm; height: auto" %>
-        <div class="dropdown-content">
-          <%= form_tag  location_controls_path(@usergroup), id: "controls" do %>
-            <table width="100%" class="fixedheight">
-              <col width="50%">
-              <col width="50%">
-              <% if User.count == 0 %>
+                <% if User.count > 0 %>
+                  <% if @user %>
+                    <tr>
+                      <td>
+                        Allow monitoring
+                      </td>
+                      <td align="left">
+                        <table>
+                          <tr>
+                            <td style="padding:10px">
+                              On
+                            </td>
+                            <td style="padding:10px">
+                              <%= radio_button_tag :allow_monitoring, "1", @user.allow_monitoring, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                            </td>
+                            <td style="padding:10px">
+                              <%= radio_button_tag :allow_monitoring, "0", !@user.allow_monitoring, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                            </td>
+                            <td style="padding:10px">
+                              Off
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% end %>
+
                 <tr>
                   <td>
-                    <%= submit_tag "Set up users", :class=> "location_input" %>
+                    Who are you?
                   </td>
-                  <td>
+                  <td align="left">
+                    <%= select_tag :user_id, options_for_select( @usergroup.users.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:include_blank => "None", :class=> "location_input", :style=>"min-width: 160px; max-width: 210px",:onchange => "controls.submit();"} %>
                   </td>
                 </tr>
-              <% end %>
 
-              <% if User.count > 0 %>
                 <% if @user %>
                   <tr>
                     <td>
-                      Allow monitoring
+                      Following
+                    </td>
+                    <td align="left">
+                        <div class="multiselect" text-align="right">
+                        <div class="selectBox" style="width: 200px" onclick="showCheckboxes()">
+                          <select style="font-size:30px">
+                            <option>Select</option>
+                          </select>
+                          <div class="overSelect"></div>
+                        </div>
+                        <div id="checkboxes">
+                          <% @usergroup.users.each do |user| %>
+                            <label for="user<%= user.id.to_s %>">
+                              <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id, :usergroup_id => @usergroup.id).count > 0, :id => "user" + user.id.to_s, :onchange => "controls.submit()" %>
+                              <%= user.name %>
+                            </label>
+                          <% end %>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      Trace
                     </td>
                     <td align="left">
                       <table>
@@ -319,128 +378,69 @@
                             On
                           </td>
                           <td style="padding:10px">
-                            <%= radio_button_tag :allow_monitoring, "1", @user.allow_monitoring, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                            <%= radio_button_tag :trace, "1", @user.trace, :class => "large_radio_button", :onchange => "controls.submit()" %>
                           </td>
                           <td style="padding:10px">
-                            <%= radio_button_tag :allow_monitoring, "0", !@user.allow_monitoring, :class => "large_radio_button", :onchange => "controls.submit()" %>
+                            <%= radio_button_tag :trace, "0", !@user.trace, :class => "large_radio_button", :onchange => "controls.submit()" %>
                           </td>
                           <td style="padding:10px">
                             Off
                           </td>
                         </tr>
                       </table>
+
                     </td>
                   </tr>
-                <% end %>
-              <% end %>
 
-              <tr>
-                <td>
-                  Who are you?
-                </td>
-                <td align="left">
-                  <%= select_tag :user_id, options_for_select( @usergroup.users.order(:name).all.map{|user| [user.name, user.id]}, cookies[:location_user_id].to_s) , {:include_blank => "None", :class=> "location_input", :style=>"min-width: 160px; max-width: 210px",:onchange => "controls.submit();"} %>
-                </td>
-              </tr>
-
-              <% if @user %>
-                <tr>
-                  <td>
-                    Following
-                  </td>
-                  <td align="left">
-                      <div class="multiselect" text-align="right">
-                      <div class="selectBox" style="width: 200px" onclick="showCheckboxes()">
-                        <select style="font-size:30px">
-                          <option>Select</option>
-                        </select>
-                        <div class="overSelect"></div>
-                      </div>
-                      <div id="checkboxes">
-                        <% @usergroup.users.each do |user| %>
-                          <label for="user<%= user.id.to_s %>">
-                            <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id, :usergroup_id => @usergroup.id).count > 0, :id => "user" + user.id.to_s, :onchange => "controls.submit()" %>
-                            <%= user.name %>
-                          </label>
-                        <% end %>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    Trace
-                  </td>
-                  <td align="left">
-                    <table>
-                      <tr>
-                        <td style="padding:10px">
-                          On
-                        </td>
-                        <td style="padding:10px">
-                          <%= radio_button_tag :trace, "1", @user.trace, :class => "large_radio_button", :onchange => "controls.submit()" %>
-                        </td>
-                        <td style="padding:10px">
-                          <%= radio_button_tag :trace, "0", !@user.trace, :class => "large_radio_button", :onchange => "controls.submit()" %>
-                        </td>
-                        <td style="padding:10px">
-                          Off
-                        </td>
-                      </tr>
-                    </table>
-
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    Last posting within
-                  </td>
-                  <td align="left">
-                    <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :style => "padding: 5px",:style=>"min-width: 180px", :onchange => "controls.submit();"} %>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    Update every
-                  </td>
-                  <td align="left">
-                    <%= select_tag :update_frequency, options_for_select( update_frequency_options, @user.update_frequency) , {:class=> "location_input",:style=>"min-width: 180px", :onchange => "controls.submit();"} %>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    Your Time zone
-                  </td>
-                  <td align="left">
-                    <%= select_tag "time_zone", options_for_select(ActiveSupport::TimeZone.all.map{|zone| [zone, zone.name]}, @user.time_zone) , {include_blank: 'Please choose' ,  onchange: "timing_form.submit();" , :class=> "location_input", :style => "font-size: 14px; width:150px;", :onchange => "controls.submit();"} %>
-                  </td>
-                </tr>
-
-
-
-                <% if @user.admin_user %>
                   <tr>
                     <td>
-                      <%= submit_tag "Admin", :class=> "location_input" %>
+                      Last posting within
                     </td>
-                    <td>
-
-                      <% if true %>
-                        <%= submit_tag "Set paths", :class=> "location_input" %>
-                      <% end %>
-
+                    <td align="left">
+                      <%= select_tag :last_posting_within, options_for_select( last_posting_options, @user.last_posting_within) , {:class=> "location_input", :style => "padding: 5px",:style=>"min-width: 180px", :onchange => "controls.submit();"} %>
                     </td>
                   </tr>
+
+                  <tr>
+                    <td>
+                      Update every
+                    </td>
+                    <td align="left">
+                      <%= select_tag :update_frequency, options_for_select( update_frequency_options, @user.update_frequency) , {:class=> "location_input",:style=>"min-width: 180px", :onchange => "controls.submit();"} %>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      Your Time zone
+                    </td>
+                    <td align="left">
+                      <%= select_tag "time_zone", options_for_select(ActiveSupport::TimeZone.all.map{|zone| [zone, zone.name]}, @user.time_zone) , {include_blank: 'Please choose' ,  onchange: "timing_form.submit();" , :class=> "location_input", :style => "font-size: 14px; width:150px;", :onchange => "controls.submit();"} %>
+                    </td>
+                  </tr>
+
+
+
+                  <% if @user.admin_user %>
+                    <tr>
+                      <td>
+                        <%= submit_tag "Admin", :class=> "location_input" %>
+                      </td>
+                      <td>
+
+                        <% if true %>
+                          <%= submit_tag "Set paths", :class=> "location_input" %>
+                        <% end %>
+
+                      </td>
+                    </tr>
+                  <% end %>
+
                 <% end %>
 
-              <% end %>
-
-            </table>
-          <% end %>
+              </table>
+            <% end %>
+          </div>
         </div>
       </div>
     </td>
