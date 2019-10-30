@@ -238,9 +238,9 @@
     overflow-x: hidden;
     width: 100%;
     display: block;
-    font-size: 20px;
-    height: 24px;
-    max-height: 24px;
+    font-size: 28px;
+    height: 36px;
+    max-height: 36px;
     white-space: nowrap;
   }
 
@@ -266,12 +266,18 @@
     margin: 0px;
 }
 
+.flex_row1 {
+    display: flex;
+    flex-direction: row;
+    }
+
+
 </style>
 
 
-<table width="100%">
-  <col style="width: 350px">
-  <col style="width: 450px">
+<table width="100%" style="border: 4px brown solid">
+  <col style="width: 30%">
+  <col style="width: 70%">
 
   <tr>
     <td style="font-size:20px; font-weight: bold; color: blue">
@@ -280,17 +286,19 @@
       <% end %>
     </td>
     <td style="vertical-align: top">
-      <div class="flex_row">
-        <div class="select_box_wrapper">
-          <div style="font-weight: bold"> Last postings</div>
-          <div id="last_posting_times" class="select_box_list" style="height: 50px">
+      <div class="flex_row1">
 
+       <div style="flex-grow: 1; margin-right: 30px">
+          <div class="select_box_wrapper" style="width: 100%">
+            <div style="font-weight: bold"> Last postings</div>
+            <div id="last_posting_times" class="select_box_list" style="height: 34px">
+            </div>
           </div>
         </div>
 
-        <div class="dropdown">
-          <%= image_tag "menu.png", :class => "dropbtn", :align => "right", :style => "width: 2cm; height: auto" %>
-          <div class="dropdown-content">
+        <div class="dropdown" style="width: 80px; text-align: center; margin-top: 3px">
+          <%= image_tag "menu.png", :class => "dropbtn", :align => "right1", :style => "width: auto; height: 70px" %>
+          <div class="dropdown-content" style="width: 500px; position: fixed; top: 0px; right: 0px">
             <%= form_tag  location_controls_path(@usergroup), id: "controls" do %>
               <table width="100%" class="fixedheight">
                 <col width="50%">
@@ -415,7 +423,7 @@
                       Your Time zone
                     </td>
                     <td align="left">
-                      <%= select_tag "time_zone", options_for_select(ActiveSupport::TimeZone.all.map{|zone| [zone, zone.name]}, @user.time_zone) , {include_blank: 'Please choose' ,  onchange: "timing_form.submit();" , :class=> "location_input", :style => "font-size: 14px; width:150px;", :onchange => "controls.submit();"} %>
+                      <%= select_tag "time_zone", options_for_select(ActiveSupport::TimeZone.all.map{|zone| [zone, zone.name]}, @user.time_zone) , {include_blank: 'Please choose', :class=> "location_input", :style => "font-size: 18px; width:200px;", :onchange => "controls.submit();"} %>
                     </td>
                   </tr>
 
