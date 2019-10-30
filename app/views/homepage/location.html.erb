@@ -1,4 +1,7 @@
 <script>
+
+  var colours = (<%= colors() %>);
+
   var timeout_period = <%= @user ? update_frequency_values(@user.update_frequency)[0] : 60 %> * 1000;
 
   function timerTick() {
@@ -33,35 +36,38 @@
       } else {
         var n = 0;
         var bounds;
-        document.getElementById("last_posting_times").innerHTML = jsonResponse.last_posting_times;
-
         jsonResponse.positions.forEach (function(position) {
-          if (position.trace != "") {
-            var unparsed_trace = JSON.parse(position.trace);
-            var path = [];
-            unparsed_trace.forEach (function(coordinate) {
-              path.push({lat: Number(coordinate[0]), lng: Number(coordinate[1])});
-            });
-            lines[n].setPath(path);
-            lines[n].setMap(map);
+          if (n < 8) {
 
-          }
-          var pos = new google.maps.LatLng(position.latitude, position.longitude);
-          markers[n].setPosition (pos);
-          markers[n].setMap (map);
-          markers[n].setTitle (position.name);
+            if (position.trace != "") {
+              var unparsed_trace = JSON.parse(position.trace);
+              var path = [];
+              unparsed_trace.forEach (function(coordinate) {
+                path.push({lat: Number(coordinate[0]), lng: Number(coordinate[1])});
+              });
+              lines[n].setPath(path);
+              lines[n].setMap(map);
 
-          <% if !@usergroup.bespoke %>
-            if (n==0){
-              bounds =  new google.maps.LatLngBounds(pos, pos);
-            } else {
-              bounds.extend(pos);
             }
-          <% end %>
+            document.getElementById("last_posting_times" + n).innerHTML = position.text;
+            document.getElementById("last_posting_times" + n).style = "color: " + colours[n];
+            var pos = new google.maps.LatLng(position.latitude, position.longitude);
+            markers[n].setPosition (pos);
+            markers[n].setMap (map);
+            markers[n].setTitle (position.name);
 
-          labels[n].text = position.name;
-          markers[n].setLabel (labels[n]);
-          n++;
+            <% if !@usergroup.bespoke %>
+              if (n==0){
+                bounds =  new google.maps.LatLngBounds(pos, pos);
+              } else {
+                bounds.extend(pos);
+              }
+            <% end %>
+
+            labels[n].text = position.name;
+            markers[n].setLabel (labels[n]);
+            n++;
+          }
         })
 
         <% if @usergroup.bespoke %>
@@ -128,14 +134,13 @@
       for (n = 0 ; n < <%= Following.where(:following_user_id => @user.id).count.to_s %> ; n++) {
         marker = new google.maps.Marker({
             map: null,
-            // icon: 'https://contacts.lawontime.com/stick_man.png'
             icon: icon
           });
           markers.push(marker);
 
           line = new google.maps.Polyline({
             geodesic: true,
-            strokeColor: '#0000ff',
+            strokeColor: colours[n],
             strokeOpacity: 1.0,
             strokeWeight: 4
           });
@@ -143,26 +148,12 @@
           lines.push(line);
 
             label = {
-            color: "blue",
+            color: colours[n],
             fontWeight: "bold",
             text: ""
             };
           labels.push(label);
       }
-      markers[0].setPosition(barnsbury_ne);
-      markers[1].setPosition(barnsbury_sw);
-
-      flightPlanCoordinates = [];
-      flightPlanCoordinates.push({lat: 51.544328, lng: -0.106652});
-      flightPlanCoordinates.push({lat: 51.536808, lng: -0.116385});
-
-      flightPath = new google.maps.Polyline({
-        // path: flightPlanCoordinates,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
     }
   <% end %>
 
@@ -292,6 +283,14 @@
           <div class="select_box_wrapper" style="width: 100%">
             <div style="font-weight: bold"> Last postings</div>
             <div id="last_posting_times" class="select_box_list" style="height: 34px">
+              <span id="last_posting_times0" ></span>
+              <span id="last_posting_times1" ></span>
+              <span id="last_posting_times2" ></span>
+              <span id="last_posting_times3" ></span>
+              <span id="last_posting_times4" ></span>
+              <span id="last_posting_times5" ></span>
+              <span id="last_posting_times6" ></span>
+              <span id="last_posting_times7" ></span>
             </div>
           </div>
         </div>

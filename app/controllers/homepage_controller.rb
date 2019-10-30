@@ -56,13 +56,11 @@ class HomepageController < ApplicationController
 
   def position
 
-
     arry = request.raw_post.split(" ")
     user_id = arry[3].to_i
 
     usergroup_id = arry[4].to_i
     positions = []
-    last_posting_times = ""
 
     if user_id > 0
 
@@ -76,16 +74,13 @@ class HomepageController < ApplicationController
       last_posting_value = helpers.last_posting_values(user.last_posting_within)[0]
 
       puts "last_posting_value = " + last_posting_value.to_s
-      puts "user_id = " + user_id.to_s
-      puts "usergroup_id = " + usergroup_id.to_s
 
       Following.where(:following_user_id => user_id, :usergroup_id => usergroup_id).each do |following|
-        puts "^^^^^^^^^^^   ^^^^^^^^^^^^^^"
+
         if last_posting_value == 0
           logs = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(30)
         else
-          logs = Positionlog.where(:user_id => following.monitored_user_id).order(:created_at).last(30)
-          # logs = Positionlog.where(:user_id => following.monitored_user_id).where("created_at >= ?", last_posting_value.seconds.ago).order(:created_at).last(30)
+          logs = Positionlog.where(:user_id => following.monitored_user_id).where("created_at >= ?", last_posting_value.seconds.ago).order(:created_at).last(30)
         end
         position = logs.last
         if position.present?
@@ -95,9 +90,9 @@ class HomepageController < ApplicationController
               trace << [log.latitude, log.longitude]
             end
           end
-          positions << {latitude: position.latitude, longitude: position.longitude, name: User.find(following.monitored_user_id).map_name,  trace: trace.to_json}
           t = logs.last.created_at
-          last_posting_times += User.find(following.monitored_user_id).map_name + " (at " + t.in_time_zone(user.time_zone).strftime("%H:%M:%S on %e %b %Y") + "; " + helpers.time_ago_in_words(t) + " ago); "
+          stg = User.find(following.monitored_user_id).map_name + " (at " + t.in_time_zone(user.time_zone).strftime("%H:%M:%S on %e %b %Y") + "; " + helpers.time_ago_in_words(t) + " ago); "
+          positions << {latitude: position.latitude, longitude: position.longitude, name: User.find(following.monitored_user_id).map_name,  trace: trace.to_json, text: stg}
         end
       end
     end
@@ -105,7 +100,7 @@ class HomepageController < ApplicationController
     if positions.blank?
       render json: ""
     else
-      render json: {positions: positions, last_posting_times: last_posting_times}
+      render json: {positions: positions}
     end
 
   end

@@ -50,16 +50,10 @@ class UsergroupsController < ApplicationController
       User.all.each do |user|
         @usergroup.users << user if params[:usergroup]["user" + user.id.to_s] == "1"
       end
+    else
+      @usergroup.update(usergroup_params)
     end
-    respond_to do |format|
-      if @usergroup.update(usergroup_params)
-        format.html { redirect_to @usergroup, notice: 'Usergroup was successfully updated.' }
-        format.json { render :show, status: :ok, location: @usergroup }
-      else
-        format.html { render :edit }
-        format.json { render json: @usergroup.errors, status: :unprocessable_entity }
-      end
-    end
+    redirect_to users_path
   end
 
   # DELETE /usergroups/1

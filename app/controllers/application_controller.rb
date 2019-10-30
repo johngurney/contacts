@@ -32,4 +32,8 @@ class ApplicationController < ActionController::Base
     @browser.mobile?
   end
 
+  def colors
+    '["Maroon", "Brown", "Olive", "Teal", "Navy", "Black", "Red", "Orange"]'
+  end
+
 end
