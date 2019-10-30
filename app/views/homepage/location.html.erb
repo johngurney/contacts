@@ -262,8 +262,30 @@
     flex-direction: row;
     }
 
+.blinking{
+        animation:blinkingText 2.5s infinite;
+    }
+    @keyframes blinkingText{
+        0%{     background-color: red;    }
+        49%{    background-color: transparent; }
+        50%{    background-color: transparent; }
+        99%{    background-color:transparent;  }
+        100%{   background-color: red;    }
+    }
 
-</style>
+  .dot {
+    position: relative;
+    top: 4px;
+
+    margin-left:12px;
+    height: 25px;
+    width: 25px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  </style>
 
 
 <table width="100%" style="border: 4px brown solid">
@@ -273,7 +295,9 @@
   <tr>
     <td style="font-size:20px; font-weight: bold; color: blue">
       <% if @user && @user.allow_monitoring %>
-        Monitoring on
+        Monitoring on<span class="dot blinking"></span>
+      <% else %>
+        Monitoring off</span>
       <% end %>
     </td>
     <td style="vertical-align: top">
@@ -296,7 +320,7 @@
         </div>
 
         <div class="dropdown" style="width: 80px; text-align: center; margin-top: 3px">
-          <%= image_tag "menu.png", :class => "dropbtn", :align => "right1", :style => "width: auto; height: 70px" %>
+          <%= image_tag "menu.png", :class => "dropbtn", :style => "width: auto; height: 70px" %>
           <div class="dropdown-content" style="width: 500px; position: fixed; top: 0px; right: 0px">
             <%= form_tag  location_controls_path(@usergroup), id: "controls" do %>
               <table width="100%" class="fixedheight">
@@ -363,7 +387,7 @@
                           <div class="overSelect"></div>
                         </div>
                         <div id="checkboxes">
-                          <% @usergroup.users.each do |user| %>
+                          <% @usergroup.users.order(:name).each do |user| %>
                             <label for="user<%= user.id.to_s %>">
                               <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id, :usergroup_id => @usergroup.id).count > 0, :id => "user" + user.id.to_s, :style => "width:25px; height: 25px", :onchange => "controls.submit()" %>
                               <%= user.name %>

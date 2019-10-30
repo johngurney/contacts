@@ -10,7 +10,7 @@
   </thead>
 
   <tbody>
-    <% User.all.each do |user| %>
+    <% User.all.order(:name).each do |user| %>
       <tr>
         <td><%= user.name %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>
@@ -32,7 +32,7 @@
   </thead>
 
   <tbody>
-    <% Usergroup.all.each do |usergroup| %>
+    <% Usergroup.all.order(:name).each do |usergroup| %>
       <tr>
         <td><%= usergroup.name %></td>
         <td><%= link_to 'Show', usergroup.url, method: :get  %></td>
