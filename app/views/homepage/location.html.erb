@@ -365,7 +365,7 @@
                         <div id="checkboxes">
                           <% @usergroup.users.each do |user| %>
                             <label for="user<%= user.id.to_s %>">
-                              <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id, :usergroup_id => @usergroup.id).count > 0, :id => "user" + user.id.to_s, :onchange => "controls.submit()" %>
+                              <%= check_box_tag "user" + user.id.to_s, 1, Following.where(:following_user_id => @user.id, :monitored_user_id => user.id, :usergroup_id => @usergroup.id).count > 0, :id => "user" + user.id.to_s, :style => "width:25px; height: 25px", :onchange => "controls.submit()" %>
                               <%= user.name %>
                             </label>
                           <% end %>
