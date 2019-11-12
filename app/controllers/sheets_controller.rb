@@ -112,7 +112,7 @@ class SheetsController < ApplicationController
         end
       end
 
-    elsif params[:commit] == "Remove contacts"
+    elsif params[:commit] == "Remove selected contact(s)"
 
       @sheet.contacts.each do |contact|
         s = params['check' + contact.id.to_s]

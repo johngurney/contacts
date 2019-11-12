@@ -83,8 +83,10 @@
                 <% end %>
               </table>
             </div>
-            <%= submit_tag "Remove selected contacts", :class => "small_button", :style =>"width: 170px" %>
-            <%= submit_tag "Update", :class => "small_button", :style =>"margin-left: 95px" %>
+            <div class="flex_row">
+              <%= submit_tag "Remove selected contact(s)", :class => "small_button", :style =>"width: 170px" %>
+              <%= submit_tag "Update", :class => "small_button", :style =>"margin-left: 95px" %>
+            </div>
           <% end %>
 
         <% end %>

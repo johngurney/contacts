@@ -16,6 +16,12 @@
 
 <script>
 
+  var timeout_period = 5 * 1000;  // 5 seconds
+
+  function timerTick() {
+    getLocation();
+    var timeout = setTimeout(timerTick, timeout_period);
+    }
 
   window.onload = getLocation;
 
@@ -38,7 +44,6 @@
       position.coords.longitude > sq_sw.lng() && position.coords.longitude < sq_ne.lng()) {
       alert("In the square");
     } else {
-      alert("Not in the square");
     };
   }
 
@@ -96,8 +101,6 @@
     marker = new google.maps.Marker({
         map: map
       });
-
-
 
     var bounds =  new google.maps.LatLngBounds(richmond_av_environs_sw, richmond_av_environs_ne);
     map.fitBounds(bounds,0);
