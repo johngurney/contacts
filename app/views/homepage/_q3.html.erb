@@ -1,12 +1,13 @@
 <script>
   function correct3() {
     alert("Correct");
-    document.getElementById("q1").style.display = "none";
+    document.getElementById("q3").style.display = "none";
     var ra_ne = new google.maps.LatLng(51.538867, -0.108495);
     var ra_sw = new google.maps.LatLng(51.538670, -0.108969);
 
     sq_ne = ra_ne;
     sq_sw = ra_sw;
+
     line.setMap(null);
     set_square();
   }
