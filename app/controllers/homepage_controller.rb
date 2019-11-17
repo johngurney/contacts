@@ -15,6 +15,10 @@ class HomepageController < ApplicationController
     contact.save
     redirect_to root_path
   end
+  
+  def xmas
+    render "xmas", :layout => false
+  end
 
   def cookie_consent
 
@@ -218,6 +222,9 @@ class HomepageController < ApplicationController
       end
     end
     send_data image.to_blob, :filename => "stick_man.png", :type => "image/png"
+  end
+
+  def video
   end
 
 

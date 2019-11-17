@@ -1,0 +1,37 @@
+<script>
+  function correct() {
+    alert("Correct");
+    document.getElementById("q1").style.display = "none";
+    var ra_ne = new google.maps.LatLng(51.538867, -0.108495);
+    var ra_sw = new google.maps.LatLng(51.538670, -0.108969);
+
+    sq_ne = ra_ne;
+    sq_sw = ra_sw;
+    line.setMap(null);
+    set_square();
+  }
+
+  function incorrect() {
+    alert("Incorrect");
+  }
+</script>
+
+<div id="q3" style="display: none; width: 400px; margin:20px" class="select_box_wrapper">
+  <div class="flex_col">
+    Q3What is the colour of the front door at number 78?
+    <div class="flex_row">
+      <div class="select_box_wrapper" style="border: 1px solid blue; margin: 2px">
+        Red
+        <input type="radio" name="q1" onchange="correct()">
+      </div>
+      <div class="select_box_wrapper" style="border: 1px solid blue; margin: 2px">
+        Blue
+        <input type="radio" name="q1" onchange="incorrect()">
+      </div>
+      <div class="select_box_wrapper" style="border: 1px solid blue; margin: 2px">
+        Black
+        <input type="radio" name="q1" onchange="incorrect()">
+      </div>
+    </div>
+  </div>
+</div>
