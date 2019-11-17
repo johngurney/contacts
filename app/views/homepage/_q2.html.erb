@@ -1,6 +1,6 @@
 <script>
   var q1 = 0;
-  function correct() {
+  function correct2() {
     alert("Correct");
     document.getElementById("q2").style.display = "none";
     var rip_grove_ne = new google.maps.LatLng(51.539968, -0.109608);
@@ -13,24 +13,21 @@
     set_square();
   }
 
-  function incorrect() {
-    alert("Incorrect");
-  }
 </script>
 
-<div id="q2" style="display: none; width: 400px; margin:20px" class="select_box_wrapper">
+<div id="q2" style="display1: none; width: 400px; margin:20px" class="ringed_box">
   <div class="flex_col">
     Q2What is the colour of the front door at number 78?
     <div class="flex_row">
-      <div class="select_box_wrapper" style="border: 1px solid blue; margin: 2px">
+      <div class="small_ringed_box">
         Red
-        <input type="radio" name="q1" onchange="correct()">
-      </div>
-      <div class="select_box_wrapper" style="border: 1px solid blue; margin: 2px">
-        Blue
         <input type="radio" name="q1" onchange="incorrect()">
       </div>
-      <div class="select_box_wrapper" style="border: 1px solid blue; margin: 2px">
+      <div class="small_ringed_box">
+        Blue
+        <input type="radio" name="q1" onchange="correct2()">
+      </div>
+      <div class="small_ringed_box">
         Black
         <input type="radio" name="q1" onchange="incorrect()">
       </div>
