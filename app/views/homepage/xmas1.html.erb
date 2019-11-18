@@ -65,6 +65,7 @@
   var timeout_period = 5 * 1000;  // 5 seconds
 
   function timerTick() {
+    alert("test");
     getLocation();
     var timeout = setTimeout(timerTick, timeout_period);
     }
@@ -94,9 +95,6 @@
       q_no += 1;
     } ;
   }
-
-
-  var x = document.getElementById("demo");
 
 
   function initMap() {
