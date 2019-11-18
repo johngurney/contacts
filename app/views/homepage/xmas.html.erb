@@ -17,8 +17,20 @@
     margin: 5px;
   }
 
+  .ringed_box {
+    /* display: inline-block; */
+    border: 8px solid red;
+    border-radius: 20px;
+    padding: 6px;
+    font-family: Arial;
+    font-size: 10pt;
+  }
+
 </style>
 
-You must visit three areas in Barnsbury.  These will be indicated by blue squares on the map.  Go to the areas indicated by the blue squares.  When you are there, we will ask you some questions.
 
-<%= button_to "Start", xmas1_path, :method => :get, :class =>" small_button" %>
+<div class="ringed_box">
+  You must visit three areas in Barnsbury.  These will be indicated by blue squares on the map.  Go to the areas indicated by the blue squares.  When you are there, we will ask you some questions.
+
+  <%= button_to "Start", xmas1_path, :method => :get, :class =>" small_button" %>
+</div>
