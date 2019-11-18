@@ -15,9 +15,13 @@ class HomepageController < ApplicationController
     contact.save
     redirect_to root_path
   end
-  
+
   def xmas
     render "xmas", :layout => false
+  end
+
+  def xmas1
+    render "xmas1", :layout => false
   end
 
   def cookie_consent

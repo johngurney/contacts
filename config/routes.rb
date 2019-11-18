@@ -62,6 +62,7 @@ Rails.application.routes.draw do
   post "download_location_logs", to:  "homepage#download_location_logs", as: :download_location_logs
 
   get "xmas", to:  "homepage#xmas"
+  get "xmas1", to:  "homepage#xmas1", as: :xmas1
 
   get "stick_man", to:  "homepage#stick_man"
 
