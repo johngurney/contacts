@@ -20,8 +20,72 @@ class HomepageController < ApplicationController
     render "xmas", :layout => false
   end
 
-  def xmas1
-    render "xmas1", :layout => false
+  def xmas_q
+
+    case params[:id]
+    when "1"
+
+      @next_q = 2
+      @ordinal = "first"
+      @question = "Q1.  What is the colour of the front door at number 35?"
+      @answer1 = "Red"
+      @answer2 = "Yellow"
+      @answer3 = "Blue"
+      @a = 2
+      @ne = "51.53995, -0.1077"
+      @sw = "51.53926, -0.1087"
+      render "xmas_q", :layout => false
+
+    when "2"
+
+      @next_q = 3
+      @ordinal = "second"
+      @question = "Q2.  What is the name of the house at number 35?"
+      @answer1 = "Devonshire"
+      @answer2 = "Cornwall"
+      @answer3 = "Somerset"
+      @a = 1
+      @ne = "51.541756, -0.109449"
+      @sw = "51.541009, -0.109955"
+
+      render "xmas_q", :layout => false
+
+    when "3"
+
+      @next_q = 4
+      @ordinal = "third"
+      @question = "Q3.  How many circles are above the door at number 1?"
+      @answer2 = "Two"
+      @answer1 = "Four"
+      @answer3 = "Five"
+      @a = 3
+      @ne = "51.53927, -0.10985"
+      @sw = "51.53908, -0.111"
+
+      render "xmas_q", :layout => false
+
+    when "4"
+
+      #Richmond Avenue
+
+      @next_q = 99
+      @ordinal = "first" + params[:id]
+      @question = ""
+      @answer2 = ""
+      @answer1 = ""
+      @answer3 = ""
+      @a = 0
+      @ne = "51.538867, -0.1084"
+      @sw = "51.538670, -0.1089"
+
+      render "xmas_q", :layout => false
+
+    when "99"
+      render "video", :layout => false
+
+    end
+
+
   end
 
   def cookie_consent

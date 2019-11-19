@@ -73,8 +73,7 @@
       </td>
       <td>
 
-        <%= form.select :time_zone, options_for_select(ActiveSupport::TimeZone.all.map{|zone| [zone, zone.name]}, user.time_zone) , {}, {include_blank: 'Please choose' ,  onchange: "timing_form.submit();" , :class=> "standard"} %>
-
+        <%= form.select :time_zone, options_for_select(ActiveSupport::TimeZone.all.map{|zone| [zone, zone.name]}, user.time_zone) , {}, {include_blank: 'Please choose' ,  :class=> "standard"} %>
 
       </td>
     </tr>

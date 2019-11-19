@@ -26,12 +26,14 @@
       }
 
   .ringed_box {
-    /* display: inline-block; */
+
     border: 8px solid red;
     border-radius: 20px;
     padding: 6px;
     font-family: Arial;
     font-size: 20pt;
+    width: 650px;
+    margin: 20px;
   }
   .small_ringed_box {
     /* display: inline-block; */
@@ -62,15 +64,14 @@
 
 <script>
 
-  var timeout_period = 5 * 1000;  // 5 seconds
+  var timeout_period = 10 * 1000;  // 10 seconds
 
   function timerTick() {
-    alert("test");
     getLocation();
     var timeout = setTimeout(timerTick, timeout_period);
     }
 
-  window.onload = getLocation;
+  window.onload = timerTick;
 
   function getLocation() {
     if (navigator.geolocation) {
@@ -80,7 +81,7 @@
     }
   }
 
-  var sq_ne, sq_sw, marker, line, map, q_no = 1, in_the_square_flag = false;
+  var sq_ne, sq_sw, marker, line, map, in_the_square_flag = false;
 
   function checkPosition(position) {
 
@@ -90,16 +91,14 @@
     if (!in_the_square_flag && position.coords.latitude > sq_sw.lat() && position.coords.latitude < sq_ne.lat() &&
       position.coords.longitude > sq_sw.lng() && position.coords.longitude < sq_ne.lng()) {
       in_the_square_flag = true;
-      alert("In the square");
-      document.getElementById("q" + q_no).style.display = "block";
-      q_no += 1;
+      document.getElementById("q").style.display = "block";
     } ;
   }
 
 
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-      draggable: true,
+      draggable: false,
       heading: 90,
       zoomControl: true
     //
@@ -108,11 +107,11 @@
     var thornhill_sq_ne = new google.maps.LatLng(51.540867, -0.114515);
     var thornhill_sq_sw = new google.maps.LatLng(51.539606, -0.115824);
 
-    var richmond_av_environs_ne = new google.maps.LatLng(51.540155, -0.107020);
-    var richmond_av_environs_sw = new google.maps.LatLng(51.538514, -0.110066);
+    var richmond_av_environs_ne = new google.maps.LatLng(51.541756, -0.107020);
+    var richmond_av_environs_sw = new google.maps.LatLng(51.5375, -0.110066);
 
-    var lonsdale_sq_ne = new google.maps.LatLng(51.539918, -0.107910);
-    var lonsdale_sq_sw = new google.maps.LatLng(51.539324, -0.108495);
+    var lonsdale_sq_ne = new google.maps.LatLng(51.53995, -0.1077);
+    var lonsdale_sq_sw = new google.maps.LatLng(51.53926, -0.1087);
 
     var barnsbury_ne = new google.maps.LatLng(51.544328, -0.106652);
     var barnsbury_sw = new google.maps.LatLng(51.536808, -0.116385);
@@ -120,8 +119,8 @@
     var islington_ne = new google.maps.LatLng(51.550872, -0.094647);
     var islington_sw = new google.maps.LatLng(51.530205, -0.122398);
 
-    sq_ne = lonsdale_sq_ne;
-    sq_sw = lonsdale_sq_sw;
+    sq_ne = new google.maps.LatLng(<%= @ne %>);
+    sq_sw = new google.maps.LatLng(<%= @sw %>);
 
     set_square(sq_ne, sq_ne, 2);
 
@@ -162,13 +161,41 @@
     alert("Incorrect");
   }
 
+  function correct() {
+    alert("Correct");
+    form_q.submit();
+  }
 </script>
 
-<%= render "q1" %>
-<%= render "q2" %>
-<%= render "q3" %>
-<%= render "q4" %>
+<%= form_tag xmas_q_path(@next_q), :id => "form_q", :method =>'get' do  %>
+  <div id="q" style="display1: none" class="ringed_box">
 
+    <% if @next_q != 99 %>
+      <div class="flex_col">
+        You have arrived at your <%= @ordinal %> destination.<br/><br/>
+        <%= @question %>
+        <div class="flex_row">
+          <div class="small_ringed_box">
+            <%= @answer1 %>
+            <input type="radio" name="q1" onchange="<%= "in" if @a != 1 %>correct()">
+          </div>
+          <div class="small_ringed_box">
+            <%= @answer2 %>
+            <input type="radio" name="q1" onchange="<%= "in" if @a != 2 %>correct()">
+          </div>
+          <div class="small_ringed_box">
+            <%= @answer3 %>
+            <input type="radio" name="q1" onchange="<%= "in" if @a != 3 %>correct()">
+          </div>
+        </div>
+      </div>
+    <% else %>
+      Back at 93 RA.  Now go in the house and when inside press this button.
+      <%= submit_tag "Press", :class => "small_button" %>
+
+    <% end %>
+  </div>
+<% end %>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-MiNsHFnMMt2RS_MzZeKZTUoUS-ITdFI&callback=initMap" async defer></script>
 
 <div id="map"></div>
