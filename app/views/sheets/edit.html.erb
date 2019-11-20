@@ -75,10 +75,10 @@
                     <td>
                       <% descs_in_order = contact.descs_in_order %>
                       <%= select_tag "select"+contact.id.to_s, options_for_select(descs_in_order.map{ |description| [description.name, description.id]}, Conshejointable.where(:sheet_id => @sheet.id, :contact_id => contact.id).first.description_id), :class=> "small_button", :style => "width: 80px; height:20px; margin: 0px" %></td>
-                    <td><% if contact != contacts.first %><%= link_to "up", contacts_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-                    <td><% if contact != contacts.last %><%= link_to "down", contacts_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-                    <td><% if contact != contacts.first %><%= link_to "to top", contacts_to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-                    <td><% if contact != contacts.last %><%= link_to "to bottom", contacts_to_bottom_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.first %><%= link_to "up", contact_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.last %><%= link_to "down", contact_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.first %><%= link_to "to top", contact_to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.last %><%= link_to "to bottom", contact_to_bottom_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
                   </tr>
                 <% end %>
               </table>

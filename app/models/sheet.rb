@@ -15,27 +15,42 @@ class Sheet < ApplicationRecord
     email_address
   end
 
-  def check_contact_orders_number_are_null
+  def check_contact_orders_number_are_ok
     Conshejointable.where(:sheet_id => self.id, :order_number => nil ).order(:contact_id).each do |contact_sheet|
       contact_sheet.order_number = self.max_contact_order
       contact_sheet.save
     end
+
+    n = 0
+    Conshejointable.where(:sheet_id => self.id).order(:order_number, :contact_id).each do |contact_sheet|
+      contact_sheet.order_number = n
+      contact_sheet.save
+      n += 1
+    end
+
   end
 
-  def check_brochure_orders_number_are_null
+  def check_brochure_orders_number_are_ok
     Broshejointable.where(:sheet_id => self.id, :order_number => nil ).order(:brochure_id).each do |brochure_sheet|
       brochure_sheet.order_number = self.max_brochure_order
       brochure_sheet.save
     end
+
+    n = 0
+    Broshejointable.where(:sheet_id => self.id).order(:order_number, :brochure_id).each do |brochure_sheet|
+      brochure_sheet.order_number = n
+      brochure_sheet.save
+      n += 1
+    end
   end
 
   def contacts_in_order
-    self.check_contact_orders_number_are_null
+    self.check_contact_orders_number_are_ok
     self.contacts.all.sort{|contact1, contact2|  find_contact_order(contact1.id, self.id) <=> find_contact_order(contact2.id, self.id) }
   end
 
   def brochures_in_order
-    self.check_brochure_orders_number_are_null
+    self.check_brochure_orders_number_are_ok
     self.brochures.all.sort{|brochure1, brochure2|  find_brochure_order(brochure1.id, self.id) <=> find_brochure_order(brochure2.id, self.id) }
   end
 

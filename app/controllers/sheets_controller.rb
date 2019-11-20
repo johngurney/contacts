@@ -69,7 +69,7 @@ class SheetsController < ApplicationController
   end
 
   def add_contact
-    @sheet.check_contact_orders_number_are_null
+    @sheet.check_contact_orders_number_are_ok
     Contact.all.order(:last_name, :first_name).each do |contact|
       s = params['check' + contact.id.to_s]
       if !s.blank?
@@ -85,7 +85,7 @@ class SheetsController < ApplicationController
   end
 
   def add_brochure
-    @sheet.check_contact_orders_number_are_null
+    @sheet.check_contact_orders_number_are_ok
     Brochure.all.order(:name).each do |brochure|
       s = params['check' + brochure.id.to_s]
       if !s.blank?
@@ -160,7 +160,7 @@ class SheetsController < ApplicationController
 
   def contact_order_up
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_ok
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
     contact_sheet2 = Conshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number - 1).first
@@ -174,7 +174,7 @@ class SheetsController < ApplicationController
 
   def contact_to_top
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_ok
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
 
@@ -190,7 +190,7 @@ class SheetsController < ApplicationController
 
   def contact_to_bottom
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_ok
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
     max_contact_order = Conshejointable.where(:sheet_id => sheet_id).maximum(:order_number)
@@ -209,7 +209,7 @@ class SheetsController < ApplicationController
 
   def contact_order_down
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_ok
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
     contact_sheet2 = Conshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number + 1).first
@@ -225,7 +225,7 @@ class SheetsController < ApplicationController
 
   def brochure_order_up
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_brochure_orders_number_are_null
+    Sheet.find(sheet_id).check_brochure_orders_number_are_ok
     brochure_id = params[:brochure_id]
     contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
     contact_sheet2 = Broshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number - 1).first
@@ -239,7 +239,7 @@ class SheetsController < ApplicationController
 
   def brochure_to_top
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_brochure_orders_number_are_null
+    Sheet.find(sheet_id).check_brochure_orders_number_are_ok
     brochure_id = params[:brochure_id]
     contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
 
@@ -255,7 +255,7 @@ class SheetsController < ApplicationController
 
   def brochure_to_bottom
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_brochure_orders_number_are_null
+    Sheet.find(sheet_id).check_brochure_orders_number_are_ok
     brochure_id = params[:brochure_id]
     contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
     max_brochure_order = Broshejointable.where(:sheet_id => sheet_id).maximum(:order_number)
@@ -274,7 +274,7 @@ class SheetsController < ApplicationController
 
   def brochure_order_down
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_brochure_orders_number_are_null
+    Sheet.find(sheet_id).check_brochure_orders_number_are_ok
     brochure_id = params[:brochure_id]
     contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
     contact_sheet2 = Broshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number + 1).first
