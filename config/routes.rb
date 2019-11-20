@@ -66,8 +66,9 @@ Rails.application.routes.draw do
   post "clear_all_location_logs", to:  "homepage#clear_all_location_logs", as: :clear_all_location_logs
   post "download_location_logs", to:  "homepage#download_location_logs", as: :download_location_logs
 
+  get "xmas_q_correct/.:id", to:  "homepage#xmas_q_correct", as: :xmas_q_correct
+  get "xmas_q", to:  "homepage#xmas_q", as: :xmas_q
   get "xmas", to:  "homepage#xmas"
-  get "xmas_q/.:id", to:  "homepage#xmas_q", as: :xmas_q
 
   get "stick_man", to:  "homepage#stick_man"
 

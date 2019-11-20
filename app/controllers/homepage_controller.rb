@@ -16,14 +16,36 @@ class HomepageController < ApplicationController
     redirect_to root_path
   end
 
+  def set_token
+
+    if cookies[:xmas_token].blank?
+      o = [('a'..'z'), ('A'..'Z'), ('0'..'9')].map(&:to_a).flatten
+      token = (0...16).map { o[SecureRandom.random_number(o.length)] }.join
+      cookies.permanent[:xmas_token] = token
+      XmasUser.create(:token => token, :stage => 0)
+    end
+  end
+
   def xmas
+    set_token
+    log = XmasUser.where(:token => cookies[:xmas_token]).first
+    log.update(:stage => 1) if log.present?
     render "xmas", :layout => false
+  end
+
+  def xmas_q_correct
+    set_token
+    log = XmasUser.where(:token => cookies[:xmas_token]).first
+    log.update(:stage => params[:id].to_s) if log.present?
+    redirect_to xmas_q_path
   end
 
   def xmas_q
 
-    case params[:id]
-    when "1"
+    set_token
+    log = XmasUser.where(:token => cookies[:xmas_token]).first
+
+   if log.blank? || log.stage == 1
 
       @next_q = 2
       @ordinal = "first"
@@ -32,25 +54,25 @@ class HomepageController < ApplicationController
       @answer2 = "Yellow"
       @answer3 = "Blue"
       @a = 2
-      @ne = "51.53995, -0.1077"
-      @sw = "51.53926, -0.1087"
+      @ne = "51.5401, -0.1076"
+      @sw = "51.53915, -0.1089"
       render "xmas_q", :layout => false
 
-    when "2"
+  elsif log.stage == 2
 
       @next_q = 3
       @ordinal = "second"
-      @question = "Q2.  What is the name of the house at number 35?"
+      @question = "Q2.  What is the name of the villas at numbers 23 and 25?"
       @answer1 = "Devonshire"
       @answer2 = "Cornwall"
       @answer3 = "Somerset"
       @a = 1
-      @ne = "51.541756, -0.109449"
-      @sw = "51.541009, -0.109955"
+      @ne = "51.5418, -0.1093"
+      @sw = "51.54095, -0.11"
 
       render "xmas_q", :layout => false
 
-    when "3"
+    elsif log.stage == 3
 
       @next_q = 4
       @ordinal = "third"
@@ -60,27 +82,28 @@ class HomepageController < ApplicationController
       @answer3 = "Five"
       @a = 3
       @ne = "51.53927, -0.10985"
-      @sw = "51.53908, -0.111"
+      @sw = "51.53895, -0.111"
 
       render "xmas_q", :layout => false
 
-    when "4"
+    elsif log.stage == 4
 
       #Richmond Avenue
 
       @next_q = 99
-      @ordinal = "first" + params[:id]
+      @ordinal = ""
       @question = ""
       @answer2 = ""
       @answer1 = ""
       @answer3 = ""
       @a = 0
-      @ne = "51.538867, -0.1084"
-      @sw = "51.538670, -0.1089"
+      @ne = "51.5389, -0.1083"
+      @sw = "51.53862, -0.109"
 
       render "xmas_q", :layout => false
 
-    when "99"
+    elsif log.stage == 99
+
       render "video", :layout => false
 
     end
