@@ -75,10 +75,10 @@
                     <td>
                       <% descs_in_order = contact.descs_in_order %>
                       <%= select_tag "select"+contact.id.to_s, options_for_select(descs_in_order.map{ |description| [description.name, description.id]}, Conshejointable.where(:sheet_id => @sheet.id, :contact_id => contact.id).first.description_id), :class=> "small_button", :style => "width: 80px; height:20px; margin: 0px" %></td>
-                    <td><% if contact != contacts.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-                    <td><% if contact != contacts.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-                    <td><% if contact != contacts.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
-                    <td><% if contact != contacts.last %><%= link_to "to bottom", to_bottom_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.first %><%= link_to "up", contacts_order_up_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.last %><%= link_to "down", contacts_order_down_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.first %><%= link_to "to top", contacts_to_top_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
+                    <td><% if contact != contacts.last %><%= link_to "to bottom", contacts_to_bottom_path(sheet_id: @sheet.id, contact_id: contact.id) %><% end %></td>
                   </tr>
                 <% end %>
               </table>
@@ -128,22 +128,21 @@
         <% if brochures.count > 0 %>
           <%= form_tag update_brochure_for_sheet_path(@sheet)  do %>
             <div class="select_box_list" style="height: 142px">
-              <table style="width:70%">
-                <col width="4%">
-                <col width="30%">
-                <col width="20%">
-                <col width="7%">
-                <col width="7%">
-                <col width="11%">
-                <col width="11%">
+              <table style="width:100%">
+                <col width="10px">
+                <col width="1*">
+                <col width="20px">
+                <col width="20px">
+                <col width="55px">
+                <col width="90px">
                 <% brochures.each do |brochure| %>
                   <tr>
                     <td><%= check_box_tag 'check'+ brochure.id.to_s %></td>
                     <td><%= link_to brochure.name, edit_brochure_path(brochure) %></td>
-                    <td><% if brochure != brochures.first %><%= link_to "up", sheet_order_up_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
-                    <td><% if brochure != brochures.last %><%= link_to "down", sheet_order_down_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
-                    <td><% if brochure != brochures.first %><%= link_to "to top", to_top_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
-                    <td><% if brochure != brochures.last %><%= link_to "to bottom", to_bottom_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+                    <td><% if brochure != brochures.first %><%= link_to "up", brochure_order_up_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+                    <td><% if brochure != brochures.last %><%= link_to "down", brochure_order_down_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+                    <td><% if brochure != brochures.first %><%= link_to "to top", brochure_to_top_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
+                    <td><% if brochure != brochures.last %><%= link_to "to bottom", brochure_to_bottom_path(sheet_id: @sheet.id, brochure_id: brochure.id) %><% end %></td>
                   </tr>
                 <% end %>
               </table>

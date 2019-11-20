@@ -15,25 +15,22 @@ class Sheet < ApplicationRecord
     email_address
   end
 
-  def check_orders_number_are_null
+  def check_contact_orders_number_are_null
     Conshejointable.where(:sheet_id => self.id, :order_number => nil ).order(:contact_id).each do |contact_sheet|
-      contact_sheet.order_number = self.max_sheet_order
+      contact_sheet.order_number = self.max_contact_order
       contact_sheet.save
     end
-
   end
 
   def check_brochure_orders_number_are_null
     Broshejointable.where(:sheet_id => self.id, :order_number => nil ).order(:brochure_id).each do |brochure_sheet|
-      brochure_sheet.order_number = self.max_sheet_order
+      brochure_sheet.order_number = self.max_brochure_order
       brochure_sheet.save
     end
-
   end
 
-
   def contacts_in_order
-    self.check_orders_number_are_null
+    self.check_contact_orders_number_are_null
     self.contacts.all.sort{|contact1, contact2|  find_contact_order(contact1.id, self.id) <=> find_contact_order(contact2.id, self.id) }
   end
 
@@ -50,7 +47,7 @@ class Sheet < ApplicationRecord
     Broshejointable.where(:brochure_id => brochure_id, :sheet_id => sheet_id).first.order_number
   end
 
-  def max_sheet_order
+  def max_contact_order
     Conshejointable.where(:sheet_id => self.id).where.not(:order_number => nil).count == 0 ? 0 : (Conshejointable.where(:sheet_id => self.id).maximum(:order_number) + 1)
   end
 
@@ -119,7 +116,6 @@ class Sheet < ApplicationRecord
       m = month_offset.months.ago
       n =  Log.where(:sheet_id => self.id).where("created_at >= ? and created_at <= ?", m.beginning_of_month, m.end_of_month).count
       v = n if n > v
-      puts "******" + n.to_s + " " + v.to_s
     end
     v.to_s
   end

@@ -20,10 +20,15 @@ Rails.application.routes.draw do
   post 'sheet/addbrochure/.:id' , to: 'sheets#add_brochure', as: :add_brochure_to_sheet
   post 'sheet/brochure_contact/.:id' , to: 'sheets#update_brochure', as: :update_brochure_for_sheet
 
-  get 'sheet/order_up/:sheet_id/:contact_id' , to: 'sheets#order_up', as: :sheet_order_up
-  get 'sheet/order_down/:sheet_id/:contact_id' , to: 'sheets#order_down', as: :sheet_order_down
-  get 'sheet/to_top/:sheet_id/:contact_id' , to: 'sheets#to_top', as: :to_top
-  get 'sheet/to_bottom/:sheet_id/:contact_id' , to: 'sheets#to_bottom', as: :to_bottom
+  get 'sheet/contacts_order_up/:sheet_id/:contact_id' , to: 'sheets#contacts_order_up', as: :contacts_order_up
+  get 'sheet/contacts_order_down/:sheet_id/:contact_id' , to: 'sheets#contacts_order_down', as: :contacts_order_down
+  get 'sheet/contacts_to_top/:sheet_id/:contact_id' , to: 'sheets#contacts_to_top', as: :contacts_to_top
+  get 'sheet/contacts_to_bottom/:sheet_id/:contact_id' , to: 'sheets#contacts_to_bottom', as: :contacts_to_bottom
+
+  get 'sheet/brochure_order_up/:sheet_id/:brochure_id' , to: 'sheets#brochure_order_up', as: :brochure_order_up
+  get 'sheet/brochure_order_down/:sheet_id/:brochure_id' , to: 'sheets#brochure_order_down', as: :brochure_order_down
+  get 'sheet/brochure_to_top/:sheet_id/:brochure_id' , to: 'sheets#brochure_to_top', as: :brochure_to_top
+  get 'sheet/brochure_to_bottom/:sheet_id/:brochure_id' , to: 'sheets#brochure_to_bottom', as: :brochure_to_bottom
 
   post 'upload_contacts_file', to:  "contacts#upload_contacts_file" , as:  :upload_contacts_file
   post 'delete_all_contacts', to:  "contacts#delete_all_contacts" , as:  :delete_all_contacts

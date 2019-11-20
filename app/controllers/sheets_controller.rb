@@ -69,15 +69,15 @@ class SheetsController < ApplicationController
   end
 
   def add_contact
-    @sheet.check_orders_number_are_null
+    @sheet.check_contact_orders_number_are_null
     Contact.all.order(:last_name, :first_name).each do |contact|
       s = params['check' + contact.id.to_s]
       if !s.blank?
-        max_order = @sheet.max_order
+        max_contact_order = @sheet.max_contact_order
         @sheet.contacts << contact
         @sheet.save
         contact_sheet = Conshejointable.where(:sheet_id => @sheet.id, :contact_id => contact.id).first
-        contact_sheet.order_number = max_order
+        contact_sheet.order_number = max_contact_order
         contact_sheet.save
       end
     end
@@ -85,15 +85,15 @@ class SheetsController < ApplicationController
   end
 
   def add_brochure
-    @sheet.check_orders_number_are_null
+    @sheet.check_contact_orders_number_are_null
     Brochure.all.order(:name).each do |brochure|
       s = params['check' + brochure.id.to_s]
       if !s.blank?
-        max_order = @sheet.max_order
+        max_brochure_order = @sheet.max_brochure_order
         @sheet.brochures << brochure
         @sheet.save
         b = Broshejointable.where(:sheet_id => @sheet.id, :brochure_id => brochure.id).first
-        b.order_number = max_order
+        b.order_number = max_brochure_order
         b.save
       end
     end
@@ -158,9 +158,9 @@ class SheetsController < ApplicationController
 
 
 
-  def order_up
+  def contact_order_up
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
     contact_sheet2 = Conshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number - 1).first
@@ -172,9 +172,9 @@ class SheetsController < ApplicationController
     redirect_to edit_sheet_path(sheet_id)
   end
 
-  def to_top
+  def contact_to_top
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
 
@@ -188,18 +188,18 @@ class SheetsController < ApplicationController
     redirect_to edit_sheet_path(sheet_id)
   end
 
-  def to_bottom
+  def contact_to_bottom
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
-    max_order = Conshejointable.where(:sheet_id => sheet_id).maximum(:order_number)
+    max_contact_order = Conshejointable.where(:sheet_id => sheet_id).maximum(:order_number)
 
     Conshejointable.where(:sheet_id => sheet_id).where("order_number > ?",contact_sheet1.order_number).each do |contact|
       contact.order_number -=1
       contact.save
     end
-    contact_sheet1.order_number = max_order
+    contact_sheet1.order_number = max_contact_order
 
     contact_sheet1.save
 
@@ -207,9 +207,9 @@ class SheetsController < ApplicationController
   end
 
 
-  def order_down
+  def contact_order_down
     sheet_id = params[:sheet_id]
-    Sheet.find(sheet_id).check_orders_number_are_null
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
     contact_id = params[:contact_id]
     contact_sheet1 = Conshejointable.where(:sheet_id => sheet_id, :contact_id => contact_id).first
     contact_sheet2 = Conshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number + 1).first
@@ -220,6 +220,78 @@ class SheetsController < ApplicationController
 
     redirect_to edit_sheet_path(sheet_id)
   end
+
+
+
+  def brochure_order_up
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    brochure_id = params[:brochure_id]
+    contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
+    contact_sheet2 = Broshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number - 1).first
+    contact_sheet1.order_number -= 1
+    contact_sheet2.order_number += 1
+    contact_sheet1.save
+    contact_sheet2.save
+
+    redirect_to edit_sheet_path(sheet_id)
+  end
+
+  def brochure_to_top
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    brochure_id = params[:brochure_id]
+    contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
+
+    Broshejointable.where(:sheet_id => sheet_id).where("order_number < ?",contact_sheet1.order_number).each do |brochure|
+      brochure.order_number +=1
+      brochure.save
+    end
+    contact_sheet1.order_number = 0
+    contact_sheet1.save
+
+    redirect_to edit_sheet_path(sheet_id)
+  end
+
+  def brochure_to_bottom
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    brochure_id = params[:brochure_id]
+    contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
+    max_brochure_order = Broshejointable.where(:sheet_id => sheet_id).maximum(:order_number)
+
+    Broshejointable.where(:sheet_id => sheet_id).where("order_number > ?",contact_sheet1.order_number).each do |brochure|
+      brochure.order_number -=1
+      brochure.save
+    end
+    contact_sheet1.order_number = max_brochure_order
+
+    contact_sheet1.save
+
+    redirect_to edit_sheet_path(sheet_id)
+  end
+
+
+  def brochure_order_down
+    sheet_id = params[:sheet_id]
+    Sheet.find(sheet_id).check_contact_orders_number_are_null
+    brochure_id = params[:brochure_id]
+    contact_sheet1 = Broshejointable.where(:sheet_id => sheet_id, :brochure_id => brochure_id).first
+    contact_sheet2 = Broshejointable.where(:sheet_id => sheet_id, :order_number  => contact_sheet1.order_number + 1).first
+    contact_sheet1.order_number += 1
+    contact_sheet2.order_number -= 1
+    contact_sheet1.save
+    contact_sheet2.save
+
+    redirect_to edit_sheet_path(sheet_id)
+  end
+
+
+
+
+
+
+
 
   def contact_sheet
     contact_sheet1(true)
