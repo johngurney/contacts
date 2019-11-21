@@ -39,8 +39,10 @@
 
     var bounds =  new google.maps.LatLngBounds(richmond_av_environs_sw, richmond_av_environs_ne);
     map.fitBounds(bounds,0);
-    var pos = new google.maps.LatLng(<%= @latitude.to_s %>, <%= @longitude.to_s %>);
-    marker.setPosition (pos);
+    <% if @latitude.present? && @longitude.present? %>
+      var pos = new google.maps.LatLng(<%= @latitude.to_s %>, <%= @longitude.to_s %>);
+      marker.setPosition (pos);
+    <% end %>
 
   }
 
