@@ -69,6 +69,8 @@ Rails.application.routes.draw do
   get "xmas_q_correct/.:id", to:  "homepage#xmas_q_correct", as: :xmas_q_correct
   get "xmas_q", to:  "homepage#xmas_q", as: :xmas_q
   get "xmas", to:  "homepage#xmas"
+  post "xmas_position", to:  "homepage#xmas_position"
+  get "xmas_monitor", to:  "homepage#xmas_monitor"
 
   get "stick_man", to:  "homepage#stick_man"
 

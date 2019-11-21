@@ -1,6 +1,6 @@
 class HomepageController < ApplicationController
   @@counter = 0
-  skip_before_action :verify_authenticity_token, only: [:position]
+  skip_before_action :verify_authenticity_token, only: [:position, :xmas_position]
 
   def homepage
     @@counter = 0
@@ -199,6 +199,70 @@ class HomepageController < ApplicationController
     end
 
   end
+
+
+
+  def xmas_position
+
+    arry = request.raw_post.split(" ")
+    token = arry[3]
+
+
+    user = XmasUser.where(:token => token).first
+    if user.present?
+      user.latitude = arry[1].to_d
+      user.longitude = arry[2].to_d
+      user.save
+      puts user.to_s
+    end
+
+
+    render json: ""
+
+  end
+
+
+
+
+  def xmas_monitor
+
+    user = XmasUser.order(:updated_at).last
+
+
+    if user.blank? || user.stage == 1
+
+       @ne = "51.5401, -0.1076"
+       @sw = "51.53915, -0.1089"
+
+    elsif user.stage == 2
+
+       @ne = "51.5418, -0.1093"
+       @sw = "51.54095, -0.11"
+
+    elsif user.stage == 3
+
+       @ne = "51.53927, -0.10985"
+       @sw = "51.53895, -0.111"
+
+    else
+
+       @ne = "51.5389, -0.1083"
+       @sw = "51.53862, -0.109"
+     end
+
+    @latitude = user.latitude
+    @longitude = user.longitude
+
+    # @latitude = 51.53926
+    # @longitude = -0.1087
+
+    render "xmas_monitor", :layout => false
+  end
+
+
+
+
+
 
   def catch_all
 

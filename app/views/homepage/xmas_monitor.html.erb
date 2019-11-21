@@ -1,0 +1,74 @@
+<style>
+  /* Always set the map height explicitly to define the size of the div
+   * element that contains the map. */
+  #map {
+    height: 90%;
+    width : 98%;
+    margin: 0 auto;
+  }
+  /* Optional: Makes the sample page fill the window. */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+</style>
+
+<script>
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      draggable: false,
+      heading: 90,
+      zoomControl: true
+    //
+    });
+
+    var richmond_av_environs_ne = new google.maps.LatLng(51.541756, -0.107020);
+    var richmond_av_environs_sw = new google.maps.LatLng(51.5375, -0.110066);
+
+    sq_ne = new google.maps.LatLng(<%= @ne %>);
+    sq_sw = new google.maps.LatLng(<%= @sw %>);
+
+    set_square(sq_ne, sq_ne, 2);
+
+    marker = new google.maps.Marker({
+        map: map
+      });
+
+    var bounds =  new google.maps.LatLngBounds(richmond_av_environs_sw, richmond_av_environs_ne);
+    map.fitBounds(bounds,0);
+    var pos = new google.maps.LatLng(<%= @latitude.to_s %>, <%= @longitude.to_s %>);
+    marker.setPosition (pos);
+
+  }
+
+  function set_square(){
+
+
+    line = new google.maps.Polyline({
+      geodesic: true,
+      strokeColor: "blue",
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+
+    var path = [];
+    path.push({lat: sq_ne.lat(), lng: sq_ne.lng() });
+    path.push({lat: sq_ne.lat(), lng: sq_sw.lng() });
+    path.push({lat: sq_sw.lat(), lng: sq_sw.lng() });
+    path.push({lat: sq_sw.lat(), lng: sq_ne.lng() });
+    path.push({lat: sq_ne.lat(), lng: sq_ne.lng() });
+
+    line.setPath(path);
+    line.setMap(map);
+
+    in_the_square_flag = false;
+  }
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-MiNsHFnMMt2RS_MzZeKZTUoUS-ITdFI&callback=initMap" async defer></script>
+
+<div id="map"></div>
