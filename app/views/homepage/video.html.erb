@@ -1,10 +1,8 @@
 <style>
   .video {
- max-width: 90%;
- max-height: 90%;
- width: 90%;
- height: auto;
-}
+      width: 100%;
+      height: 100%;
+      margin: auto;
+  }
 </style>
-
-<%= video_tag "gandg.mp4", class: "video", autoplay: :autoplay %>
+<%= video_tag "gandg.mp4", class: "video", autoplay: :autoplay, controls: :controls %>

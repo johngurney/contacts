@@ -71,6 +71,7 @@ Rails.application.routes.draw do
   get "xmas", to:  "homepage#xmas"
   post "xmas_position", to:  "homepage#xmas_position"
   get "xmas_monitor", to:  "homepage#xmas_monitor"
+  get "xmas_test", to:  "homepage#xmas_test"
 
   get "stick_man", to:  "homepage#stick_man"
 

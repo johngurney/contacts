@@ -111,6 +111,10 @@ class HomepageController < ApplicationController
 
   end
 
+  def xmas_test
+    render "video", :layout => false
+  end
+
   def cookie_consent
 
     cookies.permanent[:contacts_cookie_consent] = true if params[:cookie_consent] == "1"
