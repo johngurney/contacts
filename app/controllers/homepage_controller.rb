@@ -81,8 +81,8 @@ class HomepageController < ApplicationController
       @answer1 = "Four"
       @answer3 = "Five"
       @a = 3
-      @ne = "51.53927, -0.10985"
-      @sw = "51.53895, -0.111"
+      @ne = "51.53945, -0.10975"
+      @sw = "51.53890, -0.111"
 
       render "xmas_q", :layout => false
 
