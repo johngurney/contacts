@@ -384,6 +384,7 @@ class HomepageController < ApplicationController
   end
 
   def video
+    render "video", :layout => false
   end
 
 
