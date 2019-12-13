@@ -49,26 +49,26 @@ class HomepageController < ApplicationController
 
       @next_q = 2
       @ordinal = "first"
-      @question = "Q1.  What is the colour of the front door at number 35?"
-      @answer1 = "Red"
-      @answer2 = "Yellow"
-      @answer3 = "Blue"
-      @a = 2
-      @ne = "51.5401, -0.1076"
-      @sw = "51.53915, -0.1089"
+      @question = "Q1.  What times are the Sunday services at St Andrew's church?"
+      @answer1 = "8am and 9am"
+      @answer2 = "9am and 10am"
+      @answer3 = "9am and 10.30am"
+      @a = 3
+      @ne = "51.5410, -0.114494"
+      @sw = "51.539369, -0.116"
       render "xmas_q", :layout => false
 
   elsif log.stage == 2
 
       @next_q = 3
       @ordinal = "second"
-      @question = "Q2.  What is the name of the villas at numbers 23 and 25?"
-      @answer1 = "Devonshire"
-      @answer2 = "Cornwall"
-      @answer3 = "Somerset"
+      @question = "Q2.  Go into the playground.  Near the building is a metal cabinet.  What is the telephone number of G&R Outdoor Lighting?"
+      @answer1 = "01923 269474"
+      @answer2 = "06658 841025"
+      @answer3 = "02439 962479"
       @a = 1
-      @ne = "51.5418, -0.1093"
-      @sw = "51.54095, -0.11"
+      @ne = "51.538413, -0.112078"
+      @sw = "51.537899, -0.113240"
 
       render "xmas_q", :layout => false
 
@@ -76,13 +76,13 @@ class HomepageController < ApplicationController
 
       @next_q = 4
       @ordinal = "third"
-      @question = "Q3.  How many circles are above the door at number 1?"
-      @answer2 = "Two"
-      @answer1 = "Four"
-      @answer3 = "Five"
-      @a = 3
-      @ne = "51.53945, -0.10975"
-      @sw = "51.53890, -0.111"
+      @question = "Q3.  What colour are the doors on the church??"
+      @answer1 = "Light blue"
+      @answer2 = "Black"
+      @answer3 = "Red"
+      @a = 1
+      @ne = "51.537696, -0.10767"
+      @sw = "51.5371, -0.108697"
 
       render "xmas_q", :layout => false
 
