@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   resources :users
   get 'temp', to: "contacts#temp"
   get "video", to:  "homepage#video", as: :video
+  get "xmas_eve_video", to: "homepage#xmas_eve_video"
 
   match  "*path", to:"homepage#catch_all", via: :get
 

@@ -387,6 +387,9 @@ class HomepageController < ApplicationController
     render "video", :layout => false
   end
 
+  def xmas_eve_video
+    render "xmas_eve_video", :layout => false
+  end
 
 
 end

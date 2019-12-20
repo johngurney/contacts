@@ -133,6 +133,10 @@
     var islington_ne = new google.maps.LatLng(51.550872, -0.094647);
     var islington_sw = new google.maps.LatLng(51.530205, -0.122398);
 
+    var woodstock_ne = new google.maps.LatLng(51.85, -1.35);
+    var woodstock_sw = new google.maps.LatLng(51.845, -1.36);
+
+
     sq_ne = new google.maps.LatLng(<%= @ne %>);
     sq_sw = new google.maps.LatLng(<%= @sw %>);
 
@@ -142,7 +146,7 @@
         map: map
       });
 
-    var bounds =  new google.maps.LatLngBounds(richmond_av_environs_sw, richmond_av_environs_ne);
+    var bounds =  new google.maps.LatLngBounds(woodstock_sw, woodstock_ne);
     map.fitBounds(bounds,0);
 
     // alert("test");
