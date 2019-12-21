@@ -186,7 +186,7 @@
 </script>
 <meta name = "format-detection" content = "telephone=no">
 <%= form_tag xmas_q_correct_path(@next_q), :id => "form_q", :method =>'get' do  %>
-  <div id="q" style="display: none" class="ringed_box">
+  <div id="q" style="display1: none" class="ringed_box">
 
     <% if @next_q != 99 %>
       <div class="flex_col">
@@ -208,7 +208,7 @@
         </div>
       </div>
     <% else %>
-      Back at 93 RA.  Now go in the house and when inside press this button.
+      Back at the hotel.  Now go in the and when inside press this button.
       <%= submit_tag "Press", :class => "small_button" %>
 
     <% end %>

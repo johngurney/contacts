@@ -49,26 +49,26 @@ class HomepageController < ApplicationController
 
       @next_q = 2
       @ordinal = "first"
-      @question = "Q1.  What times are the Sunday services at St Andrew's church?"
-      @answer1 = "8am and 9am"
-      @answer2 = "9am and 10am"
-      @answer3 = "9am and 10.30am"
-      @a = 3
-      @ne = "51.5410, -0.114494"
-      @sw = "51.539369, -0.116"
+      @question = "Q1.  What is the telephone number of the Marlborough Arms"
+      @answer1 = "07621 826 922"
+      @answer2 = "01903 811 237"
+      @answer3 = "08590 143 600"
+      @a = 2
+      @ne = "51.8485, -1.355"
+      @sw = "51.8478, -1.3541"
       render "xmas_q", :layout => false
 
   elsif log.stage == 2
 
       @next_q = 3
       @ordinal = "second"
-      @question = "Q2.  Go into the playground.  Near the building is a metal cabinet.  What is the telephone number of G&R Outdoor Lighting?"
-      @answer1 = "01923 269474"
-      @answer2 = "06658 841025"
-      @answer3 = "02439 962479"
+      @question = "Q2. Numner 83a is the: "
+      @answer1 = "Old Bakery?"
+      @answer2 = "Old Shoesmith?"
+      @answer3 = "Old Mill"
       @a = 1
-      @ne = "51.538413, -0.112078"
-      @sw = "51.537899, -0.113240"
+      @ne = "51.849, -1.357"
+      @sw = "51.8486, -1.3591"
 
       render "xmas_q", :layout => false
 
@@ -76,13 +76,13 @@ class HomepageController < ApplicationController
 
       @next_q = 4
       @ordinal = "third"
-      @question = "Q3.  What colour are the doors on the church??"
-      @answer1 = "Light blue"
-      @answer2 = "Black"
-      @answer3 = "Red"
-      @a = 1
-      @ne = "51.537696, -0.10767"
-      @sw = "51.5371, -0.108697"
+      @question = "Q3.  Spencer Court in run by whom?"
+      @answer1 = "The St Andrew Care Trust"
+      @answer2 = "The St Luke Care Trust"
+      @answer3 = "The St John Care Trust"
+      @a = 3
+      @ne = "51.8497, -1.353"
+      @sw = "51.849, -1.355"
 
       render "xmas_q", :layout => false
 
@@ -97,8 +97,8 @@ class HomepageController < ApplicationController
       @answer1 = ""
       @answer3 = ""
       @a = 0
-      @ne = "51.5389, -0.1083"
-      @sw = "51.53862, -0.109"
+      @ne = "51.848, -1.3556"
+      @sw = "51.8472, -1.3575"
 
       render "xmas_q", :layout => false
 
