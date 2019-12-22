@@ -83,14 +83,20 @@
     }
   }
 
-  var sq_ne, sq_sw, marker, line, map, in_the_square_flag = false;
+  var sq_ne, sq_sw, marker, line, map, in_the_square_flag = false, n = 0;
 
   function checkPosition(position) {
+    n+=1;
 
     var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     marker.setPosition (pos);
     var current_time = new Date().getTime();
 
+    if ((!in_the_square_flag && position.coords.latitude > sq_sw.lat() && position.coords.latitude < sq_ne.lat() &&
+    position.coords.longitude > sq_sw.lng() && position.coords.longitude < sq_ne.lng()) || n > 0 ) {
+      in_the_square_flag = true;
+      document.getElementById("q").style.display = "block";
+    } ;
 
     if ((last_monitor == null) || (current_time - last_monitor > monitor_period))
       {
@@ -102,11 +108,6 @@
         xhr.send(time_string + " " + position.coords.latitude + " " + position.coords.longitude + " <%= cookies[:xmas_token].to_s %>");
       }
 
-    if (!in_the_square_flag && position.coords.latitude > sq_sw.lat() && position.coords.latitude < sq_ne.lat() &&
-      position.coords.longitude > sq_sw.lng() && position.coords.longitude < sq_ne.lng()) {
-      in_the_square_flag = true;
-      document.getElementById("q").style.display = "block";
-    } ;
   }
 
 
@@ -190,7 +191,7 @@
 
     <% if @next_q != 99 %>
       <div class="flex_col">
-        You have arrived at your <%= @ordinal %> destination.<br/><br/>
+        Go to your <%= @ordinal %> destination.<br/><br/>
         <%= @question %>
         <div class="flex_row">
           <div class="small_ringed_box">

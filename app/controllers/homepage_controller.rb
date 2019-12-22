@@ -62,7 +62,7 @@ class HomepageController < ApplicationController
 
       @next_q = 3
       @ordinal = "second"
-      @question = "Q2. Numner 83a is the: "
+      @question = "Q2. Number 83a is the: "
       @answer1 = "Old Bakery?"
       @answer2 = "Old Shoesmith?"
       @answer3 = "Old Mill"
