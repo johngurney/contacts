@@ -90,20 +90,20 @@
 
     var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-    alert(sq_sw.lat() + " <> " + position.coords.latitude  + " <> " + sq_ne.lat() + "\n" + sq_sw.lng() + " <> " + position.coords.longitude  + " <> " + sq_ne.lng())
+    // alert(sq_sw.lat() + " <> " + position.coords.latitude  + " <> " + sq_ne.lat() + "\n" + sq_sw.lng() + " <> " + position.coords.longitude  + " <> " + sq_ne.lng())
     marker.setPosition (pos);
     var current_time = new Date().getTime();
 
     if ((!in_the_square_flag && position.coords.latitude > sq_sw.lat() && position.coords.latitude < sq_ne.lat() &&
     position.coords.longitude > sq_sw.lng() && position.coords.longitude < sq_ne.lng()) ) {
       in_the_square_flag = true;
-      alert("in the square");
+      // alert("in the square");
       document.getElementById("q").style.display = "block";
     } ;
 
     if ((last_monitor == null) || (current_time - last_monitor > monitor_period))
       {
-        alert("send pos");
+        // alert("send pos");
         last_monitor = current_time;
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "xmas_position", true);

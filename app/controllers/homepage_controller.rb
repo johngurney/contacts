@@ -54,10 +54,8 @@ class HomepageController < ApplicationController
       @answer2 = "3pm to 4pm Sundays"
       @answer3 = "12pm to 1pm Wednesdays"
       @a = 1
-      @ne = "51.5392, -0.1092"
-      @sw = "51.5382, -0.1113"
-      # @ne = "51.5423, -0.1095"
-      # @sw = "51.54145, -0.1118"
+      @ne = "51.5423, -0.1095"
+      @sw = "51.54145, -0.1118"
       render "xmas_q", :layout => false
 
   elsif log.stage == 2
