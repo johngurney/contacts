@@ -23,6 +23,12 @@ module Contacts
       File.rename(filename1, filename2)
     end
 
+    filename1 = Rails.root.join('app', 'assets', 'images','*.mp4')
+    Dir.glob(filename1, File::FNM_CASEFOLD).each do |filename1|
+      ext = File.extname(filename1)
+      filename2 = File.dirname(filename1) + "/" + File.basename(filename1).gsub(ext, "") + ext.downcase
+      File.rename(filename1, filename2)
+    end
 
 
     # Settings in config/environments/* take precedence over those specified here.
