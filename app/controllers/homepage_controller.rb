@@ -49,26 +49,28 @@ class HomepageController < ApplicationController
 
       @next_q = 2
       @ordinal = "first"
-      @question = "Q1.  What is the telephone number of the Marlborough Arms"
-      @answer1 = "07621 826 922"
-      @answer2 = "01903 811 237"
-      @answer3 = "08590 143 600"
-      @a = 2
-      @ne = "51.8485, -1.355"
-      @sw = "51.8478, -1.3541"
+      @question = "Q1.  In Barnsbury Sq there is a brick building with a noticeboard.  What time is the \"volunteer gardening\"?"
+      @answer1 = "10am to 11am Saturdays"
+      @answer2 = "3pm to 4pm Sundays"
+      @answer3 = "12pm to 1pm Wednesdays"
+      @a = 1
+      @ne = "51.5392, -0.1092"
+      @sw = "51.5382, -0.1113"
+      # @ne = "51.5423, -0.1095"
+      # @sw = "51.54145, -0.1118"
       render "xmas_q", :layout => false
 
   elsif log.stage == 2
 
       @next_q = 3
       @ordinal = "second"
-      @question = "Q2. Number 83a is the: "
-      @answer1 = "Old Bakery?"
-      @answer2 = "Old Shoesmith?"
-      @answer3 = "Old Mill"
-      @a = 1
-      @ne = "51.849, -1.357"
-      @sw = "51.8486, -1.3591"
+      @question = "Q2. What is the name of number 10 Ripplevale Grove? "
+      @answer1 = "Caldeonian Cottage"
+      @answer2 = "Albion Cottage"
+      @answer3 = "Hibernian Cottage"
+      @a = 2
+      @ne = "51.5402, -0.1092"
+      @sw = "51.5395, -0.1113"
 
       render "xmas_q", :layout => false
 
@@ -76,13 +78,13 @@ class HomepageController < ApplicationController
 
       @next_q = 4
       @ordinal = "third"
-      @question = "Q3.  Spencer Court in run by whom?"
-      @answer1 = "The St Andrew Care Trust"
-      @answer2 = "The St Luke Care Trust"
-      @answer3 = "The St John Care Trust"
-      @a = 3
-      @ne = "51.8497, -1.353"
-      @sw = "51.849, -1.355"
+      @question = "Q3.  What are the opening times of \"Angels Corner Mini Market\" on Fridays and Saturdays?"
+      @answer1 = "8am to 11pm"
+      @answer2 = "7am to 10pm"
+      @answer3 = "7am to 11pm"
+      @a = 1
+      @ne = "51.536, -0.109"
+      @sw = "51.535, -0.11"
 
       render "xmas_q", :layout => false
 

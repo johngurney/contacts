@@ -14,6 +14,17 @@ module Contacts
 
     config.system_password = "elephants"
 
+    #This code just renders on startup the ext lowercase on all movie files in assets/images
+
+    filename1 = Rails.root.join('app', 'assets', 'images','*.mov')
+    Dir.glob(filename1, File::FNM_CASEFOLD).each do |filename1|
+      ext = File.extname(filename1)
+      filename2 = File.dirname(filename1) + "/" + File.basename(filename1).gsub(ext, "") + ext.downcase
+      File.rename(filename1, filename2)
+    end
+
+
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

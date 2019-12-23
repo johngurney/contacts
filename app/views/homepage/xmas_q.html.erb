@@ -64,7 +64,7 @@
 
 <script>
 
-  var timeout_period = 5 * 1000;  // 5 seconds
+  var timeout_period = 15 * 1000;  // 5 seconds
   var monitor_period = 30 * 1000;  // 5 seconds
   var last_monitor = null;  // 5 seconds
 
@@ -89,17 +89,21 @@
     n+=1;
 
     var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+    alert(sq_sw.lat() + " <> " + position.coords.latitude  + " <> " + sq_ne.lat() + "\n" + sq_sw.lng() + " <> " + position.coords.longitude  + " <> " + sq_ne.lng())
     marker.setPosition (pos);
     var current_time = new Date().getTime();
 
     if ((!in_the_square_flag && position.coords.latitude > sq_sw.lat() && position.coords.latitude < sq_ne.lat() &&
-    position.coords.longitude > sq_sw.lng() && position.coords.longitude < sq_ne.lng()) || n > 0 ) {
+    position.coords.longitude > sq_sw.lng() && position.coords.longitude < sq_ne.lng()) ) {
       in_the_square_flag = true;
+      alert("in the square");
       document.getElementById("q").style.display = "block";
     } ;
 
     if ((last_monitor == null) || (current_time - last_monitor > monitor_period))
       {
+        alert("send pos");
         last_monitor = current_time;
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "xmas_position", true);
@@ -128,7 +132,7 @@
     var lonsdale_sq_ne = new google.maps.LatLng(51.53995, -0.1077);
     var lonsdale_sq_sw = new google.maps.LatLng(51.53926, -0.1087);
 
-    var barnsbury_ne = new google.maps.LatLng(51.544328, -0.106652);
+    var barnsbury_ne = new google.maps.LatLng(51.5419, -0.106652);
     var barnsbury_sw = new google.maps.LatLng(51.536808, -0.116385);
 
     var islington_ne = new google.maps.LatLng(51.550872, -0.094647);
@@ -147,7 +151,7 @@
         map: map
       });
 
-    var bounds =  new google.maps.LatLngBounds(woodstock_sw, woodstock_ne);
+    var bounds =  new google.maps.LatLngBounds(barnsbury_sw, barnsbury_ne);
     map.fitBounds(bounds,0);
 
     // alert("test");
@@ -191,7 +195,7 @@
 
     <% if @next_q != 99 %>
       <div class="flex_col">
-        Go to your <%= @ordinal %> destination.<br/><br/>
+        You have arrived at your <%= @ordinal %> destination.<br/><br/>
         <%= @question %>
         <div class="flex_row">
           <div class="small_ringed_box">
@@ -209,7 +213,7 @@
         </div>
       </div>
     <% else %>
-      Back at the hotel.  Now go in the and when inside press this button.
+      Back at the house.  Now go in the and when inside press this button.
       <%= submit_tag "Press", :class => "small_button" %>
 
     <% end %>
