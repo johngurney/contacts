@@ -1,0 +1,93 @@
+<% time_start = 7 %>
+<% time_end = 21 %>
+<% time_step  = 2 %>
+<% number_days  = 3 %>
+
+<style>
+  .small_button{
+    width: 60px;
+    height: 18px;
+    font-family: Arial;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 9pt;
+    border: 1px solid blue;
+    color: black;
+    background: white;
+  }
+</style>
+
+<center><h1>Corona virus</h1>
+<h2>Trips to Sainsbury's, Marks & Spencer and Waitrose in Angel, Islington</h2>
+</center>
+This site is designed to try and smooth as evenly as possible across the day the attendance of customers at Sainsbury's, Marks & Spencer and Waitrose in Angel, Islington by indicating the time and date others are proposing to attend over the next three days.  By smooting the attendance, we hope to decrease the congestion at any one time, thus making it safer.<br/>
+<br/>
+Please note<br/>
+<ul>
+
+<li>the clear advice from the Government is to go out to the shops only if it is strictly necessary and as little as possible and where possible to use home delivery (links to the main supermarkets' home delivery service is below).  This site is not intended to detract from that advice in any way at all.  It is merely intended to assist those who need to go shopping to schedule any visit to the  shops at a time whcih is likely to be less busy</li>
+<li>this is not a permission system, you are perfectly at liberty to attend at the shops at any time despite what you say here.  Nonetheless, it is plainly helpful to your fellow citizens of Islington that you indicate the time you propose to attend and stick to it so that others can go at different times thus easing the congestion at any one time</li>
+<li>this site will be useful only to the extent that it is used by people in Islington to indicate when they intend to go shopping</li>
+<li>the time slots below do not necessarily indicate the actual opening times of these shops.  These are available here: <%= link_to "Sainsbury's", "https://stores.sainsburys.co.uk/0500/islington" %>; <%= link_to "Waitrose", "https://www.waitrose.com/bf_home/bf/780.html" %>; and <%= link_to "M&S", "https://www.marksandspencer.com/MSStoreDetailsView?storeId=10151&langId=-24&SAPStoreId=0725" %>.  Also, the shops may be operating preference hours for the elderly or NHS workers - check these sites</br>
+</li>
+<li>below is a short statement of our data use policy</li>
+</ul>
+To use this system, click on the time slot and date to indicate the time you intend to attend.  The number is any box in the table indicates the number of people currently intending to visit in that time slot on that day (but remember that is only the minority of people who will be using this site).  Your current selection (if any) is highlighted in light blue.
+<br/>
+<br/>
+<%= form_tag  shop_select_path, method: "post" do %>
+  <%= hidden_field_tag :date, Date.today.strftime("%Y%m%d") %>
+  <table style="width: 100%; border: 1px solid blue;" >
+    <% time_start.step(time_end,time_step).each do |h| %>
+      <col width="10%">
+      <col width="10%">
+    <% end %>
+    <col width="10%">
+    <tr>
+      <td>
+      </td>
+      <% time_start.step(time_end,time_step).each do |h| %>
+        <td>
+          <% t = Time.new(2000,1,1,h,0,0,0) %>
+          <%= time_from_to(h,time_step) %>
+        </td>
+      <% end %>
+    </tr>
+
+    <% (0...number_days).each do |d| %>
+      <tr>
+        <td>
+          <%= (Date.today + d.day).strftime("%a, %e %b")   %>
+        </td>
+        <% time_start.step(time_end,time_step).each do |h| %>
+          <td <%= Shopvisit.where(:user => cookies[:shops_cookie], :visitdate => Date.today + d.day, :visit_time => h).count > 0 ? "bgcolor=lightblue" : "" %> >
+            <%= Shopvisit.where(:visitdate => Date.today + d.day, :visit_time => h).count.to_s %>
+            <%= submit_tag "Select", {:name =>"s" + d.to_s + "_" + h.to_s , :class=>"small_button", :style => "margin-left: 20px"} %>
+          </td>
+        <% end %>
+        <td >
+          <%= submit_tag "Cancel", {:name =>"c" + d.to_s, :class=>"small_button"} %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
+
+<table width="100%">
+  <col width="50%">
+  <col width="50%">
+  <tr>
+    <td>
+      <h2>Useful links</h2>
+      <%= link_to "Sainsbury's", "https://www.sainsburys.co.uk/" %></br>
+      <%= link_to "Ocade", "https://www.ocado.co.uk/" %></br>
+      <%= link_to "Tesco", "https://www.tesco.co.uk/" %></br>
+      <%= link_to "Morrisons", "https://www.morrison.co.uk/" %></br>
+      <%= link_to "Asda", "https://www.asda.co.uk/" %></br>
+    </td>
+    <td>
+      <h2>Data use policy</h2>
+      This site uses data identifying the computer you are using to identify your preference for the time slot and date for shopping.  This information is displayed in aggregate to other users.  We do not use this information for any other purpose.  We delete these data as soon as possible after the dates to which they relate.
+    </td>
+  </tr>
+</table>

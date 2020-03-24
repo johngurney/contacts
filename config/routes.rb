@@ -30,6 +30,10 @@ Rails.application.routes.draw do
   get 'sheet/brochure_to_top/:sheet_id/:brochure_id' , to: 'sheets#brochure_to_top', as: :brochure_to_top
   get 'sheet/brochure_to_bottom/:sheet_id/:brochure_id' , to: 'sheets#brochure_to_bottom', as: :brochure_to_bottom
 
+  get 'shops' , to: 'homepage#shops', as: :shops
+  post 'shop_select' , to: 'homepage#shop_select', as: :shop_select
+  post 'shops_cookie_consent'=> 'homepage#shops_cookie_consent', as: :shops_cookie_consent
+
   post 'upload_contacts_file', to:  "contacts#upload_contacts_file" , as:  :upload_contacts_file
   post 'delete_all_contacts', to:  "contacts#delete_all_contacts" , as:  :delete_all_contacts
 

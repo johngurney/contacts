@@ -1,0 +1,2 @@
+class Shopvisit < ApplicationRecord
+end

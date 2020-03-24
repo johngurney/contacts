@@ -62,7 +62,7 @@ class HomepageController < ApplicationController
 
       @next_q = 3
       @ordinal = "second"
-      @question = "Q2. What is the name of number 10 Ripplevale Grove? "
+      @question = "Q2. What is the name of number 4 Ripplevale Grove? "
       @answer1 = "Caldeonian Cottage"
       @answer2 = "Albion Cottage"
       @answer3 = "Hibernian Cottage"
@@ -391,5 +391,50 @@ class HomepageController < ApplicationController
     render "xmas_eve_video", :layout => false
   end
 
+  def shops
+    render "shops", :layout => false
+  end
+
+  def shop_select
+    d = -1
+    (0..4).each do |d1|
+       if params["c" + d1.to_s].present?
+         d = d1
+         break
+       end
+    end
+    if d >=0
+      dte = Date.parse(params[:date]) + d.days
+      Shopvisit.where(:user => cookies[:shops_cookie], :visitdate => dte).delete_all
+
+    else
+
+      h = 0
+      d = 0
+      (0..23).each do |h1|
+        (0..4).each do |d1|
+           if params["s" + d1.to_s + "_" + h1.to_s].present?
+             h = h1
+             d = d1
+             break
+           end
+        end
+      end
+      dte = Date.parse(params[:date]) + d.days
+
+      Shopvisit.where(:user => cookies[:shops_cookie], :visitdate => dte).delete_all
+      Shopvisit.create(:user => cookies[:shops_cookie], :visitdate => dte, :visit_time => h)
+    end
+    redirect_to shops_path
+
+  end
+
+  def shops_cookie_consent
+
+    o = [('a'..'z'), ('A'..'Z'), ('0'..'9')].map(&:to_a).flatten
+    cookies.permanent[:shops_cookie] = (0...16).map { o[SecureRandom.random_number(o.length)] }.join if params[:cookie_consent] == "1"
+    redirect_to shops_path
+
+  end
 
 end

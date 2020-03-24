@@ -1,11 +1,19 @@
 class ApplicationController < ActionController::Base
 
-  before_action :check_cookie_consent, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct ]
-  before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct]
+  before_action :check_cookie_consent, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops ]
+  before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops]
+  before_action :check_cookie_consent_shops, only: [:shops]
 
   def check_cookie_consent
     if cookies[:contacts_cookie_consent].blank?
       render 'general/cookie_consent'
+      false
+    end
+  end
+
+  def check_cookie_consent_shops
+    if cookies[:shops_cookie].blank?
+      render 'general/cookie_consent_shops'
       false
     end
   end
