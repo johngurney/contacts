@@ -1,0 +1,45 @@
+<div class="hand" style="<%= hand_type == "play" ||  hand_type == "deck" || hand_type == "crib" ? "background-color: green;" : "" %>width: <%= wdth %>; overflow: hidden">
+  <div class="mainRunner" style="display: flex; flex-direction: row; flex-wrap: nowrap <%= hand_type == "deck" ? ";margin-left: 100px" : "" %>" >
+    <% n = 0 %>
+    <% cards.each do |card| %>
+      <div class="dropdown" style = "left: -<%= (n * 153).to_s %>px">
+        <% if hand_type == "deck" %>
+          <% id = 100 %>
+        <% elsif hand_type == "crib" %>
+          <% id = 101 %>
+        <% else %>
+          <% id = card[:card] %>
+        <% end %>
+
+        <%= image_tag card_filename(from_number_to_card( card[:back] ? -1 : card[:card] )), :id => "card" + id.to_s, :class => "card", :onmousedown => "mouse_down(" + id.to_s + ")" %>
+        <% if (hand_type == "hand" and !card[:back]) or (hand_type == "play" ) or (hand_type == "deck" and card[:back])  or (hand_type == "crib" and card[:back]) %>
+
+          <div id="myDropdown<%= id.to_s %>" class="dropdown-content">
+            <%= image_tag card_filename(from_number_to_card(card[:back] ? -1 : card[:card])), :width => "20" %>
+            <% if hand_type == "hand" %>
+              <% if cards.first[:card] != card[:card] %>
+                <a href='javascript: crib_move_card(<%=card[:card].to_s%>,"l")'>Move left</a>
+              <% end %>
+              <% if cards.last[:card] != card[:card] %>
+                <a href='javascript: crib_move_card(<%=card[:card].to_s%>,"r")'>Move right</a>
+              <% end %>
+              <% if enable_play(player) %>
+                <a href='javascript: crib_move_card(<%=card[:card].to_s%>,"p")'>Play</a>
+              <% end %>
+              <% if enable_crib(player) %>
+                <a href='javascript: crib_move_card(<%=card[:card].to_s%>,"c")'>To crib</a>
+              <% end %>
+            <% elsif hand_type == "play" && play_turnover(player )%>
+              <a href='javascript: crib_move_card(<%=card[:card].to_s%>,"t")'>Turn over</a>
+            <% elsif hand_type == "crib" && Card.where(:position => ["playopen", "playturned"]).count >= 8 %>
+              <a href='javascript: crib_move_card("","o")'>Turn over</a>
+            <% elsif hand_type == "deck" && Card.where(:position => "crib").count >= 4 %>
+              <a href='javascript: crib_move_card("","d")'>Turn over</a>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <% n += 1 %>
+    <% end %>
+  </div>
+</div>

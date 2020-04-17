@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_24_162228) do
+ActiveRecord::Schema.define(version: 2020_04_17_131242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 2020_03_24_162228) do
     t.integer "order_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "cards", force: :cascade do |t|
+    t.integer "card"
+    t.string "position"
+    t.integer "order"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "player"
   end
 
   create_table "conshejointables", force: :cascade do |t|
@@ -62,6 +71,15 @@ ActiveRecord::Schema.define(version: 2020_03_24_162228) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "description_id"
+  end
+
+  create_table "cribplayers", force: :cascade do |t|
+    t.integer "number"
+    t.string "key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "lastplay"
+    t.integer "score"
   end
 
   create_table "descriptions", force: :cascade do |t|

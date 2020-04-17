@@ -1,0 +1,474 @@
+<%= javascript_include_tag 'channels/crib.js' %>
+<%= javascript_include_tag 'cable.js' %>
+
+
+<% player = Cribplayer.where(:key => cookies[:crib_id]).first %>
+<% other_player = player.other_player %>
+<% player1 = Cribplayer.where(:number => 1).first %>
+<% player2 = Cribplayer.where(:number => 2).first %>
+
+<script type="text/javascript">
+  window.onload = update_scoreboard_on_load;
+
+  (function ()  {
+    start_up();
+    }).call(this);
+    <% if player1.present? && player2.present? %>
+    function update_scoreboard_on_load() {
+      update_scoreboard(<%= player1.score.to_i%>, <%= player2.score.to_i%>);
+    <% end %>
+    }
+
+    var w, h;
+    var left_margin = 0.2, right_margin = 0.05;
+    var number_of_sets = 6, holes_per_set = 5;
+    var gap_between_sets = 0.03;
+    var distance_between_holes, distance_between_sets;
+
+
+    function update_scoreboard(Player1Score, Player2Score) {
+
+          var c = document.getElementById("myCanvas");
+          var ctx = c.getContext("2d");
+          ctx.lineWidth = "0";
+          ctx.fillStyle = "#ff8c1a";
+          ctx.fillRect(0, 0, c.width, c.height);
+
+          w = c.width;
+          h = c.height;
+
+          distance_between_holes = w * (1-left_margin - right_margin - ( number_of_sets - 1 ) * gap_between_sets ) / ( number_of_sets * holes_per_set );
+          distance_between_sets = holes_per_set * distance_between_holes + gap_between_sets * w;
+
+          ctx.fillStyle = "#994d00";
+
+          ctx.font = "16px Arial";
+          ctx.textAlign = "left";
+          ctx.fillText("Player 1", 10, 20);
+          ctx.fillText("Player 2", 10, 54);
+
+          ctx.textAlign = "right";
+          ctx.fillText(Player1Score, w * ( 1 - right_margin / 5 ), 20);
+          ctx.fillText(Player2Score, w * ( 1 - right_margin / 5 ), 54);
+
+          ctx.textAlign = "left";
+
+          ctx.font = "12px Arial";
+
+          ctx.fillText("+1", 80, 18);
+          ctx.beginPath();
+          ctx.rect(78, 6, 17, 15);
+          ctx.stroke();
+          ctx.fillText("+2", 100, 18);
+          ctx.beginPath();
+          ctx.rect(98, 6, 17, 15);
+          ctx.stroke();
+          ctx.fillText("+5", 120, 18);
+          ctx.beginPath();
+          ctx.rect(118, 6, 17, 15);
+          ctx.stroke();
+
+          ctx.fillText("-1", 150, 18);
+          ctx.beginPath();
+          ctx.rect(148, 6, 17, 15);
+          ctx.stroke();
+          ctx.fillText("-5", 170, 18);
+          ctx.beginPath();
+          ctx.rect(168, 6, 17, 15);
+          ctx.stroke();
+
+
+          ctx.font = "12px Arial";
+          ctx.fillText("+1", 80, 52);
+          ctx.beginPath();
+          ctx.rect(78, 40, 17, 15);
+          ctx.stroke();
+          ctx.fillText("+2", 100, 52);
+          ctx.beginPath();
+          ctx.rect(98, 40, 17, 15);
+          ctx.stroke();
+          ctx.fillText("+5", 120, 52);
+          ctx.beginPath();
+          ctx.rect(118, 40, 17, 15);
+          ctx.stroke();
+
+          ctx.fillText("-1", 150, 52);
+          ctx.beginPath();
+          ctx.rect(148, 40, 17, 15);
+          ctx.stroke();
+          ctx.fillText("-5", 170, 52);
+          ctx.beginPath();
+          ctx.rect(168, 40, 17, 15);
+          ctx.stroke();
+
+
+          for (n1 = 0; n1 < number_of_sets; n1++) {
+            for (n2 = 0; n2 < holes_per_set; n2++) {
+              ctx.beginPath();
+              ctx.arc(left_margin * w + n1 * distance_between_sets + n2 * distance_between_holes, 10, 2, 0, 2 * Math.PI);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.arc(left_margin * w + n1 * distance_between_sets + n2 * distance_between_holes, 20, 2, 0, 2 * Math.PI);
+              ctx.stroke();
+
+              ctx.beginPath();
+              ctx.arc(left_margin * w + n1 * distance_between_sets + n2 * distance_between_holes, 45, 2, 0, 2 * Math.PI);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.arc(left_margin * w + n1 * distance_between_sets + n2 * distance_between_holes, 55, 2, 0, 2 * Math.PI);
+              ctx.stroke();
+
+            }
+
+          }
+
+          ctx.fillStyle = "blue";
+          if (Player1Score > 0){
+            plot_score(ctx, Player1Score, 10);
+          }
+          if (Player2Score > 0){
+            plot_score(ctx, Player2Score, 45);
+          }
+
+
+        }
+
+
+        function plot_score(ctx, playerscore, voffset){
+          playerscore -=1;
+          playerscore %= 60;
+          if ( playerscore >= 30 ) {
+            playerscore = 59 - playerscore;
+            voffset += 10;
+          }
+
+          ctx.beginPath();
+          ctx.arc(left_margin * w + Math.floor( playerscore / holes_per_set ) * distance_between_sets + ( playerscore % holes_per_set ) * distance_between_holes, voffset, 5, 0, 2 * Math.PI);
+          ctx.fill();
+
+        }
+
+
+        function canvasmousedown() {
+
+          var ctx = document.getElementById('myCanvas');
+          var rect = ctx.getBoundingClientRect();
+          // var x = event.clientX - ctx.offsetLeft, y = event.clientY - ctx.offsetTop;
+          var x = event.clientX - rect.left, y = event.clientY - rect.top;
+          if (inbounds(x, y, 78, 6, 17, 15)){
+            crib_move_card("1", "p1");
+          }
+          if (inbounds(x, y, 98, 6, 17, 15)){
+            crib_move_card("2", "p1");
+          }
+          if (inbounds(x, y, 118, 6, 17, 15)){
+            crib_move_card("5", "p1");
+          }
+          if (inbounds(x, y, 148, 6, 17, 15)){
+            crib_move_card("-1", "p1");
+          }
+          if (inbounds(x, y, 168, 6, 17, 15)){
+            crib_move_card("-5", "p1");
+          }
+
+          if (inbounds(x, y, 78, 40, 17, 15)){
+            crib_move_card("1", "p2");
+          }
+          if (inbounds(x, y, 98, 40, 17, 15)){
+            crib_move_card("2", "p2");
+          }
+          if (inbounds(x, y, 118, 40, 17, 15)){
+            crib_move_card("5", "p2");
+          }
+          if (inbounds(x, y, 148, 40, 17, 15)){
+            crib_move_card("-1", "p2");
+          }
+          if (inbounds(x, y, 168, 40, 17, 15)){
+            crib_move_card("-5", "p2");
+          }
+          var p, score;
+
+          if (( (y > 7) && (y < 13) ) || ((y > 17) && (y < 23)) || ((y > 42) && (y < 48)) || ((y > 52) && (y < 58)))  {
+            loop1:
+            for (n1 = 0; n1 < number_of_sets; n1++) {
+              for (n2 = 0; n2 < holes_per_set; n2++) {
+                var x1 = left_margin * w + n1 * distance_between_sets + n2 * distance_between_holes;
+                if (( x > x1 - 3 ) && ( x < x1+3 )){
+                  score = n1 * holes_per_set + n2;
+
+                  if ((y > 7) && (y < 13)) {
+                    p = 1;
+                    score +=1;
+                  }
+
+                  if  ((y > 17) && (y < 23)) {
+                    p = 1;
+                    score = 60 - score;
+                  }
+
+                  if ((y > 42) && (y < 48)) {
+                    p = 2;
+                    score +=1;
+                  }
+
+                  if ((y > 52) && (y < 58)) {
+                    p = 2;
+                    score = 60 - score;
+                  }
+                  crib_move_card(score, "s" + p);
+                  // alert(p + " - " + score);
+                  break loop1;
+
+
+                }
+
+              }
+
+            }
+
+          }
+
+
+        }
+
+        function inbounds(x,y,x1,y1,w,h){
+          return ( x >= x1) && ( x <= x1 + w ) && ( y >= y1 ) && ( y <= y1 + h)
+        }
+
+
+
+
+
+</script>
+
+
+<style>
+  .mainRunner {
+    position: relative;
+  }
+  .card {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: grab1;
+  }
+
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    left: -10px;
+    top: 30px;
+    z-index: 100;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  }
+
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    color: black;
+    padding: 6px 6px;
+    text-decoration: none;
+    display: block;
+  }
+
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {
+    display:block;
+    background-color: #ddd
+  }
+
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {display:block;}
+
+  .hand{
+    height: 250px;
+    border-style: solid;
+    border-width: 6px;
+    border-radius: 20px;
+    border-color: gold;
+    padding: 6px
+  }
+
+  .small_button{
+    display: table-cell;
+    vertical-align: middle;
+    width: 110px;
+    height: 28px;
+    max-height: 28px;
+    font-family: Arial;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 9pt;
+    border: 1px solid blue;
+    color: black;
+    background: white;
+    margin: 5px;
+  }
+
+  .flex_row {
+      height: 60px;
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0px;
+      }
+
+  .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+</style>
+
+<script>
+
+  var currently_selected_card = 0;
+
+  function mouse_down(n) {
+
+    document.getElementById("myDropdown" + n).classList.toggle("show");
+    var all = document.getElementsByClassName("dropdown-content");
+
+    for(i = 0; i < all.length; i++) {
+      if (all[i].id != ("myDropdown" + n)) {
+        if (all[i].classList.contains('show')) {
+          all[i].classList.remove('show');
+        }
+      } else {
+      }
+    }
+  }
+
+
+
+  // Close the dropdown menu if the user clicks outside of it
+  window.onclick = function(event) {
+    if (!event.target.classList.contains('card')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+
+
+  function crib_move_card(card,instruction) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "crib_move_card", true);
+    xhr.send(instruction + "_" + card);
+    return false;
+  }
+
+
+
+</script>
+
+
+  <% if player.present? %>
+    <% player_number = player.number.to_s %>
+    <% log_out_wording = "Log out" %>
+  <% else %>
+    <% player_number = 0 %>
+    <% log_out_wording = "Not logged in" %>
+  <% end %>
+
+  <%= form_tag crib_player_path, :id => 'crib_player' do %>
+    <table>
+      <tr>
+        <td>
+          <%= select_tag :player, options_for_select([["Player 1",1], ["Player 2",2], [log_out_wording,0]], player_number) , {:class => "small_button", :onchange => 'crib_player.submit()'} %>
+        </td>
+        <td>
+          <%= submit_tag "Deal" , :class=>"small_button" %>
+        </td>
+      </tr>
+  </table>
+<% end %>
+
+<% if player1.present? && player2.present? %>
+  <table >
+    <tr>
+      <td>
+        Your hand
+        <div id="your_hand">
+          <%= render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => "hand", :player => player.number).order(:order).map{|card| {:card => card.card.to_i, :back => false} }, hand_type: "hand",  player: player.number  } %>
+        </div>
+      </td>
+      <td style="width: 30px">
+      </td>
+      <td>
+        Your play
+        <div id="your_play">
+          <%= render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => ["playopen", "playturned"], :player => player.number ).order(:order).map{ |card| {:card => card.card.to_i, :back => card.position == "playturned" }  } , hand_type: "play",  player: player.number } %>
+        </div>
+      </td>
+      <td style="width: 30px">
+      </td>
+      <td>
+        Deck
+        <div id="deck">
+          <% deckcard = Card.where(:position => "deckshow").first %>
+          <%= render partial: 'homepage/hand', locals: {wdth: "400px", cards: [{:card => deckcard.blank? ? 0 : deckcard.card , :back => deckcard.blank?} ], hand_type: "deck" } %>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Other hand
+        <div id="other_hand">
+          <%= render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => "hand", :player => other_player.number).order(:order).map{|card| {:card => card.card.to_i, :back => true} }, hand_type: "hand" } %>
+        </div>
+      </td>
+      <td style="width: 30px">
+      </td>
+      <td>
+        Other play
+        <div id="other_play">
+          <%= render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => ["playopen", "playturned"], :player => other_player.number ).order(:order).map{ |card| {:card => card.card.to_i, :back => card.position == "playturned" }  } , hand_type: "play", player: other_player.number } %>
+        </div>
+      </td>
+      <td style="width: 30px">
+      </td>
+      <td>
+        Crib
+        <div id="crib">
+          <%= render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => ["crib", "cribopen"] ).order(:order).map{ |card| {:card => card.card, :back => card.position != "cribopen"}  }, hand_type: "crib"} %>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+
+  <table width="100%">
+    <col width "10%">
+    <col width "80%">
+    <col width "10%">
+    <tr>
+      <td>
+
+      </td>
+      <td>
+        <canvas id="myCanvas" class="center" width="1200" height="65" style="border:1px solid #000000; background-color:white;margin-top: 20px" onmousedown="canvasmousedown()"></canvas>
+      </td>
+      <td>
+        <%= button_to "Reset" , crib_reset_path,:class=>"small_button" %>
+      </td>
+    </tr>
+  </table>
+<% end %>

@@ -62,6 +62,10 @@ Rails.application.routes.draw do
   mount_griddler
   #https://github.com/thoughtbot/griddler
 
+  post "crib_move_card", to:  "homepage#crib_move_card", as: :crib_move_card
+  post "crib_player", to:  "homepage#crib_player", as: :crib_player
+  post "crib_reset", to:  "homepage#crib_reset", as: :crib_reset
+  get 'crib', to: "homepage#crib", as: :crib
 
   post 'position', to:  "homepage#position"
   get "location", to:  "homepage#location", as: :location
@@ -77,6 +81,7 @@ Rails.application.routes.draw do
   get "xmas_monitor", to:  "homepage#xmas_monitor"
   get "xmas_test", to:  "homepage#xmas_test"
 
+
   get "stick_man", to:  "homepage#stick_man"
 
   resources :usergroups
@@ -84,6 +89,7 @@ Rails.application.routes.draw do
   get 'temp', to: "contacts#temp"
   get "video", to:  "homepage#video", as: :video
   get "xmas_eve_video", to: "homepage#xmas_eve_video"
+
 
   match  "*path", to:"homepage#catch_all", via: :get
 
