@@ -1,9 +1,13 @@
 <%= javascript_include_tag 'channels/crib.js' %>
 <%= javascript_include_tag 'cable.js' %>
 
+<% if cookies[:crib_id].present? %>
+  <% player = Cribplayer.where(:key => cookies[:crib_id]).first %>
+  <% if player.present? %>
+    <% other_player = player.other_player %>
+  <% end %>
+<% end %>
 
-<% player = Cribplayer.where(:key => cookies[:crib_id]).first %>
-<% other_player = player.other_player %>
 <% player1 = Cribplayer.where(:number => 1).first %>
 <% player2 = Cribplayer.where(:number => 2).first %>
 
