@@ -481,7 +481,7 @@ class HomepageController < ApplicationController
   def crib_player
 
     if params[:commit] == "Deal"
-      shuffle_deal_and_send_to_other
+      shuffle_deal_and_send_to_other if Cribplayer.all.count >= 2 && Cribplayer.where(:number => 1).count >=1 && Cribplayer.where(:number => 2).count  >=1
 
     else
 
