@@ -66,6 +66,7 @@ Rails.application.routes.draw do
   post "crib_player", to:  "homepage#crib_player", as: :crib_player
   post "crib_reset", to:  "homepage#crib_reset", as: :crib_reset
   get 'crib', to: "homepage#crib", as: :crib
+  get "crib_reset_players", to:  "homepage#crib_reset_players"
 
   post 'position', to:  "homepage#position"
   get "location", to:  "homepage#location", as: :location

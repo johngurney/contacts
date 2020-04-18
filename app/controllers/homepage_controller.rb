@@ -722,6 +722,12 @@ class HomepageController < ApplicationController
 
   end
 
+  def crib_reset_players
+    Cribplayer.delete_all
+    redirect_to crib_path
+    
+  end
+
 
 
 end
