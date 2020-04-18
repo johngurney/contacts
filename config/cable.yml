@@ -6,5 +6,10 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  host: porgy.redistogo.com
+  url: redis://redistogo:0fd7e07cd2a5f19fb92e3e21cc24cc60@porgy.redistogo.com:11529/
+  password: 0fd7e07cd2a5f19fb92e3e21cc24cc60
+  port: 11529
+  inline: true
+  timeout: 1
   channel_prefix: contacts_production
