@@ -488,6 +488,7 @@ class HomepageController < ApplicationController
       if params[:player] != "0"
         player = Cribplayer.where(:key => cookies[:crib_id]).first
         if player.blank?
+          Cribplayer.where(:number => params[:player].to_i).delete_all
           player = Cribplayer.new
           player.key = cookies[:crib_id]
         end
