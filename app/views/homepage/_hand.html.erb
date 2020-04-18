@@ -11,7 +11,7 @@
           <% id = card[:card] %>
         <% end %>
 
-        <%= image_tag card_filename(from_number_to_card( card[:back] ? -1 : card[:card] )), :id => "card" + id.to_s, :class => "card", :onmousedown => "mouse_down(" + id.to_s + ")" %>
+        <%= image_tag card_filename(from_number_to_card( card[:back] ? -1 : card[:card] )), :id => "card" + id.to_s, :class => "card", :onmousedown => "mouse_down(" + id.to_s + ")", :ontouchstart => "mouse_down(" + id.to_s + ")" %>
         <% if (hand_type == "hand" and !card[:back]) or (hand_type == "play" ) or (hand_type == "deck" and card[:back])  or (hand_type == "crib" and card[:back]) %>
 
           <div id="myDropdown<%= id.to_s %>" class="dropdown-content">
