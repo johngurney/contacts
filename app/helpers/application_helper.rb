@@ -129,5 +129,15 @@ module ApplicationHelper
     (p1 > 0 && p1 < 4) || (p2 == 4)
   end
 
+  def available_crib_players(log_out_wording)
+    players = []
+    (1..2).each do |n|
+      player = Cribplayer.where(:number => n).first
+      players << ["Player " + n.to_s, + n] if player.blank? || player.lastplay < 1.hour.ago || player.key == cookies[:crib_id]
+    end
+
+    players << [log_out_wording, 0]
+  end
+
 
 end

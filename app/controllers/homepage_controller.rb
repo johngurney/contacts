@@ -553,6 +553,12 @@ class HomepageController < ApplicationController
     instruction = r[0]
     card_number = r[1]
 
+    player = Cribplayer.where(:key => cookies[:crib_id]).first
+    if player.present?
+      player.lastplay = Date.new()
+      player.save
+    end
+
 
     case instruction
 
