@@ -1,0 +1,10 @@
+<% number_of_players = get_number_of_players(player.game_id) if player.present? %>
+<div class="flex_row" style="height: 10px; margin-top: 5px;">
+  <span style="margin-right:20px"><%= player_name(player) %></span>
+    <% if player.present? && number_of_players > 1 && !game_is_in_play(player) && player.number != Cribplayer.where(:game_id => player.game_id).maximum(:number) %>
+      <%= button_to "Up", crib_player_up_path(player), :class =>"small_button", :style => "height: 20px; width: 50px; margin-top:20px" %>
+    <% end %>
+    <% if player.present? && number_of_players > 1 && !game_is_in_play(player) && player.number != 1 %>
+      <%= button_to "Down", crib_player_down_path(player), :class =>"small_button", :style => "height: 20px; width: 50px; margin-top:20px"  %>
+    <% end %>
+</div>

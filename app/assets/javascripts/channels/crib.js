@@ -21,6 +21,13 @@ function start_up() {
 
     received: function(data) {
       var encrypted_message, encrypted_messages, past_messages_downloaded, unencrypted_message, insert;
+      stgs = ["player1_hand", "player1_play", "player2_hand", "player2_play", "player3_hand", "player3_play", "player4_hand", "player4_play", "player1_name", "player2_name", "player3_name", "player4_name"];
+      stgs.forEach (function(stg) {
+        if (data[stg] != undefined){
+          document.getElementById(stg).innerHTML = data[stg];
+        }
+    })
+
       if (data['your_hand'] != undefined){
         document.getElementById("your_hand").innerHTML = data['your_hand'];
       }
@@ -39,82 +46,88 @@ function start_up() {
       if (data['crib'] != undefined){
         document.getElementById("crib").innerHTML = data['crib'];
       }
+      if (data['hands_and_score'] != undefined){
+        // alert(data['scores'] + "; " + data['names'] + "; " + data['player_number']);
+        document.getElementById("hands_and_score").innerHTML = data['hands_and_score'];
+        update_scoreboard(data['scores'], data['names'], data['player_number']);
+      }
       if (data['scores'] != undefined){
-        update_scoreboard(data['scores'][0],data['scores'][1]);
+        update_scoreboard(data['scores'], data['names'], data['player_number']);
       }
-      // $('.hand').empty("");
-
-
-      // if (data['allow_new_messages']) {
-      //   allow_new_messages = data['allow_new_messages'];
-      //   };
-
-
-      if (data['server_public_key']) {
-
-        server_public_key = data['server_public_key'];
-        if (past_messages_downloaded != true) {
-          past_messages_downloaded = true;
-          return App.room.request_past_messages("newest");
-        }
-
-      // } else {
-
-
-        // if (data['previous_messages']) {
-        //   previous_messages = data['previous_messages'];
-        //   next_messages = data['next_messages'];
-        // }
-        //
-        // if (data['total_no_packets']) {
-        //   if(message_packets==null) {
-        //     message_packets= new Array(Number(data['total_no_packets'])).fill("");
-        //   }
-        //   message_packets[data['packet_number']]  = data['message'];
-        //   encrypted_message = "";
-        //   if(check_all_downloaded()) {
-        //     message_packets.forEach (function(message) {
-        //       encrypted_message += message;
-        //       });
-        //       message_packets = null;
-        //   }
-        // } else {
-        //   encrypted_message = data['message'];
-        // }
-        //
-        // insert = $('#action_insert').html();
-        //
-        // if (encrypted_message !="") {
-        //
-        //   var crypt = new JSEncrypt();
-        //   crypt.setPrivateKey(client_private_key);
-        //   unencrypted_message = "";
-        //   encrypted_messages = encrypted_message.split("\t\n");
-        //
-        //   encrypted_messages.forEach(function(message) {
-        //
-        //     encrypted_lines = message.split("\t");
-        //     encrypted_lines.forEach(function(line) {
-        //       unencrypted_message += crypt.decrypt(line) ;
-        //       });
-        //
-        //       unencrypted_message = unencrypted_message.replace('<div id="insert" />', insert);
-        //     });
-        //
-        //
-        //   if (data['action']=="add") {
-        //     if (allow_new_messages=="yes") {
-        //
-        //     $('#messages').prepend(unencrypted_message);
-        //     }
-        //   } else {
-        //
-        //
-        //     $('#messages').prepend(unencrypted_message);
-        //   }
-        // }
-        // return ""
+      if (data['dealrequest'] != undefined){
+        document.getElementById("dealrequest").innerHTML = data['dealrequest'];
       }
+
+      if (data['reset_requests'] != undefined){
+        document.getElementById("reset_requests").innerHTML = data['reset_requests'];
+      }
+
+
+      // if (data['server_public_key']) {
+      //
+      //   server_public_key = data['server_public_key'];
+      //   if (past_messages_downloaded != true) {
+      //     past_messages_downloaded = true;
+      //     return App.room.request_past_messages("newest");
+      //   }
+      //
+      // // } else {
+      //
+      //
+      //   // if (data['previous_messages']) {
+      //   //   previous_messages = data['previous_messages'];
+      //   //   next_messages = data['next_messages'];
+      //   // }
+      //   //
+      //   // if (data['total_no_packets']) {
+      //   //   if(message_packets==null) {
+      //   //     message_packets= new Array(Number(data['total_no_packets'])).fill("");
+      //   //   }
+      //   //   message_packets[data['packet_number']]  = data['message'];
+      //   //   encrypted_message = "";
+      //   //   if(check_all_downloaded()) {
+      //   //     message_packets.forEach (function(message) {
+      //   //       encrypted_message += message;
+      //   //       });
+      //   //       message_packets = null;
+      //   //   }
+      //   // } else {
+      //   //   encrypted_message = data['message'];
+      //   // }
+      //   //
+      //   // insert = $('#action_insert').html();
+      //   //
+      //   // if (encrypted_message !="") {
+      //   //
+      //   //   var crypt = new JSEncrypt();
+      //   //   crypt.setPrivateKey(client_private_key);
+      //   //   unencrypted_message = "";
+      //   //   encrypted_messages = encrypted_message.split("\t\n");
+      //   //
+      //   //   encrypted_messages.forEach(function(message) {
+      //   //
+      //   //     encrypted_lines = message.split("\t");
+      //   //     encrypted_lines.forEach(function(line) {
+      //   //       unencrypted_message += crypt.decrypt(line) ;
+      //   //       });
+      //   //
+      //   //       unencrypted_message = unencrypted_message.replace('<div id="insert" />', insert);
+      //   //     });
+      //   //
+      //   //
+      //   //   if (data['action']=="add") {
+      //   //     if (allow_new_messages=="yes") {
+      //   //
+      //   //     $('#messages').prepend(unencrypted_message);
+      //   //     }
+      //   //   } else {
+      //   //
+      //   //
+      //   //     $('#messages').prepend(unencrypted_message);
+      //   //   }
+      //   // }
+      //   // return ""
+      // }
     },
     send_message: function(message_content) {
       // crypt = new JSEncrypt();

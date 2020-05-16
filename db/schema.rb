@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_17_131242) do
+ActiveRecord::Schema.define(version: 2020_04_30_060251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,8 @@ ActiveRecord::Schema.define(version: 2020_04_17_131242) do
     t.integer "order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "player"
+    t.integer "player_id"
+    t.string "game_id"
   end
 
   create_table "conshejointables", force: :cascade do |t|
@@ -73,6 +74,14 @@ ActiveRecord::Schema.define(version: 2020_04_17_131242) do
     t.integer "description_id"
   end
 
+  create_table "cribgames", force: :cascade do |t|
+    t.boolean "hasstarted"
+    t.string "game_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "freezenewplayers"
+  end
+
   create_table "cribplayers", force: :cascade do |t|
     t.integer "number"
     t.string "key"
@@ -80,6 +89,10 @@ ActiveRecord::Schema.define(version: 2020_04_17_131242) do
     t.datetime "updated_at", null: false
     t.datetime "lastplay"
     t.integer "score"
+    t.string "name"
+    t.string "game_id"
+    t.datetime "redealrequest"
+    t.datetime "resetrequest"
   end
 
   create_table "descriptions", force: :cascade do |t|

@@ -1,6 +1,7 @@
 class HomepageController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, only: [:position, :xmas_position, :crib_move_card]
+  skip_before_action :verify_authenticity_token, only: [:position, :xmas_position, :crib_move_card, :crib_player_up, :crib_player_down, :crib_reset, :test]
+  before_action :get_player, only: [:crib, :crib_player, :crib_move_card, :crib_reset, :test]
 
   def homepage
 
@@ -136,19 +137,6 @@ class HomepageController < ApplicationController
   def log_out
 
     cookies.permanent[:logged_in] = nil
-
-    redirect_to root_path
-  end
-
-  def test
-
-    prng = Random.new
-    (1..1000).each do |n|
-      log = Log.create(:sheet_id => 3, :ip_address => "123")
-      log.created_at = 7.months.ago - prng.rand(100).days
-      log.save
-    end
-
 
     redirect_to root_path
   end
@@ -436,272 +424,480 @@ class HomepageController < ApplicationController
 
   def crib
 
-    crib_shuffle_and_deal if Card.count == 0
-
+    # crib_shuffle_and_deal(@player) if Card.count == 0
     render "crib", :layout => false
+
   end
 
-  def crib_shuffle_and_deal
-    if Card.count != 52
-      Card.delete_all
-      (0..51).each do |card|
-        Card.create(:card => card.to_s, :order => SecureRandom.random_number(100000))
+  def crib_shuffle_and_deal(player)
+
+    game_id = player.game_id
+    if game_id != ""
+
+      crib_shuffle(game_id)
+
+      number_of_players = helpers.get_number_of_players(game_id)
+
+      number_of_cards_per_player = number_of_players == 2 ? 6 : 5
+
+      (0...number_of_players).each do |player_number|
+        (0...number_of_cards_per_player).each do |n|
+          puts "^^" + player_number.to_s + "; " + n.to_s
+          puts (player_number + number_of_players * n).to_s
+
+          card = Card.where(:game_id => game_id, :position => "deck", :order => player_number + number_of_players * n ).first
+          card.position = "hand"
+          card.player_id = Cribplayer.where(:game_id  => game_id, :number => player_number + 1).first.id
+          card.order = n
+          card.save
+        end
       end
-    else
-      Card.all.each do |card|
-        card.order =  SecureRandom.random_number(100000)
-        card.save
+      if number_of_players == 3
+        card = Card.where(:game_id => game_id, :position => "deck", :order => 15 ).first
+        card.position = "crib"
+        card.save(validate: false)
       end
 
     end
+  end
 
-    n=0
-    Card.order(:order).each do |card|
-      card.order = n
-      card.position = "deck"
-      n += 1
-      card.save
-    end
+  def crib_shuffle(game_id)
 
-    (0..5).each do |n|
-      card = Card.where(:order => n * 2).first
-      card.position = "hand"
-      card.player = 1
-      card.order = n
-      card.save
 
-      card = Card.where(:order => n * 2 + 1).first
-      card.position = "hand"
-      card.player = 2
-      card.order = n
-      card.save
+    if game_id != ""
+      if Card.where(:game_id => game_id).count != 52
+        Card.where(:game_id => game_id).delete_all
+        (0..51).each do |card|
+          Card.create!(:card => card.to_s, :game_id => game_id,:order => SecureRandom.random_number(100000))
+        end
+      else
+        Card.where(:game_id => game_id).all.each do |card|
+          card.order =  SecureRandom.random_number(100000)
+          card.save
+        end
+      end
+
+      n=0
+      Card.where(:game_id => game_id).order(:order).each do |card|
+        card.order = n
+        card.position = "deck"
+        n += 1
+        card.save(validate: false)
+      end
     end
   end
 
   def crib_player
 
+    send_all_cards_to_all_other_players_flag = false
+
     if params[:commit] == "Deal"
-      shuffle_deal_and_send_to_other if Cribplayer.all.count >= 2 && Cribplayer.where(:number => 1).count >=1 && Cribplayer.where(:number => 2).count  >=1
 
-    else
+      cribgame = Cribgame.where(:game_id => @player.game_id).first
 
-      if params[:player] != "0"
-        player = Cribplayer.where(:key => cookies[:crib_id]).first
-        if player.blank?
-          Cribplayer.where(:number => params[:player].to_i).delete_all
-          player = Cribplayer.new
-          player.key = cookies[:crib_id]
+      if (cribgame.blank? || !cribgame.hasstarted) || (Cribplayer.where(:game_id => @player.game_id).where("redealrequest >= ?", 10.minutes.ago).where.not(:id => @player.id ).count > 0) || helpers.round_over(@player.game_id)
+
+        shuffle_deal_and_send_to_other(@player)
+
+        if cribgame.blank?
+          cribgame = Cribgame.new
+          cribgame.game_id = @player.game_id
+          cribgame.save
         end
-        player.number = params[:player].to_i
-        player.lastplay = Time.now()
-        player.save
+
+
+        if !cribgame.hasstarted
+          Cribplayer.where(:game_id => @player.game_id).where("lastplay < ?", 10.minutes.ago).each do |player|
+            player.game_id = ""
+            player.save
+          end
+          cribgame.hasstarted = true
+          cribgame.save
+        end
 
       else
-        Cribplayer.where(:key => cookies[:crib_id]).delete_all
+
+        @player.redealrequest = Time.now()
+        @player.save
+
+        Cribplayer.where(:game_id => @player.game_id).each do |player|
+          ActionCable.server.broadcast 'room_channel' +  player.key, dealrequest: helpers.render_deal_request(player.game_id) if player != @player && player.key.present?
+        end
       end
 
+    elsif params[:commit] == "Apply"
+
+      if @player.game_id != params[:game_id]
+        players = Cribplayer.where(:game_id => params[:game_id])
+
+        if players.present?
+
+
+          if players.count >= 4
+            #If already four or more players, get rid of any players from game who haven't played for four or more hours
+            players.where('lastplay > ?', 4.hours.ago).order(:lastplay).all each do |player|
+              player.game_id = ""
+              player.save
+            end
+          end
+
+        end
+
+        cribgame = Cribgame.where(:game_id => params[:game_id]).first
+
+        if cribgame.blank? || (!(cribgame.hasstarted || cribgame.freezenewplayers) && Cribplayer.where(:game_id => params[:game_id]).count < 4)
+          #Add player to game
+          @player.game_id = params[:game_id]
+          make_new_crib_game(@player)
+          @player.number = players.blank? ? 1 : players.maximum(:number) + 1
+          send_all_cards_to_all_other_players_flag = true
+        else
+          render "homepage/currently_in_play", :layout => false
+          return
+        end
+
+
+      end
+
+      if @player.name != params[:name]
+        send_name_to_all_other_players_flag = true
+        @player.name = params[:name]
+      end
+
+      @player.lastplay = Time.now()
+      @player.save
+
+    end
+
+    send_hands_and_scores_to_other_players(@player) if send_all_cards_to_all_other_players_flag
+
+    redirect_to crib_path
+    # render "homepage/cardtest", :layout => false
+  end
+
+
+
+  def shuffle_deal_and_send_to_other(player)
+
+    crib_shuffle_and_deal(player)
+
+    Cribplayer.where(:game_id => player.game_id).each do |player_screen|
+      player_screen.redealrequest = nil
+      player_screen.save
+    end
+
+    Cribplayer.where(:game_id => player.game_id).each do |player_screen|
+      if player != player_screen
+        player_screen_key = player_screen.key
+        if player_screen_key.present?
+          Cribplayer.where(:game_id => player.game_id).each do |player_hand|
+            ActionCable.server.broadcast 'room_channel' +  player_screen_key, hand_command(player_hand) => helpers.render_hand(player_hand, player_screen)
+            ActionCable.server.broadcast 'room_channel' +  player_screen_key, play_command(player_hand) => helpers.render_play(player_hand, player_screen)
+          end
+          ActionCable.server.broadcast 'room_channel' +  player_screen_key, deck: helpers.render_deck(player_screen)
+          ActionCable.server.broadcast 'room_channel' +  player_screen_key, crib: helpers.render_crib(player_screen)
+          ActionCable.server.broadcast 'room_channel' + player_screen_key, dealrequest: helpers.render_deal_request(player.game_id)
+          # ActionCable.server.broadcast 'room_channel' +  player_screen_key, dealrequest: helpers.render_redealrequest(player_screen)
+        end
+      end
+    end
+  end
+
+
+  def crib_move_card
+
+    number_of_players = 2
+
+    r  = request.raw_post.split("_")
+    instruction = r[0]
+    data = r[1]
+
+    if @player.present?
+      @player.lastplay = Time.now()
+      @player.save
+    end
+    puts "instruction" + instruction
+
+    case instruction
+
+
+
+    when "l"
+      card = Card.find(data.to_i)
+      if card.order > 0
+        card1 = Card.where(:position => "hand", :player_id => card.player_id, :order => card.order - 1).first
+        card.order -= 1
+        card.save
+        card1.order += 1
+        card1.save
+        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], "player" + @player.number.to_s + "_hand" => helpers.render_hand(@player, @player)
+      end
+
+    when "r"
+      card = Card.find(data.to_i)
+      if card.order < 5
+        card1 = Card.where(:position => "hand", :player_id => card.player_id, :order => card.order + 1).first
+        card.order += 1
+        card.save
+        card1.order -= 1
+        card1.save
+        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], "player" + @player.number.to_s + "_hand" => helpers.render_hand(@player, @player)
+      end
+
+    when "p"
+      card = Card.find(data.to_i)
+
+      Card.where(:position => ["justplayed"], :game_id => card.game_id).each do |card|
+        card.position = "playopen"
+        card.save
+      end
+
+      card.position = "justplayed"
+      m = Card.where(:position => ["playopen", "playturned"], :game_id => card.game_id, :player_id => card.player_id ).maximum(:order)
+      card.order = m.blank? ? 0 : m + 1
+      card.save
+
+      Cribplayer.where(:game_id => card.game_id).each do |player|
+        player_key = player.key
+        if player_key.present?
+          ActionCable.server.broadcast 'room_channel' + player_key, hand_command(@player) => helpers.render_hand(@player, player)
+          ActionCable.server.broadcast 'room_channel' + player_key, play_command(@player) => helpers.render_play(@player, player)
+          ActionCable.server.broadcast 'room_channel' + player_key, play_command(player) => helpers.render_play(player, player) if @player != player #To update justplayed
+          ActionCable.server.broadcast 'room_channel' + other_key, crib: helpers.render_crib(player) if Card.where(:position => ["playopen", "playturned"] ).count >= 8
+        end
+      end
+
+
+    when "c"
+      card = Card.find(data.to_i)
+
+      card.position = "crib"
+      card.save
+
+      Cribplayer.where(:game_id => card.game_id).each do |player|
+        player_key = player.key
+        if player_key.present?
+          ActionCable.server.broadcast 'room_channel' + player_key, hand_command(@player) => helpers.render_hand(@player, player)
+          ActionCable.server.broadcast 'room_channel' + player_key, crib: helpers.render_crib(player)
+          ActionCable.server.broadcast 'room_channel' + player_key, deck: helpers.render_deck(player) if Card.where(:game_id => card.game_id, :position => "crib").count >= 4
+        end
+      end
+
+    when "t"
+
+      card = Card.find(data.to_i)
+
+      positions = [ "justplayed", "playturned", "playopen" ]
+
+      number_of_cards_in_play = Card.where(:position => positions, :game_id => card.game_id, :player_id => card.player_id ).count
+
+      puts "number_of_cards_in_play" + number_of_cards_in_play.to_s
+
+      player_over = Card.where(:position => "hand", :game_id => card.game_id).count == 0
+
+      Card.where(:position => positions, :game_id => card.game_id, :player_id => card.player_id ).each do |card|
+        card.position = player_over ? "playopen" : "playturned"
+        card.save
+      end
+
+      player_hand = Cribplayer.find(card.player_id)
+
+      Cribplayer.where(:game_id => card.game_id).each do |player|
+        player_key = player.key
+        if player_key.present?
+          ActionCable.server.broadcast 'room_channel' + player_key, play_command(player_hand) => helpers.render_play(player_hand, player)
+        end
+      end
+
+
+    when "d"
+      #Turn over the top card from the deck (at the start of the round)
+
+      game_id = @player.game_id
+
+      if Card.where(:position => "deckshow", :game_id => game_id).count == 0
+        card = Card.where(:position => "deck", :game_id => game_id).order(:order).first
+        card.position = "deckshow"
+        card.save
+
+        Cribplayer.where(:game_id => game_id).each do |player|
+          player_key = player.key
+          if player_key.present?
+            ActionCable.server.broadcast 'room_channel' + player_key , deck: helpers.render_deck(player)
+            ActionCable.server.broadcast 'room_channel' + player_key, hand_command(player) => helpers.render_hand(player, player)  #NB to refresh dropdowns
+            ActionCable.server.broadcast 'room_channel' + player_key, crib: helpers.render_crib(player)  #NB to refresh dropdowns
+          end
+        end
+
+
+      end
+
+    when "o"
+
+      #Turn over the crib (at the end of the round)
+
+      game_id = @player.game_id
+
+      Card.where(:position => "crib", :game_id => game_id).each do |card|
+        card.position = "cribopen"
+        card.save
+      end
+
+      Cribplayer.where(:game_id => game_id).each do |player|
+        player_key = player.key
+        if player_key.present?
+          ActionCable.server.broadcast 'room_channel' + player_key, crib: helpers.render_crib(player)
+        end
+      end
+
+    when "p1","p2","p3","p4"
+
+        values = data.split("/")
+        key = values[0]
+
+        game_id = @player.game_id
+
+        score_add = values[1].to_i
+        player = Cribplayer.where(:game_id => game_id , :number => instruction[1, 1].to_i).first
+        player.score = player.score.to_i + score_add
+        player.score = 0 if player.score < 0
+        player.save
+        send_scores(game_id)
+
+
+      when "s1","s2","s3","s4"
+        values = data.split("/")
+        key = values[0]
+
+        game_id = @player.game_id
+
+        score = values[1].to_i
+        player = Cribplayer.where(:game_id => game_id , :number => instruction[1, 1].to_i).first
+        player.score = score
+        player.save
+
+        send_scores(game_id)
+
+
+      when "cut"
+
+        if Card.where(:player_id => @player.id, :position =>"cut").count == 0
+          loop do
+            n = SecureRandom.random_number(52)
+            card = Card.where(:game_id => @player.game_id, :order => n).first
+            break if card.position == "deck"
+          end
+          card.position = "cut"
+          card.player_id = @player.id
+          card.save
+
+          small_size = (Cribplayer.where(:game_id => @player.game_id).count > 2)
+
+          Cribplayer.where(:game_id => @player.game_id).each do |player|
+            player_key = player.key
+            ActionCable.server.broadcast 'room_channel' +  player.key, play_command(@player) => helpers.render_play(@player, player, small_size) if player.key.present?
+          end
+          ActionCable.server.broadcast 'room_channel' +  @player.key, deck: helpers.render_deck(@player, small_size)
+        end
+
+      when "retcrib"
+
+        card = Card.find(data.to_i)
+        card.position = "hand"
+        card.save
+
+        small_size = (Cribplayer.where(:game_id => @player.game_id).count > 2)
+        Cribplayer.where(:game_id => card.game_id).each do |player|
+          player_key = player.key
+          if player.key.present?
+            ActionCable.server.broadcast 'room_channel' +  player.key, hand_command(@player) => helpers.render_hand(@player, player, small_size)
+            ActionCable.server.broadcast 'room_channel' +  player.key, crib: helpers.render_crib(player, small_size)
+          end
+        end
+
+      when "retplay"
+
+
+        card = Card.find(data.to_i)
+        card.position = "hand"
+        card.save
+
+        small_size = (Cribplayer.where(:game_id => @player.game_id).count > 2)
+        Cribplayer.where(:game_id => card.game_id).each do |player|
+          player_key = player.key
+          if player.key.present?
+            ActionCable.server.broadcast 'room_channel' +  player.key, hand_command(@player) => helpers.render_hand(@player, player, small_size)
+            ActionCable.server.broadcast 'room_channel' +  player.key, play_command(@player) => helpers.render_play(@player, player, small_size)
+          end
+        end
+    end
+
+  end
+
+  def crib_player_up
+    player_id = params[:player_id].to_i
+    if player_id > 0
+      player = Cribplayer.find(player_id)
+      player1 = Cribplayer.where(:game_id => player.game_id, :number => player.number + 1).first
+      player.number +=1
+      player1.number -=1
+      player.save
+      player1.save
+      send_hands_and_scores_to_other_players(player)
     end
 
     redirect_to crib_path
   end
 
-  def shuffle_deal_and_send_to_other
-
-    crib_shuffle_and_deal
-
-    if Cribplayer.where(:key => cookies[:crib_id]).first.number == 1
-      player = 1
-      other_player = 2
-    else
-      player = 2
-      other_player = 1
-    end
-
-    other = other_key
-
-    ActionCable.server.broadcast 'room_channel' + other, action: "update_hand", your_hand: render_hand(other_player)
-    ActionCable.server.broadcast 'room_channel' + other, action: "update_hand", other_hand: render_other_hand(player)
-    ActionCable.server.broadcast 'room_channel' + other, action: "update_hand", your_play: render_play(other_player)
-    ActionCable.server.broadcast 'room_channel' + other, action: "update_hand", other_play: render_play(player)
-    ActionCable.server.broadcast 'room_channel' + other, action: "update_hand", deck: render_deck
-    ActionCable.server.broadcast 'room_channel' + other, action: "update_hand", crib: render_crib
-  end
-
-  def render_hand(player)
-    ApplicationController.renderer.render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => "hand", :player => player).order(:order).map{ |card| {:card => card.card, :back => false} }, hand_type: "hand", player: player }
-  end
-
-  def render_other_hand(player)
-    ApplicationController.renderer.render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position =>  "hand", :player => player ).map{|card| {:card => card.card, :back => true }  }, hand_type: "hand", player: player }
-  end
-
-  def render_play(player)
-    ApplicationController.renderer.render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => [ "playopen",  "playturned"], :player => player ).order(:order).map{|card| {:card => card.card.to_i, :back => card.position != "playopen"}  }, hand_type: "play", player: player }
-  end
-
-  def render_deck
-    card = Card.where(:position => "deckshow").first
-    ApplicationController.renderer.render partial: 'homepage/hand', locals: {wdth: "400px", cards: [{:card => card.blank? ? 0 : card.card, :back => card.blank? } ], hand_type: "deck" }
-  end
-
-  def render_crib
-    ApplicationController.renderer.render partial: 'homepage/hand', locals: {wdth: "400px", cards: Card.where(:position => [ "crib", "cribopen" ] ).order(:order).map{|card| {:card => card.card, :back => card.position == "crib" }}, hand_type: "crib" }
-  end
-
-  def crib_move_card
-
-    r  = request.raw_post.split("_")
-    instruction = r[0]
-    card_number = r[1]
-
-    player = Cribplayer.where(:key => cookies[:crib_id]).first
-    if player.present?
-      player.lastplay = Date.new()
+  def crib_player_down
+    player_id = params[:player_id].to_i
+    if player_id > 0
+      player = Cribplayer.find(player_id)
+      player1 = Cribplayer.where(:game_id => player.game_id, :number => player.number - 1).first
+      player.number -=1
+      player1.number +=1
       player.save
+      player1.save
+      send_hands_and_scores_to_other_players(player)
     end
 
-
-    case instruction
-
-    when "l"
-      card = Card.where(:card => card_number).first
-      if card.order > 0
-        card1 = Card.where(:position => "hand", :player => card.player, :order => card.order - 1).first
-        card.order -= 1
-        card.save
-        card1.order += 1
-        card1.save
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", your_hand: render_hand(card.player), hand_type: "hand"
-      end
-
-    when "r"
-      card = Card.where(:card => card_number).first
-      if card.order < 5
-        card1 = Card.where(:position  => "hand", :player => card.player, :order => card.order + 1).first
-        card.order += 1
-        card.save
-        card1.order -= 1
-        card1.save
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", your_hand: render_hand(card.player), hand_type: "hand"
-      end
-
-    when "p"
-      card = Card.where(:card => card_number).first
-      card.position = "playopen"
-      m = Card.where(:position => ["playopen", "playturned"], :player => card.player ).maximum(:order)
-      card.order = m.blank? ? 0 : m + 1
-      card.save
-
-      ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", your_hand: render_hand(card.player)
-      ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", your_play: render_play(card.player)
-      ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", other_hand: render_other_hand(card.player)
-      ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", other_play: render_play(card.player)
-
-      if Card.where(:position => ["playopen", "playturned"] ).count >= 8
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", crib: render_crib
-        ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", crib: render_crib
-      end
-
-    when "c"
-      card = Card.where(:card => card_number).first
-
-      player =  card.player
-
-      card.position = "crib"
-      card.save
-
-      ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", your_hand: render_hand(player), hand_type: "hand"
-      ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", other_hand: render_other_hand(player), hand_type: "hand"
-      ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", crib: render_crib
-      ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", crib: render_crib
-
-      if Card.where(:position => "crib").count >= 4
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", deck: render_deck
-        ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", deck: render_deck
-      end
-
-    when "t"
-
-      card = Card.where(:card => card_number).first
-
-      positions = [ "playturned", "playopen" ]
-
-      number_of_cards_in_play = Card.where(:position => positions, :player => card.player ).count
-
-      Card.where(:position => positions, :player => card.player ).each do |card|
-        card.position = number_of_cards_in_play == 4 ? "playopen" : "playturned"
-        card.save
-      end
-
-      ActionCable.server.broadcast 'room_channel' + Cribplayer.where(:number => card.player ).first.key, action: "update_hand", your_play: render_play(card.player)
-      ActionCable.server.broadcast 'room_channel' + Cribplayer.where(:number => 3 - card.player ).first.key, action: "update_hand", other_play: render_play(card.player)
-
-    when "d"
-      if Card.where(:position => "deckshow").count == 0
-        card = Card.where(:position => "deck").order(:order).first
-        card.position = "deckshow"
-        card.save
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", deck: render_deck
-        ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", deck: render_deck
-
-        #NB update hands so that "play" drop down enabled
-        (1..2).each do |player|
-          ActionCable.server.broadcast 'room_channel' + Cribplayer.where(:number => player).first.key, action: "update_hand", your_hand: render_hand(player)
-        end
-
-      end
-
-    when "o"
-      Card.where(:position => "crib").each do |card|
-        card.position = "cribopen"
-        card.save
-      end
-      ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", crib: render_crib
-      ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", crib: render_crib
-
-      when "p1"
-        player = Cribplayer.where(:number => 1).first
-        player.score = player.score.to_i + card_number.to_i
-        player.score = 0 if player.score < 0
-        player.save
-        scores = [Cribplayer.where(:number => 1).first.score.to_i, Cribplayer.where(:number => 2).first.score.to_i]
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", scores: scores
-        ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", scores: scores
-
-      when "p2"
-        player = Cribplayer.where(:number => 2).first
-        player.score = player.score.to_i + card_number.to_i
-        player.score = 0 if player.score < 0
-        player.save
-        scores = [Cribplayer.where(:number => 1).first.score.to_i, Cribplayer.where(:number => 2).first.score.to_i]
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", scores: scores
-        ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", scores: scores
-
-      when "s1"
-        player = Cribplayer.where(:number => 1).first
-        player.score = change_score(player.score, card_number.to_i)
-        player.save
-        scores = [Cribplayer.where(:number => 1).first.score.to_i, Cribplayer.where(:number => 2).first.score.to_i]
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", scores: scores
-        ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", scores: scores
-
-      when "s2"
-        player = Cribplayer.where(:number => 2).first
-        player.score = change_score(player.score, card_number.to_i)
-        player.save
-        scores = [Cribplayer.where(:number => 1).first.score.to_i, Cribplayer.where(:number => 2).first.score.to_i]
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], action: "update_hand", scores: scores
-        ActionCable.server.broadcast 'room_channel' + other_key, action: "update_hand", scores: scores
-    end
-
+    redirect_to crib_path
   end
 
   def crib_reset
-    shuffle_deal_and_send_to_other
-    Cribplayer.all.each do |player|
-      player.score = 0
-      player.save
+
+    @player.resetrequest = Time.now()
+    @player.save
+
+
+    if helpers.get_reset_requests(@player.game_id).count == helpers.get_number_of_players(@player.game_id)
+
+      crib_shuffle(@player.game_id)
+
+      Cribplayer.where(:game_id => @player.game_id).each do |player|
+        player.resetrequest = nil
+        player.score = 0
+        player.save
+      end
+
+      game = Cribgame.where(:game_id => @player.game_id).first
+      if game.present?
+        game.hasstarted = false
+        game.save
+      end
     end
+
+    Cribplayer.where(:game_id => @player.game_id).each do |player|
+      if @player != player
+        player_key = player.key
+        if player.key.present?
+          ActionCable.server.broadcast 'room_channel' +  player.key, reset_requests: helpers.render_reset_requests(player.game_id)
+        end
+      end
+    end
+
+
+
     redirect_to crib_path
   end
 
@@ -723,11 +919,81 @@ class HomepageController < ApplicationController
   end
 
   def crib_reset_players
-    Cribplayer.delete_all
+
+    crib_shuffle(@player.game_id)
+    Cribplayer.where(:game_id => @player.game_id).each do |player|
+      player.score = 0
+      player.save_action
+    end
+    game = Cribgame.where(:game_id => @player.game_id).first
+    if game.present?
+      game.hasstarted = false
+      game.save
+    end
+
     redirect_to crib_path
-    
+
   end
 
+  def get_player
+    @player = Cribplayer.where(:key => cookies[:crib_id]).first
+  end
+
+  def hand_command(player)
+    "player" + player.number.to_s + "_hand"
+  end
+
+  def play_command(player)
+    "player" + player.number.to_s + "_play"
+  end
+
+  def make_new_crib_game(player)
+
+    cribgame = Cribgame.where(:game_id => player.game_id).first
+    if cribgame.blank?
+      cribgame = Cribgame.new
+      cribgame.game_id = player.game_id
+      cribgame.hasstarted = false
+      cribgame.save
+      crib_shuffle(player.game_id)
+    end
+
+  end
+
+  def send_scores(game_id)
+    scores = Cribplayer.where(:game_id => game_id).order(:number).map{ |player| player.score.to_i.to_s }
+    names = Cribplayer.where(:game_id => game_id).order(:number).map{ |player| helpers.player_name(player) }
+
+    Cribplayer.where(:game_id => game_id).each do |player|
+      player_key = player.key
+      if player_key.present?
+        ActionCable.server.broadcast 'room_channel' + player_key, scores: scores, names: names, player_number: player.number
+      end
+    end
+  end
+
+  def send_hands_and_scores_to_other_players(player)
+    scores = Cribplayer.where(:game_id => player.game_id).order(:number).map{ |player1| player1.score.to_i.to_s }
+    names = Cribplayer.where(:game_id => player.game_id).order(:number).map{ |player1| helpers.player_name(player1) }
+
+    Cribplayer.where(:game_id => player.game_id).each do |player1|
+      if player != player1 || true
+        key = player1.key
+        if key.present?
+          ActionCable.server.broadcast 'room_channel' +  key, hands_and_score: helpers.render_hands_and_score(player1), scores: scores, names: names, player_number: player1.number
+
+        end
+      end
+    end
+
+  end
+
+  def test
+
+    send_scores(@player.game_id)
+    render "homepage/cardtest", :layout => false
+
+  end
 
 
 end

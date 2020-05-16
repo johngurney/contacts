@@ -1,0 +1,25 @@
+That game is currently in play.
+
+<% player = Cribplayer.where(:key => cookies[:crib_id]).first %>
+
+<%= form_tag crib_player_path, :id => 'crib_player' do %>
+  <table>
+    <tr>
+      <td>
+        Game number
+      </td>
+      <td>
+        <%= text_field_tag :game_id , player.blank? ? "" : player.game_id, :class => "small_input", :style => "margin-left: 20px" %>
+      </td>
+      <td>
+        Your name
+      </td>
+      <td>
+        <%= text_field_tag :name, player.blank? ? "" : player.name, :class => "small_input", :style => "margin-left: 20px" %>
+      </td>
+      <td>
+        <%= submit_tag "Apply" , :class=>"small_button" %>
+      </td>
+    </tr>
+</table>
+<% end %>

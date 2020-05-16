@@ -57,7 +57,7 @@ Rails.application.routes.draw do
   get 'usage/.:id' , to: 'sheets#usage', as: :usage
   get 'usage_image/.:id' , to: 'sheets#usage_image', as: :usage_image
 
-  get 'test' , to: 'homepage#test', as: :test
+  post 'test' , to: 'homepage#test', as: :test
 
   mount_griddler
   #https://github.com/thoughtbot/griddler
@@ -67,6 +67,10 @@ Rails.application.routes.draw do
   post "crib_reset", to:  "homepage#crib_reset", as: :crib_reset
   get 'crib', to: "homepage#crib", as: :crib
   get "crib_reset_players", to:  "homepage#crib_reset_players"
+
+
+  post "crib_player_up/.:player_id", to:  "homepage#crib_player_up", as: :crib_player_up
+  post "crib_player_down/.:player_id", to:  "homepage#crib_player_down", as: :crib_player_down
 
   post 'position', to:  "homepage#position"
   get "location", to:  "homepage#location", as: :location

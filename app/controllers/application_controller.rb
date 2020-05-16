@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
 
-  before_action :check_cookie_consent, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_reset_players ]
-  before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_reset_players ]
+  before_action :check_cookie_consent, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_player_up, :crib_player_down, :crib_reset_players ]
+  before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_reset_players, :crib_player_up, :crib_player_down ]
   before_action :check_cookie_consent_shops, only: [:shops]
-  before_action :crib_id, only: [:crib]
+  before_action :crib_id, only: [:crib, :crib_player]
 
   def check_cookie_consent
     if cookies[:contacts_cookie_consent].blank?
@@ -20,18 +20,23 @@ class ApplicationController < ActionController::Base
   end
 
   def crib_id
+
     crib_id = cookies[:crib_id]
     if crib_id.blank?
       o = [('a'..'z'), ('A'..'Z'), ('0'..'9')].map(&:to_a).flatten
       cookies.permanent[:crib_id] = (1..10).map { o[SecureRandom.random_number(o.length)] }.join
-    else
-      player = Cribplayer.where(:key => crib_id).first
-      if player.present?
-        player.lastplay = Time.now
-        player.save
-      end
-      puts "*** Crib id:" + cookies[:crib_id]
     end
+
+    player = Cribplayer.where(:key => crib_id).first
+    if player.present?
+      player.lastplay = Time.now()
+      player.save
+    else
+      player = Cribplayer.new
+      player.key = cookies[:crib_id]
+      player.save(validate: false)
+    end
+
   end
 
   def check_logged_in
