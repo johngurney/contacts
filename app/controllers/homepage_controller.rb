@@ -672,6 +672,7 @@ class HomepageController < ApplicationController
       card = Card.find(data.to_i)
 
       card.position = "crib"
+      card.order = Card.where(:game_id => card.game_id ,:position => "crib").maximum(:order).to_i + 1
       card.save
 
       Cribplayer.where(:game_id => card.game_id).each do |player|

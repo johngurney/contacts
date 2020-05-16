@@ -45,6 +45,8 @@
               <% end %>
 
             <% elsif hand_type == "crib" %>
+            desckshow =  <%= Card.where(:position => "deckshow", :game_id => player_screen.game_id).count.to_s %>
+            player_id =  <%= Card.find(card[:id]).player_id.to_s %>
               <% if Card.where(:position => ["playopen", "playturned"]).count >= 8 %>
                 <a href='javascript: crib_move_card("","o")'>Turn over</a>
 
