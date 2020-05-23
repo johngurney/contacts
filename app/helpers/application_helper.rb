@@ -191,7 +191,7 @@ module ApplicationHelper
   end
 
   def render_hands_and_score(player)
-    if mobile?
+    if player.ismobile
       ApplicationController.renderer.render(partial: 'homepage/hands_and_score_mobile', locals: {player: player })
     else
       ApplicationController.renderer.render(partial: 'homepage/hands_and_score', locals: {player: player })

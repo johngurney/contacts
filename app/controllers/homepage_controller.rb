@@ -569,6 +569,7 @@ class HomepageController < ApplicationController
           @player.game_id = params[:game_id]
           make_new_crib_game(@player)
           @player.number = players.blank? ? 1 : players.maximum(:number) + 1
+          @player.ismobile = mobile?
           @player.score = 0
           send_all_cards_to_all_other_players_flag = true
         else
