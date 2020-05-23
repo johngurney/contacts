@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
     require "browser/aliases"
     Browser::Base.include(Browser::Aliases)
     @browser = Browser.new(request.env["HTTP_USER_AGENT"])
-    @browser.mobile?
+    @browser.mobile? == true
   end
 
   def colors

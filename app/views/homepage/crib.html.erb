@@ -1,6 +1,7 @@
 <%= javascript_include_tag 'channels/crib.js' %>
 <%= javascript_include_tag 'cable.js' %>
 <% player = Cribplayer.where(:key => cookies[:crib_id]).first %>
+ismobile = <%= player.ismobile.to_s %>
 <% number_of_players = Cribplayer.where(:game_id => player.game_id).count %>
 
 <%= form_tag crib_player_path, :id => 'crib_player' do %>
