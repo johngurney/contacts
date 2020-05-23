@@ -9,7 +9,14 @@
   <% elsif hand_type == "deck" %>
       Deck
   <% elsif hand_type == "crib" %>
-      Crib
+    <div class="flex_row">
+      <div>
+        Crib   >>
+      </div>
+      <div id="whosecrib" style="margin-left:20px">
+        <%= render_whosecrib(player_screen) %>
+      </div>
+    </div>
   <% end %>
 </div>
 <div class="hand" style="<%= hand_type == "play" ||  hand_type == "deck" || hand_type == "cut" || hand_type == "crib" ? "background-color: green;" : "" %>width: <%= wdth %>; height: <%= card_height.to_s %>px; overflow: hidden">
@@ -45,9 +52,7 @@
               <% end %>
 
             <% elsif hand_type == "crib" %>
-            deckshow =  <%= Card.where(:position => "deckshow", :game_id => player_screen.game_id).count.to_s %>
-            player_id =  <%= Card.find(card[:id]).player_id.to_s %>
-              <% if Card.where(:game_id => player_screen.game_id, :position => ["playopen", "playturned"]).count >= 8 %>
+              <% if Card.where(:game_id => player_screen.game_id, :position => "hand").count == 0 %>
                 <a href='javascript: crib_move_card("","o")'>Turn over</a>
 
               <% elsif Card.where(:position => "deckshow", :game_id => player_screen.game_id).count == 0 && Card.find(card[:id]).player_id == player_screen.id %>
@@ -56,7 +61,7 @@
             <% elsif hand_type == "deck" %>
               <% if Card.where(:game_id => player_screen.game_id, :position => "crib").count >= 4 %>
                 <a href='javascript: crib_move_card("","d")'>Turn over</a>
-              <% elsif !game_is_in_play(player_screen) && Card.where(:player_id => player_screen.id, :position => "cut").count == 0 %>
+              <% elsif !game_is_in_play(player_screen) && can_cut(player_screen) %>
                 <a href='javascript: crib_move_card("","cut")'>Cut the pack</a>
               <% end %>
             <% end %>

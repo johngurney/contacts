@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
 
-  before_action :check_cookie_consent, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_player_up, :crib_player_down, :crib_reset_players ]
-  before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_reset_players, :crib_player_up, :crib_player_down ]
+  before_action :check_cookie_consent, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_player_up, :crib_player_down, :crib_reset_players, :whosecrib ]
+  before_action :check_logged_in, except: [:cookie_consent, :log_in, :contact_sheet, :download_content, :get_picture, :position, :location, :video, :xmas, :xmas1, :xmas_q, :xmas_q_correct, :shops, :crib, :crib_move_card, :crib_reset, :crib_player, :crib_reset_players, :crib_player_up, :crib_player_down, :whosecrib ]
   before_action :check_cookie_consent_shops, only: [:shops]
   before_action :crib_id, only: [:crib, :crib_player]
 

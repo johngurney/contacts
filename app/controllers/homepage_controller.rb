@@ -1,7 +1,7 @@
 class HomepageController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, only: [:position, :xmas_position, :crib_move_card, :crib_player_up, :crib_player_down, :crib_reset, :test]
-  before_action :get_player, only: [:crib, :crib_player, :crib_move_card, :crib_reset, :test]
+  skip_before_action :verify_authenticity_token, only: [:position, :xmas_position, :crib_move_card, :crib_player_up, :crib_player_down, :crib_reset, :test, :whosecrib]
+  before_action :get_player, only: [:crib, :crib_player, :crib_move_card, :crib_reset, :test, :whosecrib]
 
   def homepage
 
@@ -490,21 +490,20 @@ class HomepageController < ApplicationController
   def crib_player
 
     send_all_cards_to_all_other_players_flag = false
+    send_name_to_all_other_players_flag = false
 
     if params[:commit] == "Deal"
 
       cribgame = Cribgame.where(:game_id => @player.game_id).first
 
+      if cribgame.blank?
+        cribgame = Cribgame.new
+        cribgame.game_id = @player.game_id
+        cribgame.whosecrib = 1
+        cribgame.save
+      end
+
       if (cribgame.blank? || !cribgame.hasstarted) || (Cribplayer.where(:game_id => @player.game_id).where("redealrequest >= ?", 10.minutes.ago).where.not(:id => @player.id ).count > 0) || helpers.round_over(@player.game_id)
-
-        shuffle_deal_and_send_to_other(@player)
-
-        if cribgame.blank?
-          cribgame = Cribgame.new
-          cribgame.game_id = @player.game_id
-          cribgame.save
-        end
-
 
         if !cribgame.hasstarted
           Cribplayer.where(:game_id => @player.game_id).where("lastplay < ?", 10.minutes.ago).each do |player|
@@ -512,8 +511,28 @@ class HomepageController < ApplicationController
             player.save
           end
           cribgame.hasstarted = true
+          cribgame.whosecrib = 1 if cribgame.whosecrib.blank?
           cribgame.save
+
+        elsif helpers.round_over(@player.game_id)
+          if cribgame.whosecrib.blank?
+            cribgame.whosecrib = 1
+            cribgame.save
+          else
+            cribgame.whosecrib += 1
+            cribgame.whosecrib = 1 if cribgame.whosecrib > Cribplayer.where(:game_id => @player.game_id).count
+            cribgame.save
+          end
         end
+
+        crib_shuffle_and_deal(@player)
+
+        Cribplayer.where(:game_id => @player.game_id).each do |player_screen|
+          player_screen.redealrequest = nil
+          player_screen.save
+        end
+
+        send_all_cards_to_all_other_players_flag = true
 
       else
 
@@ -550,6 +569,7 @@ class HomepageController < ApplicationController
           @player.game_id = params[:game_id]
           make_new_crib_game(@player)
           @player.number = players.blank? ? 1 : players.maximum(:number) + 1
+          @player.score = 0
           send_all_cards_to_all_other_players_flag = true
         else
           render "homepage/currently_in_play", :layout => false
@@ -571,37 +591,24 @@ class HomepageController < ApplicationController
 
     send_hands_and_scores_to_other_players(@player) if send_all_cards_to_all_other_players_flag
 
+    if send_name_to_all_other_players_flag
+      Cribplayer.where(:game_id => @player.game_id).each do |player|
+        if @player != player || true
+          key = player.key
+          if key.present?
+            ActionCable.server.broadcast 'room_channel' +  key, name_command(@player) => helpers.render_name(@player)
+
+          end
+        end
+      end
+    end
+
+
     redirect_to crib_path
     # render "homepage/cardtest", :layout => false
   end
 
 
-
-  def shuffle_deal_and_send_to_other(player)
-
-    crib_shuffle_and_deal(player)
-
-    Cribplayer.where(:game_id => player.game_id).each do |player_screen|
-      player_screen.redealrequest = nil
-      player_screen.save
-    end
-
-    Cribplayer.where(:game_id => player.game_id).each do |player_screen|
-      if player != player_screen
-        player_screen_key = player_screen.key
-        if player_screen_key.present?
-          Cribplayer.where(:game_id => player.game_id).each do |player_hand|
-            ActionCable.server.broadcast 'room_channel' +  player_screen_key, hand_command(player_hand) => helpers.render_hand(player_hand, player_screen)
-            ActionCable.server.broadcast 'room_channel' +  player_screen_key, play_command(player_hand) => helpers.render_play(player_hand, player_screen)
-          end
-          ActionCable.server.broadcast 'room_channel' +  player_screen_key, deck: helpers.render_deck(player_screen)
-          ActionCable.server.broadcast 'room_channel' +  player_screen_key, crib: helpers.render_crib(player_screen)
-          ActionCable.server.broadcast 'room_channel' + player_screen_key, dealrequest: helpers.render_deal_request(player.game_id)
-          # ActionCable.server.broadcast 'room_channel' +  player_screen_key, dealrequest: helpers.render_redealrequest(player_screen)
-        end
-      end
-    end
-  end
 
 
   def crib_move_card
@@ -630,7 +637,8 @@ class HomepageController < ApplicationController
         card.save
         card1.order += 1
         card1.save
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], "player" + @player.number.to_s + "_hand" => helpers.render_hand(@player, @player)
+
+        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], hand_command(@player) => helpers.render_hand(@player, @player)
       end
 
     when "r"
@@ -641,7 +649,7 @@ class HomepageController < ApplicationController
         card.save
         card1.order -= 1
         card1.save
-        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], "player" + @player.number.to_s + "_hand" => helpers.render_hand(@player, @player)
+        ActionCable.server.broadcast 'room_channel' + cookies[:crib_id], hand_command(@player) => helpers.render_hand(@player, @player)
       end
 
     when "p"
@@ -663,7 +671,16 @@ class HomepageController < ApplicationController
           ActionCable.server.broadcast 'room_channel' + player_key, hand_command(@player) => helpers.render_hand(@player, player)
           ActionCable.server.broadcast 'room_channel' + player_key, play_command(@player) => helpers.render_play(@player, player)
           ActionCable.server.broadcast 'room_channel' + player_key, play_command(player) => helpers.render_play(player, player) if @player != player #To update justplayed
-          ActionCable.server.broadcast 'room_channel' + other_key, crib: helpers.render_crib(player) if Card.where(:position => ["playopen", "playturned"] ).count >= 8
+
+          #Update where all cards have been turned simply to update dropdown
+
+          if Card.where(:game_id => player.game_id, :position => "hand").count == 0
+            ActionCable.server.broadcast 'room_channel' + player_key, crib: helpers.render_crib(player)
+            Cribplayer.where(:game_id => card.game_id).each do |player1|
+              ActionCable.server.broadcast 'room_channel' + player_key, play_command(player1) => helpers.render_play(player1, player) if @player != player1 && Card.where(:game_id => player1.game_id, :position => "playturned").count == 4
+            end
+          end
+
         end
       end
 
@@ -774,7 +791,7 @@ class HomepageController < ApplicationController
 
         score = values[1].to_i
         player = Cribplayer.where(:game_id => game_id , :number => instruction[1, 1].to_i).first
-        player.score = score
+        player.score = change_score(player.score, score)
         player.save
 
         send_scores(game_id)
@@ -782,7 +799,7 @@ class HomepageController < ApplicationController
 
       when "cut"
 
-        if Card.where(:player_id => @player.id, :position =>"cut").count == 0
+        if helpers.can_cut(@player)
           loop do
             n = SecureRandom.random_number(52)
             card = Card.where(:game_id => @player.game_id, :order => n).first
@@ -797,8 +814,8 @@ class HomepageController < ApplicationController
           Cribplayer.where(:game_id => @player.game_id).each do |player|
             player_key = player.key
             ActionCable.server.broadcast 'room_channel' +  player.key, play_command(@player) => helpers.render_play(@player, player, small_size) if player.key.present?
+            ActionCable.server.broadcast 'room_channel' +  player.key, deck: helpers.render_deck(player, small_size)
           end
-          ActionCable.server.broadcast 'room_channel' +  @player.key, deck: helpers.render_deck(@player, small_size)
         end
 
       when "retcrib"
@@ -835,7 +852,7 @@ class HomepageController < ApplicationController
 
   end
 
-  def crib_player_up
+  def crib_player_down
     player_id = params[:player_id].to_i
     if player_id > 0
       player = Cribplayer.find(player_id)
@@ -850,7 +867,7 @@ class HomepageController < ApplicationController
     redirect_to crib_path
   end
 
-  def crib_player_down
+  def crib_player_up
     player_id = params[:player_id].to_i
     if player_id > 0
       player = Cribplayer.find(player_id)
@@ -863,6 +880,29 @@ class HomepageController < ApplicationController
     end
 
     redirect_to crib_path
+  end
+
+
+  def whosecrib
+    game_id = @player.game_id
+    cribgame = Cribgame.where(:game_id => game_id).first
+    cribgame.whosecrib = params[:whosecrib].to_i
+    cribgame.save
+    name_player1 = render_player_name_from_number(game_id, 1)
+    name_player2 = render_player_name_from_number(game_id, 2)
+    name_player3 = render_player_name_from_number(game_id, 3)
+    name_player4 = render_player_name_from_number(game_id, 4)
+
+    Cribplayer.where(:game_id => @player.game_id).each do |player|
+      ActionCable.server.broadcast 'room_channel' +  player.key, whosecrib: helpers.render_whosecrib(@player), name1: name_player1, name2: name_player2, name3: name_player3, name4: name_player4 if player != @player && player.key.present?
+    end
+
+    redirect_to crib_path
+  end
+
+  def render_player_name_from_number(game_id, number)
+    player = Cribplayer.where(:game_id => game_id, :number => number).first
+    player.present? ? helpers.render_name(player) : ""
   end
 
   def crib_reset
@@ -948,6 +988,10 @@ class HomepageController < ApplicationController
     "player" + player.number.to_s + "_play"
   end
 
+  def name_command(player)
+    "player" + player.number.to_s + "_name"
+  end
+
   def make_new_crib_game(player)
 
     cribgame = Cribgame.where(:game_id => player.game_id).first
@@ -955,6 +999,7 @@ class HomepageController < ApplicationController
       cribgame = Cribgame.new
       cribgame.game_id = player.game_id
       cribgame.hasstarted = false
+      cribgame.whosecrib = 1
       cribgame.save
       crib_shuffle(player.game_id)
     end

@@ -1,0 +1,156 @@
+Mobile
+<% number_of_players = get_number_of_players(player.game_id) %>
+
+<% if player.present? && player.game_id.present? %>
+  <% player1 = Cribplayer.where(:game_id => player.game_id, :number => 1).first %>
+  <% player2 = Cribplayer.where(:game_id => player.game_id, :number => 2).first %>
+  <% player3 = Cribplayer.where(:game_id => player.game_id, :number => 3).first %>
+  <% player4 = Cribplayer.where(:game_id => player.game_id, :number => 4).first %>
+  <table >
+    <tr>
+      <td class="player" <% if player.number == 1 %> style="background: #a0a0a0"<%end%>>
+
+        <div id="player1_name"><%= render_name(player1) %></div>
+        <table>
+          <tr>
+            <td>
+              <div id="player1_hand">
+                <%= render_hand(player1, player) %>
+              </div>
+            </td>
+            <td style="width: 10px">
+            </td>
+            <td>
+              <div id="player1_play">
+                <%= render_play(player1, player) %>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <% if player2.present? %>
+      <tr>
+        <td class="player" <% if player.number == 2 %> style="background: #a0a0a0"<%end%>>
+          <div id="player2_name"><%= render_name(player2) %></div>
+          <table>
+            <tr>
+              <td>
+                <div id="player2_hand">
+                  <%= render_hand(player2, player) %>
+                </div>
+              </td>
+              <td style="width: 10px">
+              </td>
+              <td>
+                <div id="player2_play">
+                  <%= render_play(player2, player) %>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    <% end %>
+
+    <% if player3.present? %>
+      <tr>
+        <td class="player" <% if player.number == 3 %> style="background: #a0a0a0"<%end%>>
+          <div id="player3_name"><%= render_name(player3) %></div>
+          <table>
+            <tr>
+              <td>
+                <div id="player3_hand">
+                  <%= render_hand(player3, player) %>
+                </div>
+              </td>
+              <td style="width: 10px">
+              </td>
+              <td>
+                <div id="player3_play">
+                  <%= render_play(player3, player) %>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    <% end %>
+
+    <% if player4.present? %>
+      <tr>
+        <td class="player" <% if player.number == 4 %> style="background: #a0a0a0"<%end%>>
+          <div id="player4_name"><%= render_name(player4) %></div>
+          <table>
+            <tr>
+              <td>
+                <div id="player4_hand">
+                  <%= render_hand(player4, player) %>
+                </div>
+              </td>
+              <td style="width: 10px">
+              </td>
+              <td>
+                <div id="player4_play">
+                  <%= render_play(player4, player) %>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    <% end %>
+
+
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td class="player">
+              <div id="deck">
+                <%= render_deck(player) %>
+              </div>
+            </td>
+            <td style="width: 10px">
+            </td>
+            <td class="player">
+              <div id="crib">
+                <%= render_crib(player) %>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+
+
+    </tr>
+
+
+  </table>
+<% end %>
+
+<table width="100%">
+  <col width "10%">
+  <col width "70%">
+  <col width "10%">
+  <col width "10%">
+  <tr>
+    <td>
+
+    </td>
+    <td>
+      <% if number_of_players > 1 %>
+        <canvas id="myCanvas" class="center" width="1200" height="<%= (number_of_players * 33).to_s%>" style="border:1px solid #000000; background-color:white;margin-top: 20px" onmousedown="canvasmousedown()"></canvas>
+      <% end %>
+    </td>
+    <td>
+      <%= button_to "Reset" , crib_reset_path,:class=>"small_button" %>
+    </td>
+    <td>
+      <div id="reset_requests">
+        <%= render_reset_requests(player.game_id) %>
+      </div>
+    </td>
+  </tr>
+</table>

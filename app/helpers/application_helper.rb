@@ -124,9 +124,18 @@ module ApplicationHelper
   end
 
   def play_turnover(player)
-    p1 = Card.where(:position => ["justplayed", "playopen"], :game_id => player.game_id, :player_id => player.id).count
-    p2 = Card.where(:position => "playturned", :game_id => player.game_id, :player_id => player.id).count
-    (p1 > 0 && p1 < 4) || (p2 == 4)
+    #Open cards in play    Turned cards in play     Cards in all hands
+    #>=1, <4               >=1, <4                  0                     TRUE
+    #0                     4                        0                     TRUE
+    #4                     0                        0                     FALSE
+    #>1, <4                >1, <4                   >= 1                  TRUE
+    #0                     <4                       >= 1                  FALSE
+    #<4                    0                        >= 1                  TRUE
+
+    cards_in_all_hands = Card.where(:game_id => player.game_id, :position => "hand").count
+    open_cards_in_players_play = Card.where(:position => ["justplayed", "playopen"], :game_id => player.game_id, :player_id => player.id).count
+    turned_cards_in_players_play = Card.where(:position => "playturned", :game_id => player.game_id, :player_id => player.id).count
+    ((cards_in_all_hands != 0) && (open_cards_in_players_play != 0)) || ((cards_in_all_hands == 0) && (turned_cards_in_players_play != 0))
   end
 
   def available_crib_players(log_out_wording)
@@ -177,8 +186,16 @@ module ApplicationHelper
     ApplicationController.renderer.render partial: 'homepage/cribname', locals: {player: player }
   end
 
+  def render_whosecrib(player)
+    ApplicationController.renderer.render partial: 'homepage/whosecrib', locals: {player: player }
+  end
+
   def render_hands_and_score(player)
-    ApplicationController.renderer.render(partial: 'homepage/hands_and_score', locals: {player: player })
+    if mobile?
+      ApplicationController.renderer.render(partial: 'homepage/hands_and_score_mobile', locals: {player: player })
+    else
+      ApplicationController.renderer.render(partial: 'homepage/hands_and_score', locals: {player: player })
+    end
 
   end
 
@@ -192,6 +209,7 @@ module ApplicationHelper
   end
 
   def game_is_in_play(player)
+
     game = Cribgame.where(:game_id => player.game_id).first
     game.present? && game.hasstarted
   end
@@ -272,4 +290,25 @@ module ApplicationHelper
     ("[" + stg + "]").html_safe
   end
 
+  def can_cut(player)
+    number_of_cut_cards = Card.where(:position => "cut", :game_id => player.game_id, :player_id => player.id).count
+    Cribplayer.where(:game_id => player.game_id).each do |player1|
+      return true if player1 != player && Card.where(:position => "cut", :game_id => player.game_id, :player_id => player1.id).count >= number_of_cut_cards
+    end
+    false
+  end
+
+  def first_to_play(player)
+    if player.present?
+      cribgame = Cribgame.where(:game_id => player.game_id).first
+      if cribgame
+        .present?
+        if player.number == 1
+          cribgame.whosecrib == Cribplayer.where(:game_id => player.game_id).count
+        else
+          cribgame.whosecrib == player.number - 1
+        end
+      end
+    end
+  end
 end

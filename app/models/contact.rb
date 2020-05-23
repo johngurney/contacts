@@ -68,7 +68,6 @@ end
 
 #ActionController::InvalidAuthenticityToken (ActionController::InvalidAuthenticityToken):
 
-#<%= select_tag :select, options_for_select( @contact.descriptions.order(:name).all.map{|description| [description.name, description.id]}, @contact.descriptions.order(:name).first.id) , {:class => "standard", :style => "width:80%;", :onchange => '("select_button").click();'.html_safe } %>
 
 
 

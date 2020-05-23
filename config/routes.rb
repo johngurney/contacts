@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   post "crib_move_card", to:  "homepage#crib_move_card", as: :crib_move_card
   post "crib_player", to:  "homepage#crib_player", as: :crib_player
   post "crib_reset", to:  "homepage#crib_reset", as: :crib_reset
+  post "whosecrib", to:  "homepage#whosecrib", as: :whosecrib
   get 'crib', to: "homepage#crib", as: :crib
   get "crib_reset_players", to:  "homepage#crib_reset_players"
 

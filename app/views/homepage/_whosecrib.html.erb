@@ -1,0 +1,3 @@
+<%= form_tag  whosecrib_path, id: "whosecrib" do %>
+  <%= select_tag :whosecrib, options_for_select( Cribplayer.where(:game_id => player.game_id).order(:number).all.map{|player| [player_name(player), player.number]}, Cribgame.where(:game_id => player.game_id).first.whosecrib) , {:class => "small_button", :style => "width:120%;", :onchange => 'form.submit()' } %>
+<% end %>

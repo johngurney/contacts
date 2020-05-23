@@ -62,6 +62,14 @@ function start_up() {
         document.getElementById("reset_requests").innerHTML = data['reset_requests'];
       }
 
+      if (data['whosecrib'] != undefined){
+        document.getElementById("whosecrib").innerHTML = data['whosecrib'];
+        document.getElementById("player1_name").innerHTML = data['name1'];
+        document.getElementById("player2_name").innerHTML = data['name2'];
+        document.getElementById("player3_name").innerHTML = data['name3'];
+        document.getElementById("player4_name").innerHTML = data['name4'];
+
+      }
 
       // if (data['server_public_key']) {
       //
