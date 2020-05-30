@@ -66,7 +66,11 @@ module ApplicationHelper
 
       case n[1,1].downcase
       when "1"
-        filename += "ace"
+        if n[1,2].downcase == "10"
+          filename += "ten"
+        else
+          filename += "ace"
+        end
       when "2"
         filename += "two"
       when "3"
@@ -83,8 +87,6 @@ module ApplicationHelper
         filename += "eight"
       when "9"
         filename += "nine"
-      when "0"
-        filename += "ten"
       when "j"
         filename += "jack"
       when "q"
