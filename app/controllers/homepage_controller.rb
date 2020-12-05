@@ -50,26 +50,28 @@ class HomepageController < ApplicationController
 
       @next_q = 2
       @ordinal = "first"
-      @question = "Q1.  In Barnsbury Sq there is a brick building with a noticeboard.  What time is the \"volunteer gardening\"?"
-      @answer1 = "10am to 11am Saturdays"
-      @answer2 = "3pm to 4pm Sundays"
-      @answer3 = "12pm to 1pm Wednesdays"
-      @a = 1
-      @ne = "51.5423, -0.1095"
-      @sw = "51.54145, -0.1118"
+      @question = "Q1.  Find the charging point outside number 164.  On the lamppost there is a Ubicitricy sign.  Under the QA code there in a web address.  What are the last four letters of the web address?"
+      @answer1 = "snaj"
+      @answer2 = "hvrn"
+      @answer3 = "tuvc"
+      @a = 2
+
+      @ne = "51.5382, -0.11"
+      @sw = "51.5378, -0.111"
+
       render "xmas_q", :layout => false
 
   elsif log.stage == 2
 
       @next_q = 3
       @ordinal = "second"
-      @question = "Q2. What is the name of number 4 Ripplevale Grove? "
-      @answer1 = "Caldeonian Cottage"
-      @answer2 = "Albion Cottage"
-      @answer3 = "Hibernian Cottage"
-      @a = 2
-      @ne = "51.5402, -0.1092"
-      @sw = "51.5395, -0.1113"
+      @question = "Q2. Find the charging point on the opposite side of the road from number 124.  What are the last four letters of the web address? "
+      @answer1 = "ouql"
+      @answer2 = "afhn"
+      @answer3 = "cgyf"
+      @a = 3
+      @ne = "51.5375, -0.1103"
+      @sw = "51.5370, -0.1112"
 
       render "xmas_q", :layout => false
 
@@ -77,13 +79,13 @@ class HomepageController < ApplicationController
 
       @next_q = 4
       @ordinal = "third"
-      @question = "Q3.  What are the opening times of \"Angels Corner Mini Market\" on Fridays and Saturdays?"
-      @answer1 = "8am to 11pm"
-      @answer2 = "7am to 10pm"
-      @answer3 = "7am to 11pm"
+      @question = "Q3.  Find the charging point outside number 81 Theberton St.  What are the last four letters of the web address?"
+      @answer1 = "auji"
+      @answer2 = "obdk"
+      @answer3 = "dqsm"
       @a = 1
-      @ne = "51.536, -0.109"
-      @sw = "51.535, -0.11"
+      @ne = "51.5377, -0.1058"
+      @sw = "51.5373, -0.1068"
 
       render "xmas_q", :layout => false
 
